@@ -1,0 +1,65 @@
+/* Importación de fuente */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: #222;
+  line-height: 1.6;
+}
+
+/* Contenedor principal */
+.acerca-de-nosotros {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Sección: Nuestra Historia */
+.historia-contenido {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.historia-contenido .texto {
+  flex: 1;
+  min-width: 300px;
+}
+
+.historia-contenido .imagen img {
+  max-width: 350px;
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Títulos */
+h2 {
+  font-size: 28px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Párrafos */
+p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+/* Secciones generales */
+.mision, .vision, .impacto-social {
+  margin-bottom: 48px;
+}
+
+/* Estilo suave para Impacto Social */
+.impacto-social {
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 8px;
+}
+
