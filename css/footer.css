@@ -1,0 +1,102 @@
+.footer-content{
+    background-color: #ffffff;
+    padding: 40px 0;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-log img{
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+}
+.footer-social{
+    display: flex;
+    gap: 20px;
+}
+
+.footer-icon {
+    color: black;
+    font-size: 24px;
+    transition: 0.3s;
+}
+
+.social-icon:hover{
+    color: rgb(60, 60, 60);
+}
+
+.footer-links h4 {
+    color: black;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.footer-links ul {
+    list-style: none; 
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px; 
+}
+
+.footer-links a {
+    color: #cccccc; 
+    text-decoration: none; 
+    transition: 0.3s;
+}
+
+.footer-links a:hover {
+    color: #ffffff; 
+    padding-left: 5px; 
+}
+
+/* Estilo del copyright */
+.footer-bottom {
+    width: 100%; 
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #555555; 
+    color: #cccccc;
+}
+
+/* Para pantallas medianas */
+@media (max-width: 768px) {
+    .footer-content > div {
+        width: 48%; 
+        margin-bottom: 30px;
+    }
+}
+
+/* Para pantallas pequeñas */
+@media (max-width: 480px) {
+    .footer-content > div {
+        width: 100%; 
+        text-align: center;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+}
+
+
+.footer-social a {
+    transition: color 0.3s ease;
+}
+
+
+
+/* Para pantallas pequeñas */
+@media (max-width: 768px) {
+    .footer-social {
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .footer-logo {
+        text-align: center;
+    }
+}
