@@ -1,0 +1,68 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand" href="#">
+            <img src="/assets/images/ConSentido.co.png" alt="ConSentido Logo" style="max-height: 50px;">
+        </a>
+
+        <!-- Botón hamburguesa para móviles -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Contenido de la navbar -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- Menú principal -->
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#">Tejido</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#">Madera</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#">Papel</a>
+                </li>
+            </ul>
+
+            <!-- Iconos de la derecha -->
+            <div class="d-flex align-items-center">
+                <!-- Buscador -->
+                <div class="me-3">
+                    <a href="#" class="text-dark" data-bs-toggle="modal" data-bs-target="#searchModal">
+                        <i class="fas fa-search"></i>
+                    </a>
+                </div>
+                <!-- Carrito -->
+                <div class="me-3">
+                    <a href="#" class="text-dark">
+                        <i class="fas fa-shopping-cart"></i>
+                    </a>
+                </div>
+                <!-- Usuario -->
+                <div>
+                    <a href="#" class="text-dark">
+                        <i class="fas fa-user"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Modal de búsqueda -->
+<div class="modal fade" id="searchModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buscar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="search" class="form-control" placeholder="¿Qué estás buscando?">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
