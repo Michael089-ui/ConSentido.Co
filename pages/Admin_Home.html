@@ -3,20 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Me gusta comer</title>
-  <!-- Puedes añadir aquí otros estilos si los necesitas -->
-  <link rel="stylesheet" href="navbar.css" />
+  <title>Home Administrador</title>
+  <link rel="stylesheet" href="../css/adm_Home.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-  <div id="navbar-container"></div>
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="logo mb-4 text-center">
+    <img src="../assets/images/ConSentido.co.png" alt="Logo ConSentido.co" style="width: 150px;">
+  </div>
+  <p class="text-center">Administrador</p>
+  <a href="#">Dashboard</a>
+  <a href="#">Inventario</a>
+  <a href="#">Pedidos</a>
+  <a href="#">Usuarios</a>
+  <a href="#">Editar perfil</a>
+  <div class="mt-5">
+    <a href="#">Salir ⟶</a>
+  </div>
+</div>
 
-  <main class="container mt-5 pt-5">
-    <h1>ADMIN HOME</h1>
+<!-- Contenedor principal centrado -->
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+  <div class="content text-center p-4">
+        <h2 class="fw-bold mb-2">Bienvenido, Administrador</h2>
+    <p class="text-muted mb-4">Gestiona productos, pedidos y configuraciones de ConSentido.co</p>
 
-  </main>
+    <!-- Botones -->
+    <div class="d-flex gap-3 justify-content-center mb-5">
+      <button class="btn btn-outline-dark px-4 py-2">View Details</button>
+      <button class="btn btn-dark px-4 py-2">Create New</button>
+    </div>
+
+    <!-- Órdenes recientes -->
+    <h4 class="fw-bold text-start mb-4">Recent Orders</h4>
+    <div class="recent-orders d-flex gap-5 justify-content-center mt-3">
+      <div class="text-center">
+        <img src="../assets/images/box_685388.png" alt="Box icon" class="mb-2" width="70">
+        <p>Order #1234<br><small>Pending</small><br><strong>12/05/2022</strong></p>
+      </div>
+      <div class="text-center">
+        <img src="../assets/images/box_685388.png" alt="Box icon" class="mb-2" width="70">
+        <p>Order #5678<br><small>Delivered</small><br><strong>11/30/2022</strong></p>
+      </div>
+    </div>
+
+    <!-- Vista de ventas -->
+    <h4 class="fw-bold mt-5">Sales Overview</h4>
+    <p class="text-muted mb-3">Track your sales performance</p>
+    <button class="btn btn-dark px-4 py-2">View Details</button>
+  </div>
+</div>
+
 
   <script src="include-navbar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>

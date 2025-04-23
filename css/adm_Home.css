@@ -1,0 +1,51 @@
+body {
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #f1f1f1;
+    position: fixed;
+    padding: 20px;
+  }
+  
+  .sidebar a {
+    display: block;
+    padding: 10px;
+    color: black;
+    text-decoration: none;
+  }
+  
+  .sidebar a:hover {
+    background-color: #ddd;
+  }
+  
+  .content {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .logo span:nth-child(1) {
+    color: #007bff; /* azul */
+  }
+  .logo span:nth-child(2) {
+    color: #f0ad4e; /* amarillo */
+  }
+  .logo span:nth-child(3) {
+    color: #dc3545; /* rojo */
+  }
+  
+  .recent-orders img {
+    width: 60px;
+  }
+  
