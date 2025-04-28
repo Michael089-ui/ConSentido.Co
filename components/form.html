@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acerca de Nosotros</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/nav.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/formulario.css">
+  <script src="/js/script.js"></script>
+</head>
+
+<body>
+  <!-- Nav bar -->
+  <div id="navbard"></div>
+
+  <!-- Content -->
+  <main class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h4 class="mb-4 text-center">Inicia sesión o regístrate para comprar</h4>
+        <form>
+          <!-- Correo -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Correo</label>
+            <input type="email" class="form-control border-0 border-bottom rounded-0 shadow-none"
+              placeholder="Ingresa tu correo electrónico">
+          </div>
+
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre</label>
+            <input type="text" class="form-control border-0 border-bottom rounded-0 shadow-none"
+              placeholder="Ingresa un nombre">
+          </div>
+
+          <!-- Tipo de documento -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Tipo de documento</label>
+            <select class="form-select border-0 border-bottom rounded-0 shadow-none" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="CC">Cédula de Ciudadanía (CC)</option>
+              <option value="TI">Tarjeta de Identidad (TI)</option>
+              <option value="CE">Cédula de Extranjería (CE)</option>
+              <option value="NIT">NIT</option>
+              <option value="PAS">Pasaporte</option>
+            </select>
+          </div>
+
+          <!-- Número del documento -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Número de documento</label>
+            <input type="text" class="form-control border-0 border-bottom rounded-0 shadow-none"
+              placeholder="Ingresa tu número de documento" required>
+          </div>
+
+          <!-- Celular -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Celular</label>
+            <input type="tel" class="form-control border-0 border-bottom rounded-0 shadow-none"
+              placeholder="+57 | Ingresa un número de celular">
+          </div>
+
+          <!-- Contraseña -->
+          <div class="mb-1">
+            <label class="form-label fw-bold">Contraseña</label>
+            <input type="password" class="form-control border-0 border-bottom rounded-0 shadow-none"
+              placeholder="Ingresa una contraseña">
+          </div>
+          <ul class="small text-muted ps-3 mb-3">
+            <li>Mínimo 8 caracteres</li>
+            <li>Minúscula</li>
+            <li>Sin espacios</li>
+          </ul>
+
+          <!-- Botón -->
+          <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-warning text-white fw-bold">Completar Registro</button>
+          </div>
+
+          <!-- Link de acceso -->
+          <div class="text-center small">
+            ¿Ya tienes una cuenta? <a href="#" class="text-danger fw-bold">Inicia Sesión</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div id="footer-content"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
