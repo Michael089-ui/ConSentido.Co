@@ -18,13 +18,13 @@
         <img src="../assets/images/ConSentido.co.png" alt="Logo ConSentido.co" style="width: 150px;">
       </div>
       <p class="text-center">Administrador</p>
-      <a href="#dashboard">Dashboard</a>
-      <a href="#inventario">Inventario</a>
-      <a href="#pedidos">Pedidos</a>
-      <a href="#usuarios">Usuarios</a>
-      <a href="#perfil">Editar perfil</a>
+      <a href="#dashboard"><img src="../assets/images/dashboard.png" alt="dashboard" width="20"> Dashboard</a>
+      <a href="#inventario"><img src="../assets/images/inventario.png" alt="inventario" width="20"> Inventario</a>
+      <a href="#pedidos"><img src="../assets/images/pedidos.png" alt="pedidos" width="20"> Pedidos</a>
+      <a href="#usuarios"><img src="../assets/images/usuarios.png" alt="usuarios" width="20"> Usuarios</a>
+      <a href="#perfil"><img src="../assets/images/editarPerfil.png" alt="perfil" width="20"> Editar perfil</a>
       <div class="mt-5">
-        <a href="#">Salir ⟶</a>
+        <a href="#">Salir <img src="../assets/images/exit.png" alt="salir" width="20"></a>
       </div>
     </div>
   </section>
@@ -36,7 +36,8 @@
       <div class="d-flex justify-content-center align-items-center min-vh-100">
         <div class="content text-center p-4 bg-light rounded shadow-sm">
           <h2 class="fw-bold mb-2">¡Hola, Administrador!</h2>
-          <p class="text-muted mb-4">Bienvenido al panel de administración de ConSentido.co. Desde aquí podrás gestionar productos, pedidos y más.</p>
+          <p class="text-muted mb-4">Bienvenido al panel de administración de <img src="../assets/images/ConSentido.co.png" width="150"> Desde aquí podrás gestionar
+            productos, pedidos y más.</p>
           <div class="mt-4">
             <img src="../assets/images/perfilAdmin.png" alt="Administrador" width="100">
           </div>
@@ -46,84 +47,281 @@
 
     <!-- Sesión de Dashboard -->
     <section id="dashboard">
-      <div class="content text-center p-4">
-        <h2 class="fw-bold mb-2">Panel de Control</h2>
-        <p class="text-muted mb-4">Administra los productos, supervisa los pedidos, controla el inventario y realiza configuraciones clave para el funcionamiento de ConSentido.co.</p>
-        <div class="row text-start mb-4">
-          <div class="col-md-4">
-            <h5>Total de Productos</h5>
-            <p>56 productos en total</p>
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="fw-bold mb-2">Panel de Control</h2>
+          <p class="text-muted mb-4">Administra los productos, supervisa los pedidos, controla el inventario y realiza
+            configuraciones clave para el funcionamiento de ConSentido.co.</p>
+
+          <!-- Estadísticas rápidas -->
+          <div class="row text-start mb-4">
+            <div class="col-md-4">
+              <h5>Total de Productos</h5>
+              <p>56 productos en total</p>
+            </div>
+            <div class="col-md-4">
+              <h5>Total de Pedidos</h5>
+              <p>120 pedidos pendientes</p>
+            </div>
+            <div class="col-md-4">
+              <h5>Ventas Totales</h5>
+              <p>$1.500.500 pesos</p>
+            </div>
           </div>
-          <div class="col-md-4">
-            <h5>Total de Pedidos</h5>
-            <p>120 pedidos pendientes</p>
+
+          <!-- Ventas por rango de tiempo -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <h5>Ventas Hoy</h5>
+              <p>$150,000 pesos</p>
+            </div>
+            <div class="col-md-4">
+              <h5>Ventas Esta Semana</h5>
+              <p>$1,200,000 pesos</p>
+            </div>
+            <div class="col-md-4">
+              <h5>Ventas Este Mes</h5>
+              <p>$5,000,000 pesos</p>
+            </div>
           </div>
-          <div class="col-md-4">
-            <h5>Ventas Totales</h5>
-            <p>$1.500.500 pesos</p>
+
+          <!-- Ventas Recientes (gráfico) -->
+          <div class="mb-5">
+            <h4>Ventas Recientes</h4>
+            <div class="chart-container" style="width: 100%; height: 300px;">
+              <p>Gráfico de ventas aquí</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Sesión Inventario -->
+    <section id="inventario">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="text-center mb-4">Inventario</h2>
+          <p class="text-center">Gestiona el inventario de productos.</p>
+          <div class="text-center mb-4">
+            <a href="#agregar-producto" class="btn btn-primary">Agregar Nuevo Producto</a>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Categoría</th>
+                  <th>Stock</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Producto ejemplo -->
+                <tr>
+                  <td>Canasto artesanal</td>
+                  <td>Tejido</td>
+                  <td>5</td>
+                  <td>
+                    <a href="#ver-producto" class="btn btn-info btn-sm">Ver</a>
+                    <a href="#editar-producto" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="#eliminar-producto" class="btn btn-danger btn-sm">Eliminar</a>
+                  </td>
+                </tr>
+                <!-- Repitir -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Alerta de stock bajo -->
+          <div class="alert alert-warning mt-4" role="alert">
+            <strong>Atención:</strong> Algunos productos tienen stock bajo. ¡Revisar inventario!
           </div>
         </div>
-        <div class="mb-5">
-          <h4>Ventas Recientes</h4>
-          <div class="chart-container" style="width: 100%; height: 300px;">
-            <p>Gráfico de ventas aquí</p>
+    </section>
+
+    <!-- Sesión Pedidos -->
+    <section id="pedidos">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="mb-4">Pedidos</h2>
+          <p>Consulta y gestiona los pedidos realizados en la tienda.</p>
+
+          <!-- Botones de acciones generales -->
+          <div class="d-flex gap-3 justify-content-center mb-5">
+            <button class="btn btn-outline-dark px-4 py-2">Ver detalles</button>
+            <button class="btn btn-dark px-4 py-2">Nuevo Pedido</button>
+          </div>
+
+          <!-- Filtro por estado de pedidos -->
+          <div class="mb-5">
+            <label for="filtroEstado" class="form-label fw-bold">Filtrar por estado:</label>
+            <select id="filtroEstado" class="form-select w-auto mx-auto">
+              <option value="todos">Todos</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="enviado">Enviado</option>
+              <option value="entregado">Entregado</option>
+            </select>
+          </div>
+
+          <!-- Lista de pedidos recientes -->
+          <h4 class="fw-bold text-start mb-4">Pedidos recientes</h4>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID Pedido</th>
+                  <th>Cliente</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de pedido -->
+                <tr>
+                  <td>#1234</td>
+                  <td>Juan Pérez</td>
+                  <td>12/05/2022</td>
+                  <td>
+                    <select class="form-select">
+                      <option selected>Pendiente</option>
+                      <option>Enviado</option>
+                      <option>Entregado</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn btn-info btn-sm">Ver detalles</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#5678</td>
+                  <td>Ana Gómez</td>
+                  <td>11/30/2022</td>
+                  <td>
+                    <select class="form-select">
+                      <option>Pendiente</option>
+                      <option selected>Entregado</option>
+                      <option>Enviado</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn btn-info btn-sm">Ver detalles</button>
+                  </td>
+                </tr>
+                <!-- Puedes agregar más filas aquí -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Historial de compras -->
+          <div class="mt-5">
+            <h4 class="fw-bold text-start mb-4">Historial de compras de clientes</h4>
+            <p class="text-start">Visualiza las compras pasadas de cada cliente para ofrecer un mejor servicio.</p>
+            <button class="btn btn-secondary">Ver historial</button>
           </div>
         </div>
       </div>
     </section>
-  </section>
 
-  <!-- Sesión Inventario -->
-  <section id="inventario">
-    <div class="content text-center p-4">
-      <h2>Inventario</h2>
-      <p>Gestiona el inventario de productos.</p>
-    </div>
-  </section>
+    <!-- Sesión Usuarios -->
+    <section id="usuarios">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="mb-4">Usuarios</h2>
+          <p>Gestiona los usuarios registrados en la tienda.</p>
 
-  <!-- Sesión Pedidos -->
-  <section id="pedidos">
-    <div class="content text-center p-4">
-      <h2>Pedidos</h2>
-      <p>Consulta y gestiona los pedidos.</p>
+          <!-- Lista de usuarios -->
+          <div class="table-responsive mt-5">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de usuario -->
+                <tr>
+                  <td>María García</td>
+                  <td>maria@example.com</td>
+                  <td>Cliente</td>
+                  <td>Activo</td>
+                  <td>
+                    <button class="btn btn-warning btn-sm">Editar</button>
+                    <button class="btn btn-danger btn-sm">Bloquear</button>
+                    <button class="btn btn-info btn-sm">Historial de Compras</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Carlos Díaz</td>
+                  <td>carlos@example.com</td>
+                  <td>Cliente</td>
+                  <td>Bloqueado</td>
+                  <td>
+                    <button class="btn btn-warning btn-sm">Editar</button>
+                    <button class="btn btn-success btn-sm">Desbloquear</button>
+                    <button class="btn btn-info btn-sm">Historial de Compras</button>
+                  </td>
+                </tr>
+                <!-- Agregar más usuarios aquí -->
+              </tbody>
+            </table>
+          </div>
 
-      <div class="d-flex gap-3 justify-content-center mb-5">
-        <button class="btn btn-outline-dark px-4 py-2">Ver detalles</button>
-        <button class="btn btn-dark px-4 py-2">Nuevo Pedido</button>
-      </div>
-
-      <h4 class="fw-bold text-start mb-4">Pedidos recientes</h4>
-      <div class="recent-orders d-flex gap-5 justify-content-center mt-3">
-        <div class="text-center">
-          <img src="../assets/images/box_685388.png" alt="Box icon" class="mb-2" width="70">
-          <p>Pedido #1234<br><small>Pendiente</small><br><strong>12/05/2022</strong></p>
         </div>
-        <div class="text-center">
-          <img src="../assets/images/box_685388.png" alt="Box icon" class="mb-2" width="70">
-          <p>Pedido #5678<br><small>Entregado</small><br><strong>11/30/2022</strong></p>
+      </div>
+    </section>
+
+    <!-- Sesión Perfil -->
+    <section id="perfil" class="p-4">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2>Editar Perfil</h2>
+          <p>Actualiza tu información personal.</p>
+
+          <form class="perfil-form" style="max-width: 500px; margin: 0 auto; text-align: left;">
+            <div class="form-group text-center mb-4">
+              <img src="../assets/images/fotoPerfil.png" alt="Foto de perfil"
+                style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
+              <input type="file" id="foto" name="foto" class="form-control" accept="image/*">
+            </div>
+            <div class="form-group mb-3">
+              <label for="nombre">Nombre completo</label>
+              <input type="text" id="nombre" name="nombre" class="form-control"
+                placeholder="Ingresa tu nombre completo">
+            </div>
+            <div class="form-group mb-3">
+              <label for="correo">Correo electrónico</label>
+              <input type="email" id="correo" name="correo" class="form-control"
+                placeholder="Ingresa tu correo electrónico">
+            </div>
+            <div class="form-group mb-3">
+              <label for="telefono">Número de teléfono</label>
+              <input type="tel" id="telefono" name="telefono" class="form-control"
+                placeholder="Ingresa tu número de teléfono">
+            </div>
+            <div class="form-group mb-3">
+              <label for="rol">Rol</label>
+              <select id="rol" name="rol" class="form-control">
+                <option value="Administrador">Administrador</option>
+                <option value="Super Admin">Super Admin</option>
+              </select>
+            </div>
+            <div class="form-group text-center mt-4">
+              <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+            </div>
+
+          </form>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Sesión Usuarios -->
-  <section id="usuarios">
-    <div class="content text-center p-4">
-      <h2>Usuarios</h2>
-      <p>Gestiona los usuarios registrados.</p>
-    </div>
-  </section>
-
-  <!-- Sesión Perfil -->
-  <section id="perfil">
-    <div class="content text-center p-4">
-      <h2>Editar Perfil</h2>
-      <p>Actualiza tu información personal.</p>
-    </div>
-  </section>
-
-  <script src="include-navbar.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="include-navbar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -1,94 +1,50 @@
 body {
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .sidebar {
-    width: 220px;
-    height: 100vh;
-    background: #f1f1f1;
-    position: fixed;
-    padding: 20px;
-  }
-  
-  .sidebar a {
-    display: block;
-    padding: 10px;
-    color: black;
-    text-decoration: none;
-  }
-  
-  .sidebar a:hover {
-    background-color: #ddd;
-  }
-  
-  .content {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    max-width: 800px;
-    width: 100%;
-  }
-  
-  
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .logo span:nth-child(1) {
-    color: #007bff; /* azul */
-  }
-  .logo span:nth-child(2) {
-    color: #f0ad4e; /* amarillo */
-  }
-  .logo span:nth-child(3) {
-    color: #dc3545; /* rojo */
-  }
-  
-  .recent-orders img {
-    width: 60px;
-  }
- /* Asegurando que la sección de Dashboard esté centrada en la pantalla */
-#dashboard {
-  display: flex;
-  justify-content: center; /* Centrado horizontal */
-  align-items: center; /* Centrado vertical */
-  min-height: 100vh; /* Toma todo el alto de la pantalla */
-  padding: 0 20px; /* Añade padding solo en los laterales */
-  box-sizing: border-box; /* Incluye el padding en el tamaño total del contenedor */
+  font-family: 'Arial', sans-serif;
 }
 
-/* Ajusta el contenedor .content */
-#dashboard .content {
-  max-width: 100%; /* Usa el 100% del ancho disponible */
-  width: 100%; /* Asegura que ocupe todo el ancho disponible */
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
-  padding: 30px;
-  box-sizing: border-box; /* Incluye el padding en el tamaño total del contenedor */
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: #f1f1f1;
+  position: fixed;
+  left: 0;
 }
 
-/* Alineación de las métricas en columnas */
-#dashboard .row {
-  display: flex;
-  justify-content: space-between;
+.sidebar a {
+  display: block;
+  padding: 10px;
+  color: black;
+  text-decoration: none;
 }
 
-#dashboard .col-md-4 {
-  flex: 1;
-  margin-right: 15px;
+.sidebar a:hover {
+  background-color: #ddd;
 }
 
-#dashboard .col-md-4:last-child {
-  margin-right: 0;
+/* Main Content */
+#main-content {
+  margin-left: 250px; /* para que el sidebar no me tape lo demas*/
+  padding: 20px;
 }
 
-.chart-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 300px; /* Asegura que el contenedor tenga una altura específica */
-  background-color: #f8f8f8;
-  border-radius: 10px;
+#main-content section {
+  width: 100%;
+}
+
+/* General Content Styling */
+.content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Logo */
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Recent Orders */
+.recent-orders img {
+  width: 60px;
 }
