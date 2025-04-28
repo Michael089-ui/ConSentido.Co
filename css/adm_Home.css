@@ -48,4 +48,47 @@ body {
   .recent-orders img {
     width: 60px;
   }
-  
+ /* Asegurando que la sección de Dashboard esté centrada en la pantalla */
+#dashboard {
+  display: flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center; /* Centrado vertical */
+  min-height: 100vh; /* Toma todo el alto de la pantalla */
+  padding: 0 20px; /* Añade padding solo en los laterales */
+  box-sizing: border-box; /* Incluye el padding en el tamaño total del contenedor */
+}
+
+/* Ajusta el contenedor .content */
+#dashboard .content {
+  max-width: 100%; /* Usa el 100% del ancho disponible */
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  padding: 30px;
+  box-sizing: border-box; /* Incluye el padding en el tamaño total del contenedor */
+}
+
+/* Alineación de las métricas en columnas */
+#dashboard .row {
+  display: flex;
+  justify-content: space-between;
+}
+
+#dashboard .col-md-4 {
+  flex: 1;
+  margin-right: 15px;
+}
+
+#dashboard .col-md-4:last-child {
+  margin-right: 0;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* Asegura que el contenedor tenga una altura específica */
+  background-color: #f8f8f8;
+  border-radius: 10px;
+}
