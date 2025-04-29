@@ -1,0 +1,68 @@
+.top-navbar {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 70px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .top-navbar .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .navbar-brand {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin-right: 2rem;
+  }
+  
+  .logo {
+    max-height: 80px;
+    width: auto;
+    transition: transform 0.3s ease;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    display: block;
+  }
+  
+  .navbar-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  .navbar-nav {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .nav-link {
+    color: #333333 !important;
+    font-weight: 500;
+    padding: 0.5rem 1.5rem !important;
+    transition: color 0.3s ease;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .d-flex.align-items-center {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto; /* Esto empuja los íconos hacia la derecha */
+  }
