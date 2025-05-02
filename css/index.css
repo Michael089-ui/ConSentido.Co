@@ -1,0 +1,89 @@
+#consentido {
+    width: 85vw;
+    max-width: 85vw;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    height: 100vh;
+    min-height: 100vh;
+    background-image: url('bolso1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+  .form-superpuesto {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.92);
+      padding: 32px 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      width: 65vw;              /* ocupa 65% de ancho de pantalla */
+      max-width: 900px;         /* máximo para pantallas grandes */
+    }
+  .form-superpuesto h2 {
+    margin-top: 0;
+    font-size: 1.4em;
+    color: #4a2c13;
+  }
+  .form-superpuesto p {
+    color: #3d3d3d;
+    font-size: 1em;
+    margin-bottom: 20px;
+  }
+  .form-superpuesto label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #4a2c13;
+  }
+  .form-superpuesto input,
+  .form-superpuesto textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+  }
+  .form-superpuesto button {
+    width: 100%;
+    padding: 12px;
+    background: #8d6748;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .form-superpuesto button:hover {
+    background: #6d4c2f;
+  }
+  
+  /* Responsividad para pantallas medianas */
+  @media (max-width: 992px) {
+      .form-superpuesto {
+        width: 80vw;
+        max-width: 700px;
+      }
+    }
+    
+    /* Responsividad para pantallas pequeñas (móviles) */
+    @media (max-width: 576px) {
+      .form-superpuesto {
+        width: 90vw;
+        max-width: 400px;
+      }
+    }
