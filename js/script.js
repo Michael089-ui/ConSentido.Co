@@ -24,4 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
           document.getElementById('footer-content').innerHTML = data;
         });
   });
-  
+  function agregarProducto(){
+    const nombre = document.getElementById(productoNombre).value;
+    const categoria = document.getElementById(productoCategoria).value;
+    const stock = document.getElementById(productoStock).value;
+    const descripcion = document.getElementById(productoDescripcion).value;
+    const precio = document.getElementById(productoPrecio).value;
+    const nuevoproducto = {nombre,categoria,st}
+  }
