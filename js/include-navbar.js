@@ -1,6 +1,5 @@
-// Animaciones llamativas para la navbar superior y lateral
 document.addEventListener("DOMContentLoaded", () => {
-  // Cargar navbar desde archivo externo si se usa contenedor
+  
   const navbarContainer = document.getElementById("navbar-container");
   if (navbarContainer) {
     fetch("nav.html")
@@ -50,7 +49,7 @@ function iniciarAnimaciones() {
     });
   }
 
-  // Pequeño rebote para el ícono de usuario
+  // animación para el ícono de usuario
   const userIcon = document.querySelector(".fa-user");
   if (userIcon) {
     userIcon.addEventListener("mouseenter", () => {
