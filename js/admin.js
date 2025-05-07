@@ -23,7 +23,7 @@ class ProductosManager {
             });
         }
 
-        // Agregar listeners para filtros
+        // Agregar listeners para filtro
         const buscarProducto = document.getElementById('buscarProducto');
         const filtroCategoria = document.getElementById('filtroCategoria');
         const filtroStock = document.getElementById('filtroStock');
@@ -414,7 +414,7 @@ class AdminManager {
 // Inicialización
 const adminManager = new AdminManager();
 
-// Exportar función de cerrar sesión como global
+
 window.cerrarSesion = AdminManager.cerrarSesion;
 
 // Manejo global de errores
