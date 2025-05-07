@@ -1,0 +1,259 @@
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+
+.header {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 0.5rem 0;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #e63946;
+    text-decoration: none;
+}
+
+.logo span {
+    color: #457b9d;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #222;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: #e63946;
+}
+
+.login-btn {
+    background: #457b9d;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-btn:hover {
+    background: #e63946;
+}
+
+.productos-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.filtros {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.filtro-categoria {
+    background: #ffd166;
+    color: #222;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.filtro-categoria:hover {
+    background: #e63946;
+    color: #fff;
+}
+
+.busqueda {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.titulo {
+    font-size: 1.7rem;
+    margin-bottom: 1.5rem;
+    color: #222;
+}
+
+.titulo span {
+    color: #e63946;
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.producto-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.producto-img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #eee;
+}
+
+.producto-card h3 {
+    margin: 0.5rem 0 0.2rem 0;
+    font-size: 1.1rem;
+    color: #222;
+}
+
+.producto-desc {
+    color: #444;
+    font-size: 0.98rem;
+    margin-bottom: 0.5rem;
+}
+
+.producto-precio {
+    font-size: 1.2rem;
+    color: #e63946;
+    font-weight: bold;
+    margin-bottom: 0.7rem;
+}
+
+.agregar-carro {
+    background: #457b9d;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.agregar-carro:hover {
+    background: #e63946;
+}
+
+.destacados {
+    margin-top: 2.5rem;
+}
+
+.destacados h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+    color: #222;
+}
+
+.destacados-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.destacado-item {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 220px;
+    max-width: 260px;
+    flex: 1;
+    position: relative;
+}
+
+.destacado-item img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #eee;
+}
+
+.edicion-limitada {
+    background: #e63946;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 30px;
+    padding: 0.5rem 1.5rem;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.1rem;
+}
+
+.destacado-item .info {
+    text-align: center;
+}
+
+.ver-coleccion {
+    background: #e63946;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 0.7rem;
+    transition: background 0.2s;
+}
+
+.ver-coleccion:hover {
+    background: #457b9d;
+}
+
+@media (max-width: 900px) {
+
+    .productos-grid,
+    .destacados-grid {
+        flex-direction: column;
+        display: flex;
+        gap: 2rem;
+    }
+}
