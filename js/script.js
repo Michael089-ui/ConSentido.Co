@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const productos = await response.json();
         
         const contenedorProductos = document.querySelector('.productos-destacados .row');
-        contenedorProductos.innerHTML = ''; // Limpiar contenedor
+        contenedorProductos.innerHTML = ''; // Limpiar el contenedor
         
         productos.forEach(producto => {
             const cardHTML = `
@@ -59,25 +59,72 @@ function verDetallesProducto(id) {
     window.location.href = `/producto.html?id=${id}`;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  mostrarProductos();
-});
+class ProductosVista {
+    constructor() {
+        this.productos = JSON.parse(localStorage.getItem('productos')) || [];
+        this.categoria = document.body.dataset.categoria; 
+        this.init();
+    }
 
-function mostrarProductos() {
-  const productos = productosManager.obtenerProductos();
-  const contenedor = document.querySelector('.productos-grid');
-  contenedor.innerHTML = '';
+    init() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.mostrarProductos();
+        });
+    }
 
-  productos.forEach(producto => {
-      contenedor.innerHTML += `
-          <article class="producto-card">
-              <img src="${producto.imagen}" alt="${producto.nombre}" class="producto-img">
-              <h3>${producto.nombre}</h3>
-              <p class="producto-desc">${producto.descripcion}</p>
-              <p class="producto-precio">$ ${Number(producto.precio).toLocaleString()}</p>
-              <button class="agregar-carro">Agregar al Carro</button>
-          </article>
-      `;
-  });
+    mostrarProductos() {
+        const contenedor = document.getElementById('productos-container');
+        if (!contenedor) return;
+
+        const productosFiltrados = this.productos.filter(producto => 
+            producto.categoria.toLowerCase() === this.categoria.toLowerCase()
+        );
+
+        if (productosFiltrados.length === 0) {
+            contenedor.innerHTML = `
+                <div class="alert alert-info">
+                    No hay productos disponibles en esta categoría.
+                </div>
+            `;
+            return;
+        }
+
+        contenedor.innerHTML = `
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                ${productosFiltrados.map(producto => this.crearTarjetaProducto(producto)).join('')}
+            </div>
+        `;
+    }
+
+    crearTarjetaProducto(producto) {
+        return `
+            <div class="col">
+                <div class="card h-100">
+                    <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}"
+                         style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">${producto.nombre}</h5>
+                        <p class="card-text">${producto.descripcion}</p>
+                        <p class="card-text">
+                            <small class="text-muted">Stock: ${producto.stock} unidades</small>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0">$${producto.precio.toLocaleString()}</span>
+                            <button class="btn btn-primary" onclick="productosVista.agregarAlCarrito(${producto.id})">
+                                <i class="fas fa-shopping-cart"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    agregarAlCarrito(id) {
+        // Implementar función de agregar los productos aal carrito
+        alert('Función de carrito en desarrollo');
+    }
 }
+
+const productosVista = new ProductosVista();
 
