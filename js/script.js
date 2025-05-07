@@ -68,4 +68,3 @@ document.addEventListener('DOMContentLoaded', function() {
 function verDetallesProducto(id) {
     window.location.href = `/producto.html?id=${id}`;
 }
->>>>>>> main
