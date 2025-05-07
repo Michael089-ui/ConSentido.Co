@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Administrativo | ConSentido.co</title>
+  <link rel="stylesheet" href="../../css/adm_Home.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <section id="sidebar">
+    <div class="sidebar">
+      <div class="logo mb-4 text-center">
+        <img src="../../assets/images/ConSentido.co.png" alt="Logo ConSentido.co" class="logo-img">
+      </div>
+      <p class="text-center">Administrador</p>
+      <nav class="nav flex-column">
+        <a href="#" class="nav-link" data-section="dashboard">
+          <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+        <a href="#" class="nav-link" data-section="inventario">
+          <i class="fas fa-box"></i> Inventario
+        </a>
+        <a href="#" class="nav-link" data-section="pedidos">
+          <i class="fas fa-shopping-cart"></i> Pedidos
+        </a>
+        <a href="#" class="nav-link" data-section="usuarios">
+          <i class="fas fa-users"></i> Usuarios
+        </a>
+        <a href="#" class="nav-link" data-section="perfil">
+          <i class="fas fa-user-edit"></i> Editar perfil
+        </a>
+      </nav>
+      <div class="mt-5">
+        <a href="#" class="nav-link text-danger" onclick="cerrarSesion()">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contenedor Principal -->
+  <section id="main-content">
+    <!-- Pantalla de Bienvenida -->
+    <div id="bienvenida" class="content-section active">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="fw-bold mb-2">¡Hola, Administrador!</h2>
+          <p class="text-muted mb-4">Bienvenido al panel de administración de
+            <img src="../../assets/images/ConSentido.co.png" alt="Logo" width="150">
+          </p>
+          <div class="mt-4">
+            <img src="../../assets/images/perfilAdmin.png" alt="Administrador" width="100">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenedor dinámico para las secciones -->
+    <div id="content-container"></div>
+  </section>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../../js/admin.js"></script>
+</body>
+
+</html>
