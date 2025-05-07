@@ -1,3 +1,4 @@
+// Animación de logo cada 5 segundos
 document.addEventListener("DOMContentLoaded", function () {
   const logo = document.querySelector(".logo-img");
 
@@ -11,20 +12,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }, 5000);
   }
-});
 
-window.addEventListener("DOMContentLoaded", function () {
-  fetch("/components/navbar.html") // o "../components/navbar.html" si está en otra carpeta
+  // Cargar navbar en #nav-placeholder
+  fetch("/components/navbar.html")
     .then(response => response.text())
     .then(data => {
-      document.getElementById("nav-placeholder").innerHTML = data;
-    });
-});
+      const navPlaceholder = document.getElementById("nav-placeholder");
+      if (navPlaceholder) {
+        navPlaceholder.innerHTML = data;
+      }
+    })
+    .catch(error => console.error("Error cargando navbar.html:", error));
 
-// $(document).ready(function () {
-//   $('#nav-placeholder').load('/components/nav.html', function (response, status, xhr) {
-//     if (status == 'error') {
-//       console.log('Error loading nav:', xhr.status, xhr.statusText);
-//     }
-//   });
-// });
+  // Cargar nav en #navbard si existe
+  fetch("/components/nav.html")
+    .then(response => response.text())
+    .then(data => {
+      const navbard = document.getElementById("navbard");
+      if (navbard) {
+        navbard.innerHTML = data;
+      }
+    })
+    .catch(error => console.error("Error cargando nav.html:", error));
+
+  // Cargar footer en #footer-content
+  fetch("/components/footer.html")
+    .then(response => response.text())
+    .then(data => {
+      const footerContent = document.getElementById("footer-content");
+      if (footerContent) {
+        footerContent.innerHTML = data;
+      }
+    })
+    .catch(error => console.error("Error cargando footer.html:", error));
+});
