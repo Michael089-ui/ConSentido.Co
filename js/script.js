@@ -58,3 +58,26 @@ document.addEventListener('DOMContentLoaded', function() {
 function verDetallesProducto(id) {
     window.location.href = `/producto.html?id=${id}`;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  mostrarProductos();
+});
+
+function mostrarProductos() {
+  const productos = productosManager.obtenerProductos();
+  const contenedor = document.querySelector('.productos-grid');
+  contenedor.innerHTML = '';
+
+  productos.forEach(producto => {
+      contenedor.innerHTML += `
+          <article class="producto-card">
+              <img src="${producto.imagen}" alt="${producto.nombre}" class="producto-img">
+              <h3>${producto.nombre}</h3>
+              <p class="producto-desc">${producto.descripcion}</p>
+              <p class="producto-precio">$ ${Number(producto.precio).toLocaleString()}</p>
+              <button class="agregar-carro">Agregar al Carro</button>
+          </article>
+      `;
+  });
+}
+

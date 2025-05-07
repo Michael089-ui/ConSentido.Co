@@ -1,0 +1,118 @@
+<div class="content p-4 bg-light rounded shadow-sm">
+    <h2 class="fw-bold mb-2">Panel de Control</h2>
+    <p class="text-muted mb-4">Administra los productos, supervisa los pedidos, controla el inventario y realiza
+        configuraciones clave para el funcionamiento de ConSentido.co.</p>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row text-start mb-4">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <img src="../assets/images/estadistica1.png" alt="estadistica1" class="stats-image">
+                <h5>Total de Productos</h5>
+                <p class="producto-count">56 productos en total</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <img src="../assets/images/estadistica2.png" alt="estadistica2" class="stats-image">
+                <h5>Total de Pedidos</h5>
+                <p class="pedidos-count">120 pedidos pendientes</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <img src="../assets/images/estadistica3.png" alt="estadistica3" class="stats-image">
+                <h5>Ventas Totales</h5>
+                <p class="ventas-total">$1.500.500 pesos</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventas por rango de tiempo -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Ventas Hoy</h5>
+                <p class="ventas-hoy">$150,000 pesos</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <img src="../assets/images/estadistica4.png" alt="estadistica4" class="stats-image">
+                <h5>Ventas Esta Semana</h5>
+                <p class="ventas-semana">$1,200,000 pesos</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <img src="../assets/images/estadistica5.png" alt="estadistica5" class="stats-image">
+                <h5>Ventas Este Mes</h5>
+                <p class="ventas-mes">$5,000,000 pesos</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventas Recientes (gráfico) -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Ventas Recientes</h4>
+            <div class="chart-container">
+                <canvas id="ventasChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Últimos Pedidos -->
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Últimos Pedidos</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ultimos-pedidos">
+                        <!-- Los pedidos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Inicializar el gráfico de ventas
+    const ctx = document.getElementById('ventasChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Ventas Mensuales',
+                data: [1200000, 1900000, 3000000, 5000000, 2000000, 3500000],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Actualizar datos en tiempo real
+    function actualizarEstadisticas() {
+        // Aquí irá el código para actualizar las estadísticas
+        // usando datos reales de tu backend
+    }
+
+    // Actualizar cada 5 minutos
+    setInterval(actualizarEstadisticas, 300000);
+</script>
