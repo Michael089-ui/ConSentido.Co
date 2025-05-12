@@ -15,23 +15,22 @@ eyeIcon.addEventListener('click', function() {
   }
 });
 
-// Obtener los elementos
+// Restablecer contra
 const showPopup = document.getElementById('showPopup');
 const popupWindow = document.getElementById('popupWindow');
 const closePopup = document.getElementById('closePopup');
 
-// Mostrar la ventana emergente
 showPopup.addEventListener('click', function(event) {
-  event.preventDefault(); // Evitar que el enlace navegue a otra página
-  popupWindow.style.display = 'flex'; // Mostrar la ventana emergente
+  event.preventDefault(); 
+  popupWindow.style.display = 'flex'; 
 });
 
-// Cerrar la ventana emergente
+// Cerrar la ventana restablecer contra
 closePopup.addEventListener('click', function() {
-  popupWindow.style.display = 'none'; // Ocultar la ventana emergente
+  popupWindow.style.display = 'none'; 
 });
 
-// Cerrar la ventana emergente si se hace clic fuera de ella
+// Cerrar la ventana restablecer contra, si se hace clic fuera de ella
 window.addEventListener('click', function(event) {
   if (event.target === popupWindow) {
     popupWindow.style.display = 'none';
