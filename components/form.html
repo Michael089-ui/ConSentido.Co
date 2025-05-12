@@ -23,25 +23,25 @@
     <div class="row justify-content-center">
       <div class="col-md-6">
         <h4 class="mb-4 text-center">Inicia sesión o regístrate para comprar</h4>
-        <form>
+        <form id="formularUsuario">
           <!-- Correo -->
           <div class="mb-3">
             <label class="form-label fw-bold">Correo</label>
-            <input type="email" class="form-control border-0 border-bottom rounded-0 shadow-none"
+            <input type="email" id="correo" class="form-control border-0 border-bottom rounded-0 shadow-none"
               placeholder="Ingresa tu correo electrónico">
           </div>
 
           <!-- Nombre -->
           <div class="mb-3">
             <label class="form-label fw-bold">Nombre</label>
-            <input type="text" class="form-control border-0 border-bottom rounded-0 shadow-none"
+            <input type="text" id="nombre" class="form-control border-0 border-bottom rounded-0 shadow-none"
               placeholder="Ingresa un nombre">
           </div>
 
           <!-- Tipo de documento -->
           <div class="mb-3">
             <label class="form-label fw-bold">Tipo de documento</label>
-            <select class="form-select border-0 border-bottom rounded-0 shadow-none" required>
+            <select id="tipoDocumento" class="form-select border-0 border-bottom rounded-0 shadow-none" required>
               <option value="" disabled selected>Selecciona una opción</option>
               <option value="CC">Cédula de Ciudadanía (CC)</option>
               <option value="TI">Tarjeta de Identidad (TI)</option>
@@ -54,21 +54,21 @@
           <!-- Número del documento -->
           <div class="mb-3">
             <label class="form-label fw-bold">Número de documento</label>
-            <input type="text" class="form-control border-0 border-bottom rounded-0 shadow-none"
+            <input id="numeroDocumento" type="text" class="form-control border-0 border-bottom rounded-0 shadow-none"
               placeholder="Ingresa tu número de documento" required>
           </div>
 
           <!-- Celular -->
           <div class="mb-3">
             <label class="form-label fw-bold">Celular</label>
-            <input type="tel" class="form-control border-0 border-bottom rounded-0 shadow-none"
+            <input type="tel" id="numeroCelular" class="form-control border-0 border-bottom rounded-0 shadow-none"
               placeholder="+57 | Ingresa un número de celular">
           </div>
 
           <!-- Contraseña -->
           <div class="mb-1">
             <label class="form-label fw-bold">Contraseña</label>
-            <input type="password" class="form-control border-0 border-bottom rounded-0 shadow-none"
+            <input type="password" id="contraseña" class="form-control border-0 border-bottom rounded-0 shadow-none"
               placeholder="Ingresa una contraseña">
           </div>
           <ul class="small text-muted ps-3 mb-3">
@@ -79,7 +79,8 @@
 
           <!-- Botón -->
           <div class="d-grid mb-3">
-            <button type="submit" class="btn btn-warning text-white fw-bold">Completar Registro</button>
+            <button id="botonRegistrar" type="submit" class="btn btn-warning text-white fw-bold">Completar
+              Registro</button>
           </div>
 
           <!-- Link de acceso -->
