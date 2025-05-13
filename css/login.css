@@ -22,7 +22,11 @@
     left: 65%;
     transform: translateX(-50%);
   }
-  /* Restablecer contra */
+  /* .eye-icon {
+  width: 5px; /* Cambia el tamaño según necesites */
+  /* cursor: pointer;
+} */ */
+    /* Restablecer contra */
 .popup-window {
   position: fixed;
   top: 0;
@@ -56,5 +60,56 @@
   color: red;
 }
 
-  
-  
+  /* Responsive para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .left-image {
+    width: 100%;
+    height: 50%;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  }
+
+  .login-box {
+    left: 5%;
+    right: 5%;
+    top: 40%;
+    transform: translateY(-40%);
+  }
+
+  /* Ajustar el logo para pantallas pequeñas */
+  .login-box img {
+    width: 200px;
+  }
+
+  /* Asegurarse de que el formulario se ajuste bien */
+  #loginForm {
+    max-width: 100%;
+  }
+
+  /* Asegurar que el popup se vea bien */
+  .popup-content {
+    width: 90%;
+  }
+}
+
+/* Responsive para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .left-image {
+    display: none; /* Ocultar la imagen en pantallas muy pequeñas */
+  }
+
+  .login-box {
+    left: 0;
+    right: 0;
+    top: 30%;
+    transform: translateY(-30%);
+  }
+
+  .login-box img {
+    width: 180px; /* Logo más pequeño */
+  }
+
+  /* Hacer el popup más pequeño */
+  .popup-content {
+    width: 80%;
+  }
+}
