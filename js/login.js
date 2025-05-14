@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordInput = document.getElementById('loginPassword');
     const eyeIcon = document.getElementById('eye-icon');
     const loginButton = document.getElementById('loginButton');
-
     // Verificar que todos los elementos existen
     if (!loginForm || !loginMessage || !emailInput || !passwordInput || !eyeIcon || !loginButton) {
         console.error('Falta algún elemento del DOM');
@@ -37,12 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessage('Por favor, complete todos los campos.', 'danger');
             return;
         }
-
         // Obtener usuarios y validar credenciales
         try {
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users.find(u => u.email === email && u.password === password);
-
             if (user) {
                 // Login exitoso
                 localStorage.setItem('currentUser', JSON.stringify({
@@ -64,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessage('Error al procesar la solicitud', 'danger');
         }
     });
-
     // Toggle password visibility
     eyeIcon.addEventListener('click', function() {
         const isPassword = passwordInput.type === 'password';
@@ -72,13 +68,11 @@ document.addEventListener('DOMContentLoaded', function() {
         eyeIcon.classList.toggle('fa-eye');
         eyeIcon.classList.toggle('fa-eye-slash');
     });
-
     // Función unificada para mostrar mensajes
     function showMessage(message, type) {
         loginMessage.textContent = message;
         loginMessage.className = `alert alert-${type} mt-3`;
         loginMessage.style.display = 'block';
-
         if (type === 'danger') {
             setTimeout(() => {
                 loginMessage.style.display = 'none';
