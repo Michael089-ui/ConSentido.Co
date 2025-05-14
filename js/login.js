@@ -1,40 +1,88 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos del DOM
+    const loginForm = document.getElementById('loginForm');
+    const loginMessage = document.getElementById('loginMessage'); // Cambiado de loginError a loginMessage
+    const emailInput = document.getElementById('loginEmail');
+    const passwordInput = document.getElementById('loginPassword');
+    const eyeIcon = document.getElementById('eye-icon');
+    const loginButton = document.getElementById('loginButton');
 
-const eyeIcon = document.getElementById('eye-icon');
-const passwordField = document.getElementById('password');
+    // Verificar que todos los elementos existen
+    if (!loginForm || !loginMessage || !emailInput || !passwordInput || !eyeIcon || !loginButton) {
+        console.error('Falta algún elemento del DOM');
+        return;
+    }
 
-eyeIcon.addEventListener('click', function() {
-  
-  if (passwordField.type === 'password') {
-    passwordField.type = 'text'; // Muestra la contraseña
-    eyeIcon.classList.remove('fa-eye'); // Cambia el ícono
-    eyeIcon.classList.add('fa-eye-slash'); // Cambia el ícono al de "ojo tachado"
-  } else {
-    passwordField.type = 'password'; // Oculta la contraseña
-    eyeIcon.classList.remove('fa-eye-slash'); // Vuelve al ícono del ojo
-    eyeIcon.classList.add('fa-eye'); // Cambia el ícono al de "ojo"
-  }
+    // Guardar usuarios de ejemplo si no existen
+    if (!localStorage.getItem('users')) {
+        const defaultUsers = [
+            { 
+                email: 'usuario@example.com', 
+                password: 'password123',
+                name: 'Usuario Demo'
+            }
+        ];
+        localStorage.setItem('users', JSON.stringify(defaultUsers));
+    }
+
+    // Manejar envío del formulario
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevenir envío del formulario por defecto
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        // Validar campos vacíos
+        if (!email || !password) {
+            showMessage('Por favor, complete todos los campos.', 'danger');
+            return;
+        }
+
+        // Obtener usuarios y validar credenciales
+        try {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                // Login exitoso
+                localStorage.setItem('currentUser', JSON.stringify({
+                    email: user.email,
+                    name: user.name
+                }));
+
+                showMessage('¡Inicio de sesión exitoso!', 'success');
+                
+                // Redireccionar después de mostrar el mensaje
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1500);
+            } else {
+                showMessage('Correo o contraseña incorrectos', 'danger');
+            }
+        } catch (error) {
+            console.error('Error al procesar el login:', error);
+            showMessage('Error al procesar la solicitud', 'danger');
+        }
+    });
+
+    // Toggle password visibility
+    eyeIcon.addEventListener('click', function() {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        eyeIcon.classList.toggle('fa-eye');
+        eyeIcon.classList.toggle('fa-eye-slash');
+    });
+
+    // Función unificada para mostrar mensajes
+    function showMessage(message, type) {
+        loginMessage.textContent = message;
+        loginMessage.className = `alert alert-${type} mt-3`;
+        loginMessage.style.display = 'block';
+
+        if (type === 'danger') {
+            setTimeout(() => {
+                loginMessage.style.display = 'none';
+            }, 3000);
+        }
+    }
 });
-
-// Restablecer contra
-const showPopup = document.getElementById('showPopup');
-const popupWindow = document.getElementById('popupWindow');
-const closePopup = document.getElementById('closePopup');
-
-showPopup.addEventListener('click', function(event) {
-  event.preventDefault(); 
-  popupWindow.style.display = 'flex'; 
-});
-
-// Cerrar la ventana restablecer contra
-closePopup.addEventListener('click', function() {
-  popupWindow.style.display = 'none'; 
-});
-
-// Cerrar la ventana restablecer contra, si se hace clic fuera de ella
-window.addEventListener('click', function(event) {
-  if (event.target === popupWindow) {
-    popupWindow.style.display = 'none';
-  }
-});
-
-  
