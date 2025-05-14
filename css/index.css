@@ -19,6 +19,7 @@
     background-repeat: no-repeat;
     position: relative;
     font-family: Arial, sans-serif;
+    padding-top: 80px;
   }
   .form-superpuesto {
       position: absolute;
