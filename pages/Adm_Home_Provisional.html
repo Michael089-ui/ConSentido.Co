@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administrador</title>
+  <link rel="stylesheet" href="../css/adm_Home_provi.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <section id="sidebar">
+    <div class="sidebar">
+      <div class="logo mb-4 text-center">
+        <img src="../assets/images/ConSentido.co.png" alt="Logo ConSentido.co" style="width: 150px;">
+      </div>
+      <!-- Mostrar datos del perfil -->
+    <div id="perfilSidebar">
+        <!-- <img id="perfilSidebarImg" src="../assets/images/fotoPerfil.png" alt="Foto de perfil" 
+          style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"> -->
+        <!-- <p id="perfilSidebarNombre">Administrador</p> -->
+        <p id="perfilSidebarCorreo">Correo: example@correo.com</p>
+        <p id="perfilSidebarTelefono">Teléfono: 123-456-7890</p>
+        <p id="perfilSidebarRol">Rol: Administrador</p>
+      <!-- <a href="#dashboard"><img src="../assets/images/dashboard.png" alt="dashboard" width="20"> Dashboard</a> -->
+      <a href="#inventario"><img src="../assets/images/inventario.png" alt="inventario" width="20"> Inventario</a>
+      <a href="#pedidos"><img src="../assets/images/pedidos.png" alt="pedidos" width="20"> Pedidos</a>
+      <a href="#usuarios"><img src="../assets/images/usuarios.png" alt="usuarios" width="20"> Usuarios</a>
+      <a href="#perfil"><img src="../assets/images/editarPerfil.png" alt="perfil" width="20"> Editar perfil</a>
+      <div class="mt-5">
+        <a href="#">Salir <img src="../assets/images/exit.png" alt="salir" width="20"></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contenedor Principal -->
+  <section id="main-content">
+    <!-- Sesión de Bienvenida -->
+    <section id="bienvenida">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="fw-bold mb-2">¡Hola, Administrador!</h2>
+          <p class="text-muted mb-4">Bienvenido al panel de administración de <img src="../assets/images/ConSentido.co.png" width="150"> Desde aquí podrás gestionar
+            productos, pedidos y más.</p>
+          <div class="mt-4">
+            <img src="../assets/images/perfilAdmin.png" alt="Administrador" width="100">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sesión de Dashboard
+    <section id="dashboard">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="fw-bold mb-2">Panel de Control</h2>
+          <p class="text-muted mb-4">Administra los productos, supervisa los pedidos, controla el inventario y realiza
+            configuraciones clave para el funcionamiento de ConSentido.co.</p>
+
+          Estadísticas rápidas
+          <div class="row text-start mb-4">
+            <div class="col-md-4">
+              <img src="../assets/images/estadistica1.png" alt="estadistica1" width="200">
+              <h5>Total de Productos</h5>
+              <p>56 productos en total</p>
+            </div>
+            <div class="col-md-4">
+              <img src="../assets/images/estadistica2.png" alt="estadistica2" width="200">
+              <h5>Total de Pedidos</h5>
+              <p>120 pedidos pendientes</p>
+            </div>
+            <div class="col-md-4">
+              <img src="../assets/images/estadistica3.png" alt="estadistica3" width="200">
+              <h5>Ventas Totales</h5>
+              <p>$1.500.500 pesos</p>
+            </div>
+          </div>
+
+          <!-- Ventas por rango de tiempo -->
+          <!-- <div class="row mb-4">
+            <div class="col-md-4">
+              <h5>Ventas Hoy</h5>
+              <p>$150,000 pesos</p>
+            </div>
+            <div class="col-md-4">
+              <img src="../assets/images/estadistica4.png" alt="estadistica4" width="200">
+              <h5>Ventas Esta Semana</h5>
+              <p>$1,200,000 pesos</p>
+            </div>
+            <div class="col-md-4">
+              <img src="../assets/images/estadistica5.png" alt="estadistica5" width="200">
+              <h5>Ventas Este Mes</h5>
+              <p>$5,000,000 pesos</p>
+            </div>
+          </div> -->
+
+          <!-- Ventas Recientes (gráfico) -->
+          <!-- <div class="mb-5">
+            <h4>Ventas Recientes</h4>
+            <div class="chart-container" style="width: 100%; height: 300px;">
+              <p>Gráfico de ventas aquí</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section> --> 
+
+   <!-- Sesión Inventario -->
+<section id="inventario">
+  <div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="content text-center p-4 bg-light rounded shadow-sm">
+      <h2 class="text-center mb-4">Inventario</h2>
+      <p class="text-center">Gestiona el inventario de productos.</p>
+      <div class="text-center mb-4">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarProductoModal">
+          Agregar Nuevo Producto
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Stock</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert alert-warning mt-4" role="alert">
+        <strong>Atención:</strong> Algunos productos tienen stock bajo. ¡Revisar inventario!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal VER Producto -->
+<div class="modal fade" id="verProductoModal" tabindex="-1" aria-labelledby="verProductoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="verProductoModalLabel">Detalles del Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <img id="verImagen" src="../assets/images/hamaca.jpg" alt="Imagen del Producto" class="img-fluid mb-3">
+        <p><strong>Descripción: </strong> <span id="verDescripcion"></span></p>
+        <p><strong>Precio:</strong> <span id="verPrecio"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para AGREGAR nuevo producto -->
+<div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Nuevo Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="agregarProductoForm">
+          <div class="mb-3">
+            <label for="productoNombre" class="form-label">Nombre del Producto</label>
+            <input type="text" class="form-control" id="productoNombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="productoCategoria" class="form-label">Categoría</label>
+            <select class="form-control" id="productoCategoria" required>
+                <option value="">Seleccionar Categoría</option>
+                <option value="Tejido">Tejido</option>
+                <option value="Madera">Madera</option>
+                <option value="Papel">Papel</option>
+              </select>
+          </div>
+          <div class="mb-3">
+            <label for="productoStock" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="productoStock" required>
+          </div>
+          <div class="mb-3">
+            <label for="productoDescripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="productoDescripcion" rows="2" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="productoPrecio" class="form-label">Precio ($)</label>
+            <input type="number" step="0.01" class="form-control" id="productoPrecio" required>
+          </div>
+          <div class="mb-3">
+            <label for="productoImagen" class="form-label">Imagen del Producto</label>
+            <input type="file" class="form-control" id="productoImagen" accept="image/*" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Agregar Producto</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal EDITAR producto -->
+<div class="modal fade" id="editarProductoModal" tabindex="-1" aria-labelledby="editarProductoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editarProductoModalLabel">Editar Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editarProductoForm">
+          <div class="mb-3">
+            <label for="editarDescripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="editarDescripcion" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="editarPrecio" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="editarPrecio" required>
+          </div>
+          <div class="mb-3">
+            <label for="editarImagen" class="form-label">Imagen</label>
+            <input type="file" class="form-control" id="editarImagen" accept="image/*">
+            <img id="vistaPreviaEditar" class="img-fluid mt-2" alt="Vista previa" />
+          </div>
+          <button type="submit" class="btn btn-success">Guardar Cambios</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+    <!-- Sesión Pedidos -->
+    <section id="pedidos">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="mb-4">Pedidos</h2>
+          <p>Consulta y gestiona los pedidos realizados en la tienda.</p>
+    
+          <!-- Filtro por estado de pedidos -->
+          <div class="mb-5">
+            <label for="filtroEstado" class="form-label fw-bold">Filtrar por estado:</label>
+            <select id="filtroEstado" class="form-select w-auto mx-auto">
+              <option value="todos">Todos</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="enviado">Enviado</option>
+            </select>
+          </div>
+    
+          <!-- Lista de pedidos recientes -->
+          <h4 class="fw-bold text-start mb-4">Pedidos recientes</h4>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID Pedido</th>
+                  <th>Cliente</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de pedido -->
+                <tr>
+                  <td>#1234</td>
+                  <td>Juan Pérez</td>
+                  <td>12/05/2022</td>
+                  <td>
+                    <select class="form-select">
+                      <option selected>Pendiente</option>
+                      <option>Enviado</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#verDetallesModal" onclick="verDetallesPedido('Juan Pérez', '12/05/2022', 'Hamaca artesanal', 'Tejido', 5, 99.99)">Ver detalles</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#5678</td>
+                  <td>Ana Gómez</td>
+                  <td>11/30/2022</td>
+                  <td>
+                    <select class="form-select">
+                      <option>Pendiente</option>
+                      <option selected>Enviado</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#verDetallesModal" onclick="verDetallesPedido('Ana Gómez', '11/30/2022', 'Canasto artesanal', 'Tejido', 3, 45.50)">Ver detalles</button>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Modal para ver detalles del pedido -->
+    <div class="modal fade" id="verDetallesModal" tabindex="-1" aria-labelledby="verDetallesModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="verDetallesModalLabel">Detalles del Pedido</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Cliente:</strong> <span id="verCliente"></span></p>
+            <p><strong>Fecha:</strong> <span id="verFecha"></span></p>
+            <h5>Productos Comprados</h5>
+            <ul id="productosComprados">
+              <li><strong>Producto:</strong> <span id="productoNombre"></span></li>
+              <li><strong>Categoría:</strong> <span id="productoCategoria"></span></li>
+              <li><strong>Cantidad:</strong> <span id="productoCantidad"></span></li>
+              <li><strong>Precio Unitario:</strong> $<span id="productoPrecio"></span></li>
+            </ul>
+            <p><strong>Total:</strong> $<span id="totalPedido"></span></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sesión Usuarios -->
+    <section id="usuarios">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2 class="mb-4">Usuarios</h2>
+          <p>Gestiona los usuarios registrados en la tienda.</p>
+    
+          <!-- Lista de usuarios -->
+          <div class="table-responsive mt-5">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Ejemplo de usuario -->
+                <tr id="usuario1">
+                  <td>María García</td>
+                  <td>maria@example.com</td>
+                  <td>Cliente</td>
+                  <td>Activo</td>
+                  <td>
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" onclick="editarUsuario('María García', 'maria@example.com')">Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick="bloquearUsuario(1)">Bloquear</button>
+                    <button class="btn btn-info btn-sm" onclick="verHistorialCompras(1)">Historial de Compras</button>
+                  </td>
+                </tr>
+                <tr id="usuario2">
+                  <td>Carlos Díaz</td>
+                  <td>carlos@example.com</td>
+                  <td>Cliente</td>
+                  <td>Bloqueado</td>
+                  <td>
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" onclick="editarUsuario('Carlos Díaz', 'carlos@example.com')">Editar</button>
+                    <button class="btn btn-success btn-sm" onclick="desbloquearUsuario(2)">Desbloquear</button>
+                    <button class="btn btn-info btn-sm" onclick="verHistorialCompras(2)">Historial de Compras</button>
+                  </td>
+                </tr>
+                <!-- Aquí se agregarán más usuarios automáticamente al finalizar una compra -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Modal para editar usuario -->
+    <div class="modal fade" id="editarUsuarioModal" tabindex="-1" aria-labelledby="editarUsuarioModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editarUsuarioModalLabel">Editar Usuario</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="nombreUsuario" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombreUsuario" placeholder="Nombre del usuario">
+            </div>
+            <div class="mb-3">
+              <label for="emailUsuario" class="form-label">Email</label>
+              <input type="email" class="form-control" id="emailUsuario" placeholder="Email del usuario">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" onclick="guardarCambios()">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal para historial de compras -->
+    <div class="modal fade" id="historialComprasModal" tabindex="-1" aria-labelledby="historialComprasModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="historialComprasModalLabel">Historial de Compras</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <h6>Compra 1</h6>
+            <p><strong>Producto:</strong> Hamaca artesanal</p>
+            <p><strong>Cantidad:</strong> 2</p>
+            <p><strong>Precio:</strong> $200.00</p>
+            <p><strong>Fecha:</strong> 10/05/2022</p>
+            <!-- Aquí se agregan los detalles de las compras de manera dinámica -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- Sesión Perfil -->
+    <section id="perfil" class="p-4">
+      <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="content text-center p-4 bg-light rounded shadow-sm">
+          <h2>Editar Perfil</h2>
+          <p>Actualiza tu información personal.</p>
+
+          <form class="perfil-form" style="max-width: 500px; margin: 0 auto; text-align: left;">
+            <div class="form-group text-center mb-4">
+              <!-- <img src="../assets/images/fotoPerfil.png" alt="Foto de perfil" -->
+                <!-- style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;"> -->
+              <input type="file" id="foto" name="foto" class="form-control" accept="image/*">
+            </div>
+            <div class="form-group mb-3">
+              <label for="nombre">Nombre completo</label>
+              <input type="text" id="nombre" name="nombre" class="form-control"
+                placeholder="Ingresa tu nombre completo">
+            </div>
+            <div class="form-group mb-3">
+              <label for="correo">Correo electrónico</label>
+              <input type="email" id="correo" name="correo" class="form-control"
+                placeholder="Ingresa tu correo electrónico">
+            </div>
+            <div class="form-group mb-3">
+              <label for="telefono">Número de teléfono</label>
+              <input type="tel" id="telefono" name="telefono" class="form-control"
+                placeholder="Ingresa tu número de teléfono">
+            </div>
+            <div class="form-group mb-3">
+              <label for="rol">Rol</label>
+              <select id="rol" name="rol" class="form-control">
+                <option value="Administrador">Administrador</option>
+                <option value="Super Admin">Super Admin</option>
+              </select>
+            </div>
+            <div class="form-group text-center mt-4">
+              <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-content"></div>
+    <script src="include-navbar.js"></script>
+    <script src="/js/productos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/Adm-Home_Provi.js"></script>
+</body>
+
+</html>
