@@ -1,4 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // 👨‍💼 Usuario admin hardcodeado (solo si no existe ya)
+  const adminEmail = "admin@admin.com";
+  const adminUser = {
+    name: "Administrador",
+    email: adminEmail,
+    password: "Admin1234",  // contraseña predeterminada
+    tipoDocumento: "CC",
+    numeroDocumento: "123456789",
+    numeroCelular: "3001234567",
+    rol: "admin"
+  };
+
+  const usuarios = JSON.parse(localStorage.getItem("usuariosRegistrados")) || [];
+  const existeAdmin = usuarios.some(u => u.email === adminEmail);
+  if (!existeAdmin) {
+    usuarios.push(adminUser);
+    localStorage.setItem("usuariosRegistrados", JSON.stringify(usuarios));
+  }
+
   const loginForm = document.getElementById('loginForm');
   const loginMessage = document.getElementById('loginMessage');
   const emailInput = document.getElementById('loginEmail');
@@ -29,12 +48,20 @@ document.addEventListener('DOMContentLoaded', function() {
       if (user) {
         localStorage.setItem('currentUser', JSON.stringify({
           email: user.email,
-          name: user.name
+          name: user.name,
+          rol: user.rol || "usuario"
         }));
+
+        console.log('Rol del usuario encontrado:', user ? user.rol : 'Usuario no encontrado'); // Depuración adicional
+        console.log('Redirigiendo a:', user && user.rol === "admin" ? '/pages/admin/Admin_Home.html' : '../index.html'); // Depuración adicional
 
         showMessage('¡Inicio de sesión exitoso!', 'success');
         setTimeout(() => {
-          window.location.href = '../index.html';
+          if (user.rol === "admin") {
+            window.location.href = '/pages/admin/Admin_Home.html';
+          } else {
+            window.location.href = '../index.html';
+          }
         }, 1500);
       } else {
         showMessage('Correo o contraseña incorrectos', 'danger');
