@@ -20,6 +20,7 @@ function renderCart() {
       `<div class="alert alert-info">
          Aún no ha añadido productos al carrito de compras, por favor explora nuestras categorías.
        </div>`;
+    updateSummary(); // Actualiza el resumen incluso si el carrito está vacío
     return;
   }
 
@@ -47,11 +48,11 @@ function renderCart() {
 
   // Resumen de compra
   const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  // Elimina el botón "Ir a Pagar" del resumen principal
   html += `
     <div class="cart-summary mt-4 p-3">
       <h5>Resumen</h5>
       <p>Subtotal: <strong>${subtotal.toLocaleString('es-CO',{style:'currency',currency:'COP'})}</strong></p>
-      <button class="btn btn-success btn-checkout w-100">Ir a Pagar</button>
     </div>
   `;
 
@@ -64,6 +65,21 @@ function renderCart() {
       modal.show();
     });
   });
+
+  updateSummary(); // Actualiza el resumen después de renderizar el carrito
+}
+
+// Actualiza el resumen del carrito en el panel derecho
+function updateSummary() {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const summaryCount = document.getElementById('summary-count');
+  const summarySubtotal = document.getElementById('summary-subtotal');
+
+  if (summaryCount) summaryCount.textContent = totalItems;
+  if (summarySubtotal) summarySubtotal.textContent = subtotal.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
 }
 
 // 3. Actualiza cantidad de un ítem
