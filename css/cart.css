@@ -1,0 +1,144 @@
+/* cart.css - Estilos mejorados para la vista de carrito */
+
+/* Mensaje cuando el carrito está vacío */
+#cartContainer .alert-info {
+  background-color: #e9f7fb;
+  border-color: #b8e1f2;
+  color: #31708f;
+  font-size: 1.05rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+/* Asegura espacio para navbar fijo */
+body {
+  padding-top: 70px; /* ajusta si tu navbar es más alto o más bajo */
+}
+
+/* Corrige estilo del h2 */
+h2.mb-4 {
+  font-weight: 600;
+  color: #212529;
+  margin-top: 4rem; /* Incrementa el margen superior para evitar que se superponga con la navbar */
+}
+
+
+/* Fila de producto en el carrito */
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s, transform 0.3s;
+}
+.cart-item:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+}
+
+.cart-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 2px solid #dee2e6;
+  border-radius: 0.5rem;
+}
+
+.cart-item .info {
+  flex: 1;
+  margin-left: 1rem;
+}
+.cart-item .info h6 {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.cart-item .info small {
+  color: #6c757d;
+}
+
+.cart-item .actions {
+  display: flex;
+  align-items: center;
+}
+.cart-item .actions button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.cart-item .actions button:hover {
+  background-color: #e2e6ea;
+  transform: scale(1.05);
+}
+.cart-item .actions span {
+  margin: 0 0.5rem;
+  font-weight: 500;
+}
+
+/* Resumen de compra */
+.cart-summary {
+  background-color: #ffffff;
+  border-top: 4px solid #28a745;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 2rem;
+}
+.cart-summary h5 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+.cart-summary p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+/* Botón de checkout */
+.btn-checkout {
+  background: linear-gradient(45deg, #ffc107, #ffca2c);
+  border: none;
+  color: #212529;
+  font-weight: bold;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-checkout:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste del footer para reducir su ancho en la vista del carrito */
+#footer-content {
+  margin-top: 2rem; /* Agrega un margen superior para separar el contenido del footer */
+  padding: 1rem 0; /* Reduce el padding para que no ocupe tanto espacio */
+}
+
+/* Ajuste para que la página ocupe más espacio hacia abajo */
+main.container {
+  min-height: 70vh; /* Asegura que el contenido principal ocupe al menos el 70% de la altura de la ventana */
+}
+
+/* Responsividad */
+@media (max-width: 576px) {
+  .cart-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  .cart-item .actions {
+    justify-content: center;
+    margin-top: 0.75rem;
+  }
+  .cart-item .info {
+    margin: 1rem 0;
+  }
+}
