@@ -1,0 +1,284 @@
+/* ===== COMPONENTES REUTILIZABLES ===== */
+
+/* Variables de Componentes */
+:root {
+  --color-dark: #333;
+  --color-primary: #007bff;
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.15);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 20px;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --card-hover-transform: translateY(-5px) scale(1.02);
+  --form-input-border: 1px solid #ccc;
+  --color-light-gray: #ddd;
+  --producto-img-height: 200px;
+  --navbar-bg: rgba(186, 185, 164, 0.579);
+}
+
+.topbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 40px; 
+  background-color: var(--color-light);
+  z-index: 1030;
+  box-shadow: var(--shadow-sm);
+}
+
+
+.navbar {
+  background-color: var(--navbar-bg) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+  position: fixed;
+  top: 40px;
+  width: 100%;
+  z-index: 1000;
+  padding: 1rem 0;
+  transition: var(--transition-default);
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.navbar-nav li {
+  margin: 0 10px;
+}
+
+.d-flex.align-items-center {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+}
+
+.nav-icon i {
+  font-size: 1.2rem;
+  color: var(--color-dark);
+  transition: color 0.3s ease;
+}
+
+.nav-icon i:hover {
+  color: var(--color-primary);
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  padding-right: 30px;
+}
+
+.search-box .fa-search {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.search-box .fa-search:hover {
+  color: var(--color-primary);
+}
+
+
+
+.logo-navbar {
+  max-height: 60px; /* o 40px si es muy grande */
+  width: auto;
+  transition: transform 0.3s ease;
+  image-rendering: -webkit-optimize-contrast;
+  display: block;
+}
+
+
+
+/* ===== Cards ===== */
+.card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.2rem;
+  transition: var(--transition-default);
+}
+
+/* Artesano Card */
+.artesano-card {
+  flex: 1 1 45%;
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  text-align: left;
+  transition: var(--transition-default);
+}
+
+.artesano-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.artesano-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* Equipo Card */
+.equipo-card {
+  flex: 0 0 24%;
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.equipo-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* Componentes específicos del comprador */
+
+/* Cards de Productos */
+.producto-card {
+    background: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-md);
+    transition: var(--transition-default);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.producto-card:hover {
+    transform: var(--card-hover-transform);
+    box-shadow: var(--shadow-lg);
+}
+
+.producto-img {
+    width: 100%;
+    height: var(--producto-img-height);
+    object-fit: cover;
+    border-radius: var(--border-radius-md);
+}
+
+/* Botones */
+.btn-primary-custom {
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-xl);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-default);
+}
+
+/* Formularios */
+.form-control-custom {
+    border: var(--form-input-border);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm);
+    width: 100%;
+    transition: var(--transition-default);
+}
+
+/* ===== Footer ===== */
+.footer-content {
+  background-color: var(--footer-bg);
+  padding: 40px 0;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.logo-footer {
+  max-width: 160px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: var(--border-radius-xl);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: var(--transition-default);
+}
+
+/* ===== Forms ===== */
+.form-control,
+.form-select {
+  border: none;
+  border-bottom: 2px solid var(--color-light-gray);
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 1rem;
+  background-color: transparent;
+  transition: border-color 0.3s ease;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+/* ===== Media Queries ===== */
+@media (max-width: 991px) {
+  .navbar-nav {
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .artesano-card,
+  .equipo-card {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  :root {
+    --navbar-height: 60px;
+  }
+  
+  .logo-footer {
+    max-height: 40px;
+  }
+  .logo-navbar{
+    max-height: 40px;
+  }
+  
+  .footer-content > div {
+    width: 100%;
+    text-align: center;
+  }
+}

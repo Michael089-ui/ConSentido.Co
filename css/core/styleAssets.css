@@ -5,21 +5,19 @@
 /* Importación de fuentes */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-/* Reset CSS - Normalización de estilos base */
-html, body {
-  height: 100%;
+/* Reset CSS */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  color: var(--color-dark);
-  line-height: 1.6;
-  background-color: var(--color-light); !important;
+html, body {
+  height: 100%;
+  scroll-behavior: smooth;
 }
 
-/* Variables globales - Colores, sombras, espaciados y bordes */
+/* Variables globales */
 :root {
   /* Paleta de colores principal */
   --color-primary: #457b9d;
@@ -31,6 +29,11 @@ body {
   --color-light-gray: #ddd;
   --color-beige: #cdc6b8;
   --color-gold: #e6bc8a;
+  
+  /* Colores de componentes */
+  --navbar-bg: rgba(186, 175, 164, 0.579);
+  --navbar-height: 80px;
+  --footer-bg: #9a6f42;
   
   /* Sistema de sombras */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -49,9 +52,29 @@ body {
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
   --spacing-xl: 4rem;
+
+  /* Transiciones */
+  --transition-fast: 0.2s ease;
+  --transition-default: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  
+  --card-hover-transform: translateY(-8px) scale(1.02);
+  --producto-card-width: 220px;
+  --producto-img-height: 160px;
+  --form-input-border: 2px solid var(--color-light-gray);
 }
 
-/* Sistema tipográfico - Jerarquía y estilos de texto */
+/* Estilos base del cuerpo */
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--color-dark);
+  line-height: 1.6;
+  background-color: var(--color-light);
+  padding-top: 110px;
+}
+
+/* Sistema tipográfico */
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   font-weight: 600;
@@ -66,20 +89,25 @@ h4 { font-size: 1.5rem; }
 h5 { font-size: 1.25rem; }
 h6 { font-size: 1rem; }
 
-/* Enlaces y elementos interactivos */
+p {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Enlaces */
 a {
   color: var(--color-primary);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color var(--transition-default);
 }
 
 a:hover {
   color: var(--color-secondary);
 }
 
-/* Imágenes y recursos multimedia */
+/* Utilidades de imagen */
 img {
   max-width: 100%;
+  height: auto;
   display: block;
 }
 
@@ -123,6 +151,8 @@ img {
 
 /* Media queries */
 @media (max-width: 992px) {
+  html { font-size: 16px; }
+  
   h1 { font-size: 2rem; }
   h2 { font-size: 1.75rem; }
   h3 { font-size: 1.5rem; }

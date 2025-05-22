@@ -1,0 +1,197 @@
+/* ===== ESTILOS DE PÁGINAS Y LAYOUTS =====
+   Este archivo contiene estilos específicos para estructuras de página
+   y layouts que son comunes pero no son componentes reutilizables */
+
+/* Layout principal */
+main {
+    padding-top: var(--navbar-height);
+    padding-bottom: var(--spacing-xl);
+    min-height: 100vh;
+}
+
+/* Contenedores principales */
+.container-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.container-narrow {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+}
+
+/* Títulos y encabezados de página */
+.section-title {
+    font-size: 2.5rem;
+    color: var(--color-dark);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+    font-weight: 600;
+}
+
+.section-subtitle {
+    font-size: 1.5rem;
+    color: var(--color-gray);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+}
+
+/* Layouts de página específicos */
+.page-header {
+    background-color: var(--color-light);
+    padding: var(--spacing-xl) 0;
+    margin-bottom: var(--spacing-lg);
+}
+
+.page-content {
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Grids y layouts reutilizables */
+.grid-responsive {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.grid-fixed-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+}
+
+.grid-fixed-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+}
+
+/* Layouts de sección */
+.section-split {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin: var(--spacing-xl) 0;
+}
+
+.section-split > * {
+    flex: 1;
+}
+
+/* Layouts específicos de página */
+.about-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-lg);
+    margin: var(--spacing-xl) 0;
+}
+
+.contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    margin: var(--spacing-xl) 0;
+}
+
+/* Contenedores de formulario */
+.form-container {
+    background: #fff;
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA PÁGINAS DEL COMPRADOR ===== */
+
+/* Layout de Productos */
+.productos-container {
+    padding: var(--spacing-xl) 0;
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--producto-card-width), 1fr));
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+/* Layout de Producto Detalle */
+.producto-detalle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl) 0;
+}
+
+/* Layout de Carrito */
+.carrito-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+/* Utilitarios de espaciado de página */
+.page-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.page-section:last-child {
+    margin-bottom: 0;
+}
+
+/* Media queries */
+@media (max-width: 992px) {
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .grid-fixed-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about-layout,
+    .contact-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .producto-detalle {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    main {
+        padding-top: calc(var(--navbar-height) - 20px);
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .grid-fixed-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .section-split {
+        flex-direction: column;
+    }
+
+    .carrito-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-main,
+    .container-narrow {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+
+    .grid-responsive {
+        grid-template-columns: 1fr;
+    }
+}
