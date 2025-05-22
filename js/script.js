@@ -1,141 +1,114 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const tarjetas = document.querySelectorAll('.equipo-card');
-  
-    tarjetas.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.classList.add('rotar');
-      });
-  
-      card.addEventListener('mouseleave', () => {
-        card.classList.remove('rotar');
-      });
-    });
+// script.js - Lógica de Carrito y Carga Dinámica de Navbar/Footer
 
-    fetch('/components/nav.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('navbard').innerHTML = data;
-        })
-        .catch(error => console.error('Error cargando el navbar:', error));
-    
-    fetch('/components/footer.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('footer-content').innerHTML = data;
-        });
-  });
-<<<<<<< HEAD
-  function agregarProducto(){
-    const nombre = document.getElementById(productoNombre).value;
-    const categoria = document.getElementById(productoCategoria).value;
-    const stock = document.getElementById(productoStock).value;
-    const descripcion = document.getElementById(productoDescripcion).value;
-    const precio = document.getElementById(productoPrecio).value;
-    const nuevoproducto = {nombre,categoria,st}
+// 1. Inicializa y actualiza el contador del carrito (badge)
+function initCartCounter() {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const badge = document.getElementById('cartCount');
+  if (badge) badge.textContent = totalItems;
+}
+
+// 2. Renderiza el carrito dentro de #cartContainer
+function renderCart() {
+  const container = document.getElementById('cartContainer');
+  if (!container) return;
+
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  // Carrito vacío
+  if (cart.length === 0) {
+    container.innerHTML = 
+      `<div class="alert alert-info">
+         Aún no ha añadido productos al carrito de compras, por favor explora nuestras categorías.
+       </div>`;
+    return;
   }
-=======
 
+  // Lista de productos
+  let html = '';
+  cart.forEach(item => {
+    html += `
+      <div class="cart-item">
+        <div class="d-flex align-items-center">
+          <img src="${item.image || '/assets/images/default.png'}" alt="${item.name}">
+          <div class="info ms-3">
+            <h6 class="mb-1">${item.name}</h6>
+            <small>${item.price.toLocaleString('es-CO',{style:'currency',currency:'COP'})}</small>
+          </div>
+        </div>
+        <div class="actions d-flex align-items-center">
+          <button class="btn btn-outline-secondary btn-sm me-1" onclick="updateQty(${item.id}, -1)"><i class="fas fa-minus"></i></button>
+          <span>${item.quantity}</span>
+          <button class="btn btn-outline-secondary btn-sm ms-1 me-3" onclick="updateQty(${item.id}, 1)"><i class="fas fa-plus"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="removeItem(${item.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+  });
 
-  async function cargarProductosDestacados() {
-    try {
-        const response = await fetch('/api/productos/destacados');
-        const productos = await response.json();
-        
-        const contenedorProductos = document.querySelector('.productos-destacados .row');
-        contenedorProductos.innerHTML = ''; // Limpiar el contenedor
-        
-        productos.forEach(producto => {
-            const cardHTML = `
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}">
-                        <div class="card-body">
-                            <h5 class="card-title">${producto.nombre}</h5>
-                            <p class="card-text">${producto.descripcion}</p>
-                            <p class="precio">$${producto.precio.toLocaleString()}</p>
-                            <button class="btn btn-primary" onclick="verDetallesProducto(${producto.id})">Ver detalles</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            contenedorProductos.innerHTML += cardHTML;
-        });
-    } catch (error) {
-        console.error('Error al cargar productos destacados:', error);
-    }
+  // Resumen de compra
+  const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  html += `
+    <div class="cart-summary mt-4 p-3">
+      <h5>Resumen</h5>
+      <p>Subtotal: <strong>${subtotal.toLocaleString('es-CO',{style:'currency',currency:'COP'})}</strong></p>
+      <button class="btn btn-success btn-checkout w-100">Ir a Pagar</button>
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Mostrar modal de login al clicar en pagar
+  document.querySelectorAll('.btn-checkout').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+      modal.show();
+    });
+  });
 }
 
-function verDetallesProducto(id) {
-    window.location.href = `/producto.html?id=${id}`;
+// 3. Actualiza cantidad de un ítem
+function updateQty(id, delta) {
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  cart = cart.map(item =>
+    item.id === id
+      ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+      : item
+  );
+  localStorage.setItem('cart', JSON.stringify(cart));
+  initCartCounter();
+  renderCart();
 }
 
-class ProductosVista {
-    constructor() {
-        this.productos = JSON.parse(localStorage.getItem('productos')) || [];
-        this.categoria = document.body.dataset.categoria; 
-        this.init();
-    }
-
-    init() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.mostrarProductos();
-        });
-    }
-
-    mostrarProductos() {
-        const contenedor = document.getElementById('productos-container');
-        if (!contenedor) return;
-
-        const productosFiltrados = this.productos.filter(producto => 
-            producto.categoria.toLowerCase() === this.categoria.toLowerCase()
-        );
-
-        if (productosFiltrados.length === 0) {
-            contenedor.innerHTML = `
-                <div class="alert alert-info">
-                    No hay productos disponibles en esta categoría.
-                </div>
-            `;
-            return;
-        }
-
-        contenedor.innerHTML = `
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                ${productosFiltrados.map(producto => this.crearTarjetaProducto(producto)).join('')}
-            </div>
-        `;
-    }
-
-    crearTarjetaProducto(producto) {
-        return `
-            <div class="col">
-                <div class="card h-100">
-                    <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}"
-                         style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">${producto.nombre}</h5>
-                        <p class="card-text">${producto.descripcion}</p>
-                        <p class="card-text">
-                            <small class="text-muted">Stock: ${producto.stock} unidades</small>
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="h5 mb-0">$${producto.precio.toLocaleString()}</span>
-                            <button class="btn btn-primary" onclick="productosVista.agregarAlCarrito(${producto.id})">
-                                <i class="fas fa-shopping-cart"></i> Agregar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    agregarAlCarrito(id) {
-        // Implementar función de agregar los productos aal carrito
-        alert('Función de carrito en desarrollo');
-    }
+// 4. Elimina un ítem del carrito
+function removeItem(id) {
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  cart = cart.filter(item => item.id !== id);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  initCartCounter();
+  renderCart();
 }
 
-const productosVista = new ProductosVista();
+// 5. Carga dinámica y arranque de funcionalidades
+document.addEventListener('DOMContentLoaded', () => {
+  // Cargar Navbar
+  fetch('/components/nav.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('navbard').innerHTML = html;
+      initCartCounter();  // Actualiza badge después de inyectar navbar
+    })
+    .catch(err => console.error('Error cargando navbar:', err));
 
+  // Cargar Footer
+  fetch('/components/footer.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('footer-content').innerHTML = html;
+    })
+    .catch(err => console.error('Error cargando footer:', err));
 
+  // Renderizar carrito si existe contenedor
+  if (document.getElementById('cartContainer')) {
+    renderCart();
+  }
+});

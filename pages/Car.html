@@ -1,13 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Carrito de Compras</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos del carrito -->
+    <link rel="stylesheet" href="/css/cart.css">
 </head>
+
 <body>
-    
+    <!-- Navbar dinámico (placeholder) -->
+    <div id="nav-placeholder"></div>
+
+    <!-- Título -->
+    <main class="container mt-5 pt-5">
+        <h2 class="mb-4">Carrito de Compras</h2>
+        <!-- Contenedor donde JS inyecta el carrito -->
+        <div id="cartContainer"></div>
+    </main>
+
+    <!-- Footer dinámico -->
     <div id="footer-content"></div>
-    <script src="../js/navbar.js"></script>
+
+    <!-- JS Lógica (navbar, carrito, etc) -->
+    <script src="/js/navbar.js"></script>
+    <script src="/js/script.js"></script>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
