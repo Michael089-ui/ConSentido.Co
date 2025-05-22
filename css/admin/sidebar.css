@@ -1,0 +1,26 @@
+.admin-sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    background: var(--color-light);
+    padding: var(--spacing-md);
+    border-right: 1px solid var(--color-light-gray);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.sidebar-link {
+    padding: var(--spacing-sm);
+    color: var(--color-dark);
+    text-decoration: none;
+    transition: var(--transition-default);
+    border-radius: var(--border-radius-sm);
+}
+
+.sidebar-link:hover {
+    background: var(--color-light-gray);
+}
