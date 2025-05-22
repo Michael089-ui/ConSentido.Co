@@ -109,7 +109,7 @@ body {
 /* Contenedor principal */
 .acerca-de-nosotros {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 80px auto 0 auto;
   padding: 40px 20px;
 }
  
@@ -157,6 +157,78 @@ p {
 /* Secciones generales */
 .mision, .vision, .impacto-social {
   margin-bottom: 40px;
+}
+/* Estilo para la sección Misión */
+.mision-contenido {
+  display: flex;
+  align-items: center;
+  gap: 40px; /* Espacio entre imagen y texto */
+  margin-bottom: 60px;
+}
+
+.imagen-mision {
+  flex: 1; /* Ocupa el 50% del espacio */
+}
+
+.imagen-mision img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.texto-mision {
+  flex: 1; /* Ocupa el otro 50% */
+  padding: 20px;
+}
+
+/* Para móviles: apilar imagen arriba y texto abajo */
+@media (max-width: 768px) {
+  .mision-contenido {
+    flex-direction: column;
+  }
+  .imagen-mision, .texto-mision {
+    flex: none;
+    width: 100%;
+  }
+}
+/* Estilo para la sección Visión (orden inverso) */
+.vision-contenido {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+/* Texto a la izquierda */
+.texto-vision {
+  flex: 1;
+  padding: 20px;
+  order: 1; /* Fuerza el orden izquierda */
+}
+
+/* Imagen a la derecha */
+.imagen-vision {
+  flex: 1;
+  order: 2; /* Fuerza el orden derecha */
+}
+
+.imagen-vision img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive: apila imagen abajo en móviles */
+@media (max-width: 768px) {
+  .vision-contenido {
+    flex-direction: column;
+  }
+  .texto-vision, .imagen-vision {
+    order: initial; /* Restablece el orden natural */
+    width: 100%;
+  }
 }
  
 /* Estilo suave para Impacto Social */
