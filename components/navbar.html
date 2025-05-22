@@ -1,50 +1,57 @@
-<head>
-    <link rel="stylesheet" href="/css/nav.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
 
-<nav class="navbar navbar-expand-lg fixed-top">
+<div class="topbar bg-light py-1 border-bottom">
+    <div class="container d-flex justify-content-end gap-3 small">
+        <a href="/pages/customer/about_us.html" class="text-decoration-none text-dark">Sobre Nosotros</a>
+        <a href="/pages/customer/Contact_us.html" class="text-decoration-none text-dark">Contáctanos</a>
+        <a href="/pages/customer/FAQ.html" class="text-decoration-none text-dark">FAQ</a>
+    </div>
+</div>
+
+
+<nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand" href="../index.html">
-            <img src="../assets/images/ConSentido.co.png" alt="ConSentido Logo" class="logo">
+
+        <!-- Logo -->
+        <a class="navbar-brand" href="/index.html">
+            <img src="/assets/images/ConSentido.co.png" alt="Logo ConSentido.co" class="logo-navbar">
+
         </a>
+
+
+        <!-- Toggle para móvil -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Enlaces de navegación -->
         <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 d-flex gap-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="/pages/customer/tejidos.html">Tejido</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pages/customer/madera.html">Madera</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/pages/customer/papel.html">Papel</a>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Menú
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="../index.html">Home</a></li>
-                        <li><a class="dropdown-item" href="../pages/about_us.html">Sobre Nosotros</a></li>
-                        <li><a class="dropdown-item" href="../pages/Contact_us.html">Contáctanos</a></li>
-                        <li><a class="dropdown-item" href="../pages/FAQ.html">Preguntas Frecuentes</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/pages/tejidos2.html">Tejido</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/pages/madera2.html">Madera</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/pages/papel2.html">Papel</a>
                 </li>
             </ul>
 
+            <!-- Íconos: búsqueda, carrito, usuario -->
             <div class="d-flex align-items-center gap-3">
-                <div class="search-box">
+                <div class="search-box position-relative">
                     <input type="text" class="form-control form-control-sm" placeholder="Buscar...">
-                    <i class="fas fa-search"></i>
+                    <button class="btn btn-link position-absolute end-0 top-50 translate-middle-y">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
-                <a href="./Car.html" class="nav-icon">
+                <a href="/pages/Car.html" class="nav-icon position-relative">
                     <i class="fas fa-shopping-cart"></i>
-                </a>
-                <a href="/pages/Login.html" class="nav-icon">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                </a> 
+                <a href="/pages/customer/User_Profile.html" class="nav-icon position-relative">
                     <i class="fas fa-user"></i>
                 </a>
             </div>

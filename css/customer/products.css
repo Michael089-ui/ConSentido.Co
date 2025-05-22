@@ -1,0 +1,38 @@
+/* Estilos específicos de productos */
+.productos-container {
+    padding-top: var(--navbar-height);
+}
+
+.producto-imagen {
+    width: 85vw;
+    max-width: 85vw;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.producto-form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.92);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    width: 65vw;
+    max-width: 900px;
+}
+
+/* Media queries específicas de productos */
+@media (max-width: 992px) {
+    .producto-form {
+        width: 80vw;
+    }
+}
+
+@media (max-width: 576px) {
+    .producto-form {
+        width: 90vw;
+    }
+}
