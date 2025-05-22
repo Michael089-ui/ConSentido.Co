@@ -1,26 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Preguntas Frecuentes</title>
-        <link rel="stylesheet" href="/css/style.css">
-        <link rel="stylesheet" href="/css/footer.css">
-        <link rel="stylesheet" href="/css/nav.css">
-        <link rel="stylesheet" href="../css/maderas.css">
-        <link rel="stylesheet" href="/components/navbar.html">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <script src="/js/navbar.js"></script>
-      </head>
-      <div id="nav-placeholder"></div><!-- Barra de navegacion -->
-      <body>
-  <img id="imagen-principal" src="../assets/images/preguntas.jpeg" alt="Bolso">
+<html lang="es">
 
-  <form class="form-superpuesto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preguntas Frecuentes</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/nav.css">
+  <link rel="stylesheet" href="/css/faq.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+  <div id="nav-placeholder"></div>
+
+<div class="fondo-acordeon p-4 rounded">
+    <div class="container mt-5">
+        
+        <h1>Preguntas Frecuentes</h1>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        ¿De dónde provienen las artesanías?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        La mayoría de nuestras artesanías son elaboradas por personas privadas de la libertad, así como por personas necesitadas y con pocos recursos. Tu compra les brinda una valiosa oportunidad de sustento y esperanza.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        ¿Cómo puedo ayudar a través de su sitio web?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        ¡Gracias por tu interés en ayudar! La forma principal es comprando las hermosas artesanías que ofrecemos. Cada compra impacta directamente en la vida de los artesanos. También puedes difundir nuestra labor entre tus conocidos.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        ¿Qué tipo de artesanías puedo encontrar?
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Encontrarás una variedad de productos únicos, como tejidos, tallas en madera, joyería artesanal, cerámica y muchas otras creaciones elaboradas con dedicación y talento. La oferta puede variar con el tiempo, ¡así que te invitamos a explorar regularmente!
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        ¿Cómo se garantiza la calidad de las artesanías?
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Trabajamos de cerca con los artesanos para asegurar que cada pieza cumpla con estándares de calidad aceptables. Valoramos la autenticidad y el trabajo manual, por lo que cada artesanía tiene su propio encanto y puede presentar ligeras variaciones, lo que las hace únicas.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFive">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                        Soy artesano, ¿cómo puedo vender mis productos en su sitio web?
+                    </button>
+                </h2>
+                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        ¡Excelente! Nos encantaría conocer tu trabajo. Por favor, contáctanos a través de la sección de "Contacto" o envíanos un correo electrónico con información sobre tus artesanías, fotos de tus productos y tu historia. Evaluaremos tu propuesta y te informaremos sobre los pasos a seguir.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingSix">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                        ¿Cuáles son las formas de pago aceptadas?
+                    </button>
+                </h2>
+                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Aceptamos diversas formas de pago para tu comodidad, incluyendo tarjetas de crédito y débito, transferencias bancarias y plataformas de pago en línea. Los detalles específicos se mostrarán durante el proceso de compra.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingSeven">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                        ¿Realizan envíos a todo el país (o región)? ¿Cuál es el costo y tiempo de envío?
+                    </button>
+                </h2>
+                <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Sí, realizamos envíos a [indicar el alcance de los envíos]. El costo y el tiempo de envío pueden variar según el destino y el peso del paquete. Te proporcionaremos esta información detallada durante el proceso de compra antes de que confirmes tu pedido.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingEight">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                        ¿Qué sucede si mi compra llega dañada o no estoy satisfecho?
+                    </button>
+                </h2>
+                <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Queremos que estés completamente satisfecho con tu compra. Si tu pedido llega dañado o no cumple con tus expectativas, por favor contáctanos lo antes posible con fotos del daño (si aplica) y el motivo de tu insatisfacción. Revisaremos tu caso y te ofreceremos una solución adecuada, como un reembolso o un reemplazo.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>    
+<div class="container my-5">
+  <div class="p-5 text-center bg-primary text-white rounded-4 shadow-lg">
+    <h2 class="mb-3 fw-bold">¿Tienes otra pregunta?</h2>
+    <p class="lead">Si no encontraste aquí la respuesta que buscabas, no dudes en contactarnos. ¡Estamos para ayudarte!</p>
+    <a href="Contact_us.html" class="btn btn-warning btn-lg mt-3 shadow-sm">
+      <i class="fas fa-envelope me-2"></i> Contáctanos
+    </a>
+  </div>
+</div>
+
+
+    <div id="footer-content"></div>
     
-  </form>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/Contact_us.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
+
 </html>
