@@ -11,7 +11,7 @@ class AdminManager {
         this.sidebarManager = new SidebarManager();
         this.productosManager = new InventoryManager();
         this.OrdersManager = new OrdersManager();
-        this.UsersManager = new UsersManager();
+        this.usersManager = new UsersManager(); // Cambiar a minúscula
 
 
         this.init();
@@ -20,7 +20,7 @@ class AdminManager {
     verificarAdmin() {
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || currentUser.rol !== 'admin') {
-            window.location.href = '/pages/customer/Login.html';
+            window.location.href = '/pages/customer/login.html';
             return false;
         }
         return true;
@@ -81,8 +81,16 @@ class AdminManager {
     }
 
     initializeSectionFeatures(seccion) {
-        if (seccion === 'inventario') {
-            this.productosManager.init();
+        switch(seccion) {
+            case 'inventario':
+                this.productosManager.init();
+                break;
+            case 'usuarios':
+                this.usersManager.init(); // Cambiar a minúscula
+                break;
+            case 'pedidos':
+                this.OrdersManager.init();
+                break;
         }
     }
 

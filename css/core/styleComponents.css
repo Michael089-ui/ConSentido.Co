@@ -106,6 +106,37 @@
   color: var(--color-primary);
 }
 
+/* Estilos para el contador del carrito */
+.nav-icon {
+    position: relative;
+    text-decoration: none;
+    color: var(--color-dark);
+}
+
+.cart-counter {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.add-to-cart {
+    transition: all 0.3s ease;
+}
+
+.add-to-cart:hover {
+    transform: scale(1.05);
+}
+
 .search-box {
   position: relative;
 }
@@ -249,6 +280,12 @@
   height: var(--producto-img-height);
   object-fit: cover;
   border-radius: var(--border-radius-md);
+  transition: opacity 0.3s ease;
+}
+
+.producto-img:hover {
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 /* Botones */
@@ -313,6 +350,47 @@
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
+}
+
+/* filepath: c:\Users\chave\Bootcamp\ConSentido.Co\css\core\styleComponents.css */
+/* Agregar al final del archivo */
+
+.producto-card img:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.modal-body img {
+    max-height: 400px;
+    width: 100%;
+    object-fit: contain;
+}
+
+.cantidad-control {
+    max-width: 120px;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+/* Estilos para la tabla de productos */
+.producto-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+.producto-nombre {
+    display: flex;
+    align-items: center;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
 }
 
 /* ===== Media Queries ===== */

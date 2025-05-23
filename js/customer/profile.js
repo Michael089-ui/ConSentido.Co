@@ -1,59 +1,64 @@
 document.addEventListener('DOMContentLoaded', function() {
-    verificarSesion();
-    cargarDatosPerfil();
-    setupEventListeners();
+    new ProfileManager();
 });
 
-function verificarSesion() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) {
-        window.location.href = '/pages/customer/Login.html';
-        return;
+class ProfileManager {
+    constructor() {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.init();
     }
-}
 
-function cargarDatosPerfil() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const profileData = document.getElementById('profileData');
-    
-    if (currentUser) {
+    init() {
+        if (!this.currentUser) {
+            window.location.href = '/pages/customer/Login.html';
+            return;
+        }
+        this.loadUserProfile();
+        this.setupEventListeners();
+    }
+
+    loadUserProfile() {
+        const profileData = document.getElementById('profileData');
+        
+        if (!profileData) return;
+
         profileData.innerHTML = `
-            <div class="mb-3">
-                <label class="form-label fw-bold">Nombre</label>
-                <p>${currentUser.name || 'No especificado'}</p>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Nombre:</label>
+                    <p class="border-bottom pb-2">${this.currentUser.nombre || 'No especificado'}</p>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Apellido:</label>
+                    <p class="border-bottom pb-2">${this.currentUser.apellido || 'No especificado'}</p>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold">Email</label>
-                <p>${currentUser.email}</p>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Email:</label>
+                    <p class="border-bottom pb-2">${this.currentUser.email || 'No especificado'}</p>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Teléfono:</label>
+                    <p class="border-bottom pb-2">${this.currentUser.telefono || 'No especificado'}</p>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold">Tipo de documento</label>
-                <p>${currentUser.tipoDoc || 'No especificado'}</p>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-bold">Número de documento</label>
-                <p>${currentUser.numeroDoc || 'No especificado'}</p>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label class="form-label fw-bold">Dirección:</label>
+                    <p class="border-bottom pb-2">${this.currentUser.direccion || 'No especificado'}</p>
+                </div>
             </div>
         `;
     }
-}
 
-function setupEventListeners() {
-    // Manejar cierre de sesión
-    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-    
-    // Manejar edición de perfil
-    document.getElementById('editProfileBtn').addEventListener('click', handleEditProfile);
-}
-
-function handleLogout() {
-    if (confirm('¿Está seguro que desea cerrar sesión?')) {
-        localStorage.removeItem('currentUser');
-        window.location.href = '/pages/customer/Login.html';
+    setupEventListeners() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('currentUser');
+                window.location.href = '/index.html';
+            });
+        }
     }
-}
-
-function handleEditProfile() {
-    // Por implementar: lógica de edición de perfil
-    alert('Función de edición en desarrollo');
 }

@@ -1,32 +1,31 @@
 export class DataService {
     constructor() {
-        this.dbPath = '/data/productos.json';
+        this.apiUrl = 'http://localhost:3000';  // json-server URL
     }
 
     async getAllProducts() {
         try {
-            const response = await fetch(this.dbPath);
+            const response = await fetch(`${this.apiUrl}/productos`);
             if (!response.ok) throw new Error('Error al cargar productos');
-            const data = await response.json();
-            return data.productos;
+            return await response.json();
         } catch (error) {
             console.error('Error:', error);
             return [];
         }
     }
 
-    async getProductsByCategory(category) {
-        const productos = await this.getAllProducts();
-        return productos.filter(p => p.categoria === category);
-    }
-
     async addProduct(product) {
         try {
-            const productos = await this.getAllProducts();
-            product.id = Date.now();
-            productos.push(product);
-            await this.saveProducts(productos);
-            return product;
+            const response = await fetch(`${this.apiUrl}/productos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(product)
+            });
+            
+            if (!response.ok) throw new Error('Error al agregar producto');
+            return await response.json();
         } catch (error) {
             console.error('Error al agregar producto:', error);
             throw error;
@@ -35,14 +34,16 @@ export class DataService {
 
     async updateProduct(id, updatedProduct) {
         try {
-            const productos = await this.getAllProducts();
-            const index = productos.findIndex(p => p.id === parseInt(id));
-            if (index !== -1) {
-                productos[index] = { ...productos[index], ...updatedProduct };
-                await this.saveProducts(productos);
-                return true;
-            }
-            return false;
+            const response = await fetch(`${this.apiUrl}/productos/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedProduct)
+            });
+            
+            if (!response.ok) throw new Error('Error al actualizar producto');
+            return await response.json();
         } catch (error) {
             console.error('Error al actualizar producto:', error);
             throw error;
@@ -51,29 +52,25 @@ export class DataService {
 
     async deleteProduct(id) {
         try {
-            const productos = await this.getAllProducts();
-            const filteredProducts = productos.filter(p => p.id !== parseInt(id));
-            await this.saveProducts(filteredProducts);
+            const response = await fetch(`${this.apiUrl}/productos/${id}`, {
+                method: 'DELETE'
+            });
+            
+            if (!response.ok) throw new Error('Error al eliminar producto');
         } catch (error) {
             console.error('Error al eliminar producto:', error);
             throw error;
         }
     }
 
-    async saveProducts(products) {
+    async getProductsByCategory(category) {
         try {
-            const response = await fetch(this.dbPath, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ productos: products })
-            });
-            
-            if (!response.ok) throw new Error('Error al guardar productos');
+            const response = await fetch(`${this.apiUrl}/productos?categoria=${category}`);
+            if (!response.ok) throw new Error('Error al cargar productos por categoría');
+            return await response.json();
         } catch (error) {
-            console.error('Error al guardar:', error);
-            throw error;
+            console.error('Error al filtrar productos:', error);
+            return [];
         }
     }
 }

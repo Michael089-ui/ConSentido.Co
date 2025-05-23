@@ -23,20 +23,20 @@ body {
 /* Variables globales */
 :root {
   /* Paleta de colores principal */
-  --color-primary: #457b9d;
-  --color-secondary: #e63946;
-  --color-accent: #ffd166;
-  --color-light: #f8f9fa;
-  --color-dark: #222;
-  --color-gray: #888;
-  --color-light-gray: #ddd;
-  --color-beige: #cdc6b8;
-  --color-gold: #e6bc8a;
+  --color-primary: #8B4513;           /* Marrón saddle */
+  --color-secondary: #D2691E;         /* Marrón chocolate */
+  --color-accent: #DEB887;            /* Beige burlywood */
+  --color-light: #FFF8DC;             /* Beige cornsilk */
+  --color-dark: #4a3a37;              /* Marrón oscuro */
+  --color-gray: #A1887F;              /* Marrón grisáceo */
+  --color-light-gray: #D7CCC8;        /* Gris beige claro */
+  --color-beige: #F5DEB3;             /* Beige wheat */
+  --color-gold: #DAA520;              /* Dorado */
 
   /* Colores de componentes */
-  --navbar-bg: rgba(186, 175, 164, 0.579);
+  --navbar-bg: rgba(139, 69, 19, 0.9);/* Navbar semi-transparente */
   --navbar-height: 80px;
-  --footer-bg: #9a6f42;
+  --footer-bg: #70615c;               /* Footer marrón oscuro */
 
   /* Sistema de sombras */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);

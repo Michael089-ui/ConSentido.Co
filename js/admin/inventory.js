@@ -13,6 +13,7 @@ export class InventoryManager {
     async cargarProductos() {
         try {
             const productos = await this.dataService.getAllProducts();
+            this.productos = productos; // Guardar los productos en la instancia
             this.renderProductos(productos);
         } catch (error) {
             console.error('Error al cargar productos:', error);
@@ -30,7 +31,7 @@ export class InventoryManager {
         // Previsualización de imagen
         const inputImagen = document.getElementById('productoImagen');
         if (inputImagen) {
-            inputImagen.addEventListener('change', this.previsualizarImagen);
+            inputImagen.addEventListener('change', (e) => this.previsualizarImagen(e));
         }
 
         // Filtros
@@ -41,47 +42,73 @@ export class InventoryManager {
         if (buscarInput) buscarInput.addEventListener('input', () => this.aplicarFiltros());
         if (categoriaSelect) categoriaSelect.addEventListener('change', () => this.aplicarFiltros());
         if (stockSelect) stockSelect.addEventListener('change', () => this.aplicarFiltros());
+
+        // Formulario para editar producto
+        const formEditar = document.getElementById('editarProductoForm');
+        if (formEditar) {
+            formEditar.addEventListener('submit', (e) => this.handleEditarProducto(e));
+        }
+
+        // Previsualización de imagen en edición
+        const inputImagenEditar = document.getElementById('editarImagen');
+        if (inputImagenEditar) {
+            inputImagenEditar.addEventListener('change', (e) => {
+                const preview = document.getElementById('editarVistaPrevia');
+                this.previsualizarImagen(e, preview);
+            });
+        }
     }
 
     async handleAgregarProducto(e) {
         e.preventDefault();
 
         try {
-            const producto = await this.createProductFromForm(e.target);
-            this.dataService.addProduct(producto);
-            this.productos = this.dataService.getAllProducts();
-            this.cargarProductos();
+            const formData = new FormData(e.target);
+            const fileInput = document.getElementById('productoImagen');
+            const file = fileInput.files[0];
 
-            this.closeModal();
+            // Convertir imagen a base64 y guardar en localStorage
+            const base64Image = await this.convertImageToBase64(file);
+            const uniquePrefix = Date.now() + '-';
+            const safeFileName = uniquePrefix + file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
+            const imagePath = `/assets/images/products/${safeFileName}`;
+
+            // Guardar imagen en localStorage
+            const images = JSON.parse(localStorage.getItem('productImages') || '{}');
+            images[imagePath] = base64Image;
+            localStorage.setItem('productImages', JSON.stringify(images));
+
+
+            //Cuando se maneje backend aquí se debe utilizar para mover el archvio por ahora no hace falta
+
+            const producto = {
+                nombre: formData.get('productoNombre'),
+                categoria: formData.get('productoCategoria'),
+                stock: parseInt(formData.get('productoStock')),
+                descripcion: formData.get('productoDescripcion'),
+                precio: parseFloat(formData.get('productoPrecio')),
+                imagen: imagePath,
+                estado: 'activo'
+            };
+
+            await this.dataService.addProduct(producto);
+            await this.cargarProductos();
+
+            // Close modal using Bootstrap
+            const modal = document.getElementById('agregarProductoModal');
+            const bootstrapModal = bootstrap.Modal.getInstance(modal);
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            }
+
+            // Reset form
+            e.target.reset();
+
             this.mostrarMensaje('Producto agregado exitosamente', 'success');
         } catch (error) {
             console.error('Error al agregar producto:', error);
             this.mostrarMensaje('Error al agregar el producto', 'danger');
         }
-    }
-
-    createProductFromForm(form) {
-        return new Promise((resolve, reject) => {
-            const formData = new FormData(form);
-            const fileInput = document.getElementById('productoImagen');
-            const file = fileInput.files[0];
-
-            this.convertImageToBase64(file)
-                .then(base64Image => {
-                    const producto = {
-                        id: Date.now(),
-                        nombre: formData.get('productoNombre'),
-                        categoria: formData.get('productoCategoria'),
-                        stock: parseInt(formData.get('productoStock')),
-                        descripcion: formData.get('productoDescripcion'),
-                        precio: parseFloat(formData.get('productoPrecio')),
-                        imagen: base64Image,
-                        estado: 'activo'
-                    };
-                    resolve(producto);
-                })
-                .catch(error => reject(error));
-        });
     }
 
     convertImageToBase64(file) {
@@ -104,49 +131,60 @@ export class InventoryManager {
     }
 
     aplicarFiltros() {
-        let productosFiltrados = [...this.productos];
+        try {
+            if (!Array.isArray(this.productos)) {
+                console.error('No hay productos para filtrar');
+                return;
+            }
 
-        const busqueda = document.getElementById('buscarProducto')?.value.toLowerCase();
-        const categoria = document.getElementById('filtroCategoria')?.value;
-        const estadoStock = document.getElementById('filtroStock')?.value;
+            let productosFiltrados = [...this.productos];
 
-        if (busqueda) {
-            productosFiltrados = productosFiltrados.filter(p =>
-                p.nombre.toLowerCase().includes(busqueda) ||
-                p.descripcion.toLowerCase().includes(busqueda)
-            );
+            const busqueda = document.getElementById('buscarProducto')?.value.toLowerCase();
+            const categoria = document.getElementById('filtroCategoria')?.value;
+            const estadoStock = document.getElementById('filtroStock')?.value;
+
+            if (busqueda) {
+                productosFiltrados = productosFiltrados.filter(p =>
+                    p.nombre?.toLowerCase().includes(busqueda) ||
+                    p.descripcion?.toLowerCase().includes(busqueda)
+                );
+            }
+
+            if (categoria) {
+                productosFiltrados = productosFiltrados.filter(p => p.categoria === categoria);
+            }
+
+            if (estadoStock) {
+                productosFiltrados = productosFiltrados.filter(p => {
+                    switch (estadoStock) {
+                        case 'bajo': return p.stock <= 5;
+                        case 'normal': return p.stock > 5 && p.stock <= 15;
+                        case 'alto': return p.stock > 15;
+                        default: return true;
+                    }
+                });
+            }
+
+            this.renderProductos(productosFiltrados);
+        } catch (error) {
+            console.error('Error al aplicar filtros:', error);
+            this.mostrarMensaje('Error al filtrar productos', 'danger');
         }
-
-        if (categoria) {
-            productosFiltrados = productosFiltrados.filter(p => p.categoria === categoria);
-        }
-
-        if (estadoStock) {
-            productosFiltrados = productosFiltrados.filter(p => {
-                switch (estadoStock) {
-                    case 'bajo': return p.stock <= 5;
-                    case 'normal': return p.stock > 5 && p.stock <= 15;
-                    case 'alto': return p.stock > 15;
-                    default: return true;
-                }
-            });
-        }
-
-        return productosFiltrados;
     }
 
     crearFilaProducto(producto) {
-        const estado = this.determinarEstadoStock(producto.stock);
+        const images = JSON.parse(localStorage.getItem('productImages') || '{}');
+        const imageSrc = images[producto.imagen] || producto.imagen;
+
         return `
             <tr>
-                <td>
-                    <img src="${producto.imagen}" alt="${producto.nombre}" class="producto-thumb">
+                <td class="producto-nombre">
+                    <img src="${imageSrc}" alt="${producto.nombre}" class="producto-thumb">
                     ${producto.nombre}
                 </td>
-                <td>${producto.categoria}</td>
-                <td>${producto.stock}</td>
-                <td>$${producto.precio.toLocaleString()}</td>
-                <td><span class="badge bg-${estado}">${producto.estado}</span></td>
+                <td>${producto.categoria || ''}</td>
+                <td>${producto.stock || 0}</td>
+                <td>$${(producto.precio || 0).toLocaleString()}</td>
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-sm btn-info view-btn" data-id="${producto.id}">
@@ -209,14 +247,47 @@ export class InventoryManager {
         return false;
     }
 
-    eliminarProducto(id) {
-        const index = this.productos.findIndex(p => p.id === id);
-        if (index !== -1) {
-            this.productos.splice(index, 1);
-            this.guardarProductos();
-            return true;
+    async handleEditarProducto(e) {
+        e.preventDefault();
+        try {
+            const id = document.getElementById('editarId').value;
+            const fileInput = document.getElementById('editarImagen');
+            let imagePath = document.getElementById('editarVistaPrevia').src;
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const base64Image = await this.convertImageToBase64(file);
+                const uniquePrefix = Date.now() + '-';
+                const safeFileName = uniquePrefix + file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
+                imagePath = `/assets/images/products/${safeFileName}`;
+
+                // Guardar nueva imagen en localStorage
+                const images = JSON.parse(localStorage.getItem('productImages') || '{}');
+                images[imagePath] = base64Image;
+                localStorage.setItem('productImages', JSON.stringify(images));
+            }
+
+            const productoActualizado = {
+                nombre: document.getElementById('editarNombre').value,
+                categoria: document.getElementById('editarCategoria').value,
+                stock: parseInt(document.getElementById('editarStock').value),
+                descripcion: document.getElementById('editarDescripcion').value,
+                precio: parseFloat(document.getElementById('editarPrecio').value),
+                imagen: imagePath,
+                estado: 'activo'
+            };
+
+            await this.dataService.updateProduct(id, productoActualizado);
+            await this.cargarProductos();
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editarProductoModal'));
+            modal.hide();
+            
+            this.mostrarMensaje('Producto actualizado exitosamente', 'success');
+        } catch (error) {
+            console.error('Error al actualizar producto:', error);
+            this.mostrarMensaje('Error al actualizar el producto', 'danger');
         }
-        return false;
     }
 
     guardarProductos() {
@@ -233,10 +304,99 @@ export class InventoryManager {
         `;
 
         const container = document.querySelector('.content');
-        container.insertBefore(alertDiv, container.firstChild);
+        if (container) {
+            container.insertBefore(alertDiv, container.firstChild);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+    }
 
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 3000);
+
+    previsualizarImagen(e, previewElementId) {
+        const file = e.target.files[0];
+        const preview = previewElementId;
+        if (preview && file) {
+            preview.classList.remove('d-none');
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                preview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    async verProducto(id) {
+        try {
+            const producto = this.productos.find(p => p.id === id);
+            if (!producto) return;
+
+            const images = JSON.parse(localStorage.getItem('productImages') || '{}');
+            const imageSrc = images[producto.imagen] || producto.imagen;
+
+            const modalContent = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="${imageSrc}" class="img-fluid" alt="${producto.nombre}">
+                    </div>
+                    <div class="col-md-6">
+                        <h4>${producto.nombre}</h4>
+                        <p><strong>Categoría:</strong> ${producto.categoria}</p>
+                        <p><strong>Stock:</strong> ${producto.stock}</p>
+                        <p><strong>Precio:</strong> $${producto.precio.toLocaleString()}</p>
+                        <p><strong>Descripción:</strong> ${producto.descripcion}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('verProductoModalBody').innerHTML = modalContent;
+            const modal = new bootstrap.Modal(document.getElementById('verProductoModal'));
+            modal.show();
+        } catch (error) {
+            console.error('Error al ver producto:', error);
+            this.mostrarMensaje('Error al cargar el producto', 'danger');
+        }
+    }
+
+    async editarProducto(id) {
+        try {
+            const producto = this.productos.find(p => p.id === id);
+            if (!producto) return;
+
+            // Llenar el formulario de edición
+            const form = document.getElementById('editarProductoForm');
+            form.querySelector('#editarId').value = producto.id;
+            form.querySelector('#editarNombre').value = producto.nombre;
+            form.querySelector('#editarCategoria').value = producto.categoria;
+            form.querySelector('#editarStock').value = producto.stock;
+            form.querySelector('#editarPrecio').value = producto.precio;
+            form.querySelector('#editarDescripcion').value = producto.descripcion;
+
+            // Mostrar la imagen actual
+            const images = JSON.parse(localStorage.getItem('productImages') || '{}');
+            const imageSrc = images[producto.imagen] || producto.imagen;
+            const preview = form.querySelector('#editarVistaPrevia');
+            if (preview) {
+                preview.src = imageSrc;
+                preview.classList.remove('d-none');
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('editarProductoModal'));
+            modal.show();
+        } catch (error) {
+            console.error('Error al editar producto:', error);
+            this.mostrarMensaje('Error al cargar el producto', 'danger');
+        }
+    }
+
+    async eliminarProducto(id) {
+        if (confirm('¿Está seguro de eliminar este producto?')) {
+            try {
+                await this.dataService.deleteProduct(id);
+                await this.cargarProductos();
+                this.mostrarMensaje('Producto eliminado exitosamente', 'success');
+            } catch (error) {
+                console.error('Error al eliminar producto:', error);
+                this.mostrarMensaje('Error al eliminar el producto', 'danger');
+            }
+        }
     }
 }

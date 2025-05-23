@@ -1,6 +1,7 @@
 <div class="content p-4 bg-light rounded shadow-sm">
+    <!-- Encabezado -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Usuarios</h2>
+        <h2 class="mb-0">Gestión de Usuarios</h2>
     </div>
 
     <!-- Filtros -->
@@ -39,5 +40,35 @@
                 <!-- Los usuarios se cargarán dinámicamente aquí -->
             </tbody>
         </table>
+    </div>
+
+    <!-- Modal Ver Usuario -->
+    <div class="modal fade" id="userModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles del Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="userModalBody">
+                    <!-- Contenido dinámico -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Usuario -->
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="editUserModalBody">
+                    <!-- Contenido dinámico -->
+                </div>
+            </div>
+        </div>
     </div>
 </div>

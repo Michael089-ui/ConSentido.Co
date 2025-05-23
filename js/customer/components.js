@@ -50,11 +50,20 @@ export class ComponentsManager {
             const html = await response.text();
             navPlaceholder.innerHTML = html;
             
+            // Agregar el contador al icono del carrito
+            const cartIcon = navPlaceholder.querySelector('.nav-icon i.fa-shopping-cart');
+            if (cartIcon) {
+                const cartContainer = cartIcon.parentElement;
+                const counter = document.createElement('span');
+                counter.className = 'cart-counter';
+                cartContainer.appendChild(counter);
+            }
+            
+            // Actualizar contador
+            this.updateCartCounter();
+            
             // Verificar si hay un usuario logueado y actualizar la UI
             this.updateUserUI();
-            
-            // Inicializar el contador del carrito
-            this.updateCartCounter();
             
             // Inicializar la búsqueda
             this.initializeSearch();
@@ -105,18 +114,25 @@ export class ComponentsManager {
         const userIcon = document.querySelector('.nav-icon i.fa-user');
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         
-        if (currentUser && userIcon) {
-            userIcon.classList.remove('fa-user');
-            userIcon.classList.add('fa-user-check');
-            userIcon.parentElement.href = '/pages/customer/profile.html';
+        if (userIcon) {
+            if (currentUser && currentUser.rol !== 'admin') {
+                userIcon.classList.remove('fa-user');
+                userIcon.classList.add('fa-user-check');
+                userIcon.parentElement.href = '/pages/customer/profile.html';
+            } else {
+                userIcon.classList.remove('fa-user-check');
+                userIcon.classList.add('fa-user');
+                userIcon.parentElement.href = '/pages/customer/Login.html';
+            }
         }
     }
 
     static updateCartCounter() {
-        const cartBadge = document.querySelector('.badge');
-        if (cartBadge) {
+        const counter = document.querySelector('.cart-counter');
+        if (counter) {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            cartBadge.textContent = cart.length;
+            counter.textContent = cart.length;
+            counter.style.display = cart.length > 0 ? 'flex' : 'none';
         }
     }
 
@@ -125,18 +141,21 @@ export class ComponentsManager {
         const searchButton = document.querySelector('.search-box button');
 
         if (searchInput && searchButton) {
-            searchButton.addEventListener('click', () => this.handleSearch(searchInput.value));
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.handleSearch(searchInput.value);
+            searchButton.addEventListener('click', () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    window.location.href = `/pages/customer/search.html?q=${encodeURIComponent(query)}`;
                 }
             });
-        }
-    }
 
-    static handleSearch(query) {
-        if (query.trim()) {
-            window.location.href = `/pages/customer/search.html?q=${encodeURIComponent(query)}`;
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        window.location.href = `/pages/customer/search.html?q=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
         }
     }
 }

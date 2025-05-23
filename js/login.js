@@ -46,18 +46,20 @@ function handleLogin(e) {
     const user = usuarios.find(u => u.email === email && u.password === password);
 
     if (user) {
-        // Guardar información del usuario actual
+        // Guardar todos los datos relevantes del usuario
         localStorage.setItem('currentUser', JSON.stringify({
-            name: user.name,
+            nombre: user.nombre || user.name,
+            apellido: user.apellido || user.lastName,
             email: user.email,
+            telefono: user.telefono || user.phone,
+            direccion: user.direccion || user.address,
             rol: user.rol
         }));
 
-        // Redireccionar según el rol
         if (user.rol === 'admin') {
-            window.location.href = '/pages/admin/admin.html';
+            window.location.href = '../admin/admin.html';
         } else {
-            window.location.href = '/index.html';
+            window.location.href = '../../index.html';
         }
     } else {
         showMessage('Credenciales incorrectas', 'danger');
