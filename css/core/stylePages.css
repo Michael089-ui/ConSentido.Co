@@ -143,6 +143,69 @@ main {
     margin-bottom: 0;
 }
 
+/* Layout página de login */
+.login-container {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.left-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 65%;
+    height: 100%;
+    background-image: url('/assets/images/ArtesanoMadera.jpg');
+    background-size: cover;
+    background-position: center;
+    clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+}
+
+.login-box {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    padding: 2rem;
+    border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
+}
+
+/* Hero Section Styles */
+.hero-section {
+    position: relative;
+    height: 600px; /* Altura fija para el contenedor */
+    overflow: hidden;
+}
+
+.hero-section .carousel {
+    height: 100%;
+}
+
+.hero-section .carousel-inner {
+    height: 100%;
+}
+
+.hero-section .carousel-item {
+    height: 100%;
+}
+
+.hero-section .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantiene la proporción y cubre todo el espacio */
+    object-position: center; /* Centra la imagen */
+}
+
+/* Mejora del overlay para mejor legibilidad del texto */
+.hero-section .carousel-caption {
+    background: rgba(0, 0, 0, 0.4); /* Overlay semi-transparente */
+    padding: 2rem;
+    border-radius: var(--border-radius-lg);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
 /* Media queries */
 @media (max-width: 992px) {
     .section-title {
@@ -160,6 +223,11 @@ main {
 
     .producto-detalle {
         grid-template-columns: 1fr;
+    }
+
+    .left-image {
+        width: 50%;
+        clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
     }
 }
 
@@ -183,6 +251,23 @@ main {
     .carrito-layout {
         grid-template-columns: 1fr;
     }
+
+    .left-image {
+        display: none;
+    }
+
+    .login-box {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin: 2rem auto;
+        transform: none;
+        border-radius: var(--border-radius-lg);
+    }
+
+    .hero-section {
+        height: 400px; /* Altura más pequeña para móviles */
+    }
 }
 
 @media (max-width: 576px) {
@@ -193,5 +278,17 @@ main {
 
     .grid-responsive {
         grid-template-columns: 1fr;
+    }
+
+    .hero-section {
+        height: 300px; /* Aún más pequeña para móviles muy pequeños */
+    }
+    
+    .hero-section .carousel-caption {
+        padding: 1rem;
+    }
+    
+    .hero-section .carousel-caption h1 {
+        font-size: 1.5rem;
     }
 }

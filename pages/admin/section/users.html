@@ -1,0 +1,43 @@
+<div class="content p-4 bg-light rounded shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Usuarios</h2>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Buscar usuario</label>
+                    <input type="text" class="form-control" id="buscarUsuario" placeholder="Nombre o email...">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Rol</label>
+                    <select class="form-select" id="filtroRol">
+                        <option value="">Todos</option>
+                        <option value="cliente">Cliente</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaUsuarios">
+                <!-- Los usuarios se cargarán dinámicamente aquí -->
+            </tbody>
+        </table>
+    </div>
+</div>

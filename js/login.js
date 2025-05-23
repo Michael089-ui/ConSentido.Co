@@ -1,93 +1,76 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // 👨‍💼 Usuario admin hardcodeado (solo si no existe ya)
-  const adminEmail = "admin@admin.com";
-  const adminUser = {
+// Usuario admin hardcodeado
+const adminUser = {
     name: "Administrador",
-    email: adminEmail,
-    password: "Admin1234",  // contraseña predeterminada
-    tipoDocumento: "CC",
-    numeroDocumento: "123456789",
-    numeroCelular: "3001234567",
+    email: "admin@consentido.com",
+    password: "admin123",
     rol: "admin"
-  };
+};
 
-  const usuarios = JSON.parse(localStorage.getItem("usuariosRegistrados")) || [];
-  const existeAdmin = usuarios.some(u => u.email === adminEmail);
-  if (!existeAdmin) {
-    usuarios.push(adminUser);
-    localStorage.setItem("usuariosRegistrados", JSON.stringify(usuarios));
-  }
+document.addEventListener('DOMContentLoaded', function() {
+    // Asegurarse de que el admin existe en localStorage
+    const usuarios = JSON.parse(localStorage.getItem('usuariosRegistrados')) || [];
+    if (!usuarios.some(u => u.email === adminUser.email)) {
+        usuarios.push(adminUser);
+        localStorage.setItem('usuariosRegistrados', JSON.stringify(usuarios));
+    }
 
-  const loginForm = document.getElementById('loginForm');
-  const loginMessage = document.getElementById('loginMessage');
-  const emailInput = document.getElementById('loginEmail');
-  const passwordInput = document.getElementById('loginPassword');
-  const eyeIcon = document.getElementById('eye-icon');
-  const loginButton = document.getElementById('loginButton');
+    // Manejar el formulario de login
+    const loginForm = document.getElementById('loginForm');
+    const loginMessage = document.getElementById('loginMessage');
 
-  if (!loginForm || !loginMessage || !emailInput || !passwordInput || !eyeIcon || !loginButton) {
-    console.error('Falta algún elemento del DOM');
-    return;
-  }
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
 
-  loginForm.addEventListener('submit', function(e) {
+    // Manejar visibilidad de la contraseña
+    const eyeIcon = document.getElementById('eye-icon');
+    const passwordInput = document.getElementById('loginPassword');
+    
+    if (eyeIcon && passwordInput) {
+        eyeIcon.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            eyeIcon.classList.toggle('fa-eye');
+            eyeIcon.classList.toggle('fa-eye-slash');
+        });
+    }
+});
+
+function handleLogin(e) {
     e.preventDefault();
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
 
-    if (!email || !password) {
-      showMessage('Por favor, complete todos los campos.', 'danger');
-      return;
-    }
+    const usuarios = JSON.parse(localStorage.getItem('usuariosRegistrados')) || [];
+    const user = usuarios.find(u => u.email === email && u.password === password);
 
-    try {
-      const users = JSON.parse(localStorage.getItem('usuariosRegistrados')) || [];
-      const user = users.find(u => u.email === email && u.password === password);
-
-      if (user) {
+    if (user) {
+        // Guardar información del usuario actual
         localStorage.setItem('currentUser', JSON.stringify({
-          email: user.email,
-          name: user.name,
-          rol: user.rol || "usuario"
+            name: user.name,
+            email: user.email,
+            rol: user.rol
         }));
 
-        console.log('Rol del usuario encontrado:', user ? user.rol : 'Usuario no encontrado'); // Depuración adicional
-        console.log('Redirigiendo a:', user && user.rol === "admin" ? '/pages/admin/Admin_Home.html' : '../index.html'); // Depuración adicional
-
-        showMessage('¡Inicio de sesión exitoso!', 'success');
-        setTimeout(() => {
-          if (user.rol === "admin") {
+        // Redireccionar según el rol
+        if (user.rol === 'admin') {
             window.location.href = '/pages/admin/Admin_Home.html';
-          } else {
-            window.location.href = '../index.html';
-          }
-        }, 1500);
-      } else {
-        showMessage('Correo o contraseña incorrectos', 'danger');
-      }
-    } catch (error) {
-      console.error('Error al procesar el login:', error);
-      showMessage('Error al procesar la solicitud', 'danger');
+        } else {
+            window.location.href = '/index.html';
+        }
+    } else {
+        showMessage('Credenciales incorrectas', 'danger');
     }
-  });
+}
 
-  eyeIcon.addEventListener('click', function() {
-    const isPassword = passwordInput.type === 'password';
-    passwordInput.type = isPassword ? 'text' : 'password';
-    eyeIcon.classList.toggle('fa-eye');
-    eyeIcon.classList.toggle('fa-eye-slash');
-  });
-
-  function showMessage(message, type) {
-    loginMessage.textContent = message;
-    loginMessage.className = `alert alert-${type} mt-3`;
-    loginMessage.style.display = 'block';
-
-    if (type === 'danger') {
-      setTimeout(() => {
-        loginMessage.style.display = 'none';
-      }, 3000);
+function showMessage(message, type) {
+    const loginMessage = document.getElementById('loginMessage');
+    if (loginMessage) {
+        loginMessage.className = `alert alert-${type}`;
+        loginMessage.style.display = 'block';
+        loginMessage.textContent = message;
     }
-  }
-});
+}
+
+export { adminUser };
