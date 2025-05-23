@@ -1,0 +1,13 @@
+{
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Ejemplo Producto",
+      "categoria": "madera",
+      "descripcion": "Descripción del producto",
+      "precio": 100,
+      "stock": 10,
+      "imagen": "/assets/images/bosque.jpg"
+    }
+  ]
+}

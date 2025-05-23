@@ -206,6 +206,71 @@ main {
     margin: 0 auto;
 }
 
+/* Estilos para la sección principal de categorías */
+.seccion-principal {
+    position: relative;
+    height: 500px;
+    width: 100%;
+    overflow: hidden;
+    margin-top: -20px; /* Ajustar si hay conflicto con el navbar */
+}
+
+.seccion-principal img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7); /* Oscurecer ligeramente la imagen */
+}
+
+.contenido-superpuesto {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.form-superpuesto {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: var(--border-radius-lg);
+    max-width: 600px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+}
+
+.form-superpuesto h2 {
+    color: var(--color-dark);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.form-superpuesto p {
+    color: var(--color-dark);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+    text-align: justify;
+}
+
+/* Estilos para la sección de productos */
+.productos-section {
+    padding: 4rem 0;
+    background-color: var(--color-light);
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
 /* Media queries */
 @media (max-width: 992px) {
     .section-title {
@@ -268,6 +333,23 @@ main {
     .hero-section {
         height: 400px; /* Altura más pequeña para móviles */
     }
+
+    .seccion-principal {
+        height: 400px;
+    }
+
+    .form-superpuesto {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .form-superpuesto h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-superpuesto p {
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -290,5 +372,17 @@ main {
     
     .hero-section .carousel-caption h1 {
         font-size: 1.5rem;
+    }
+
+    .seccion-principal {
+        height: 300px;
+    }
+
+    .form-superpuesto {
+        padding: 1rem;
+    }
+
+    .form-superpuesto h2 {
+        font-size: 1.25rem;
     }
 }
