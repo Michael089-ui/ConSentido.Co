@@ -1,4 +1,4 @@
-export class UsuariosManager {
+export class UsersManager {
     constructor() {
         this.usuarios = JSON.parse(localStorage.getItem('usuariosRegistrados')) || [];
     }

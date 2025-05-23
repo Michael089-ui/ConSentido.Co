@@ -14,9 +14,9 @@
   --spacing-lg: 1.5rem;
   --card-hover-transform: translateY(-5px) scale(1.02);
   --form-input-border: 1px solid #ccc;
-  --color-light-gray: #ddd;
+  --color-light-gray: #a0a0a0;
   --producto-img-height: 200px;
-  --navbar-bg: rgba(186, 185, 164, 0.579);
+  --navbar-bg: rgba(122, 109, 63, 0.74);
 }
 
 .topbar {
@@ -29,19 +29,53 @@
   box-shadow: var(--shadow-sm);
 }
 
+.topbar .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    /* Cambia justify-content según necesites:
+       flex-start: alinea a la izquierda
+       center: alinea al centro
+       flex-end: alinea a la derecha
+       space-between: distribuye el espacio entre elementos
+       space-around: distribuye el espacio alrededor de elementos */
+    justify-content: flex-end;
+}
+
+
+/* Estilos para los enlaces dentro de la topbar */
+.topbar a {
+    color: var(--color-dark);
+    text-decoration: none;
+    font-size: 0.875rem;
+    padding: 0 10px;
+    transition: var(--transition-default);
+}
+
+.topbar a:hover {
+    color: var(--color-primary);
+}
+
+/* Para espaciado entre elementos */
+.topbar .gap-3 {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
 
 .navbar {
   background-color: var(--navbar-bg) !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
   box-shadow: var(--shadow-sm);
   position: fixed;
   top: 40px;
   width: 100%;
   z-index: 1000;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   transition: var(--transition-default);
   display: flex;
   align-items: center;
+  height: 80px;
 }
 
 .navbar-nav {
@@ -97,7 +131,7 @@
 
 
 .logo-navbar {
-  max-height: 60px;
+  max-height: 170px;
   /* o 40px si es muy grande */
   width: auto;
   transition: transform 0.3s ease;

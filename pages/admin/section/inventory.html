@@ -1,12 +1,12 @@
 <div class="content p-4 bg-light rounded shadow-sm">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-center mb-4">Inventario</h2>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarProductoModal">
-            <i class="fas fa-plus"></i> Agregar Nuevo Producto
+        <h2 class="mb-0">Inventario</h2>
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#agregarProductoModal">
+            <i class="fas fa-plus"></i> Agregar Producto
         </button>
     </div>
 
-    <!-- Filtros de búsqueda -->
+    <!-- Filtros -->
     <div class="card mb-4">
         <div class="card-body">
             <div class="row g-3">
@@ -19,7 +19,7 @@
                     <select class="form-select" id="filtroCategoria">
                         <option value="">Todas</option>
                         <option value="tejidos">Tejidos</option>
-                        <option value="ceramica">Papel</option>
+                        <option value="papel">Papel</option>
                         <option value="madera">Madera</option>
                     </select>
                 </div>
@@ -38,7 +38,7 @@
 
     <!-- Tabla de productos -->
     <div class="table-responsive">
-        <table class="table table-bordered">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Producto</th>
@@ -49,81 +49,75 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Los productos se cargarán dinámicamente aqui... -->
+            <tbody id="tablaProductos">
+                <!-- Los productos se cargarán dinámicamente aquí -->
             </tbody>
         </table>
     </div>
-
-    <!-- Alerta de stock bajo -->
-    <div id="alertaProductos"></div>
 </div>
 
-<!-- Modal VER Producto -->
-<div class="modal fade" id="verProductoModal" tabindex="-1" aria-labelledby="verProductoModalLabel" aria-hidden="true">
+<!-- Modal Agregar Producto -->
+<div class="modal fade" id="agregarProductoModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="verProductoModalLabel">Detalles del Producto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 class="modal-title">Agregar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <img id="verImagen" src="" alt="Imagen del Producto" class="img-fluid mb-3">
-                <p><strong>Descripción: </strong> <span id="verDescripcion"></span></p>
-                <p><strong>Precio:</strong> <span id="verPrecio"></span></p>
+                <form id="agregarProductoForm">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Producto</label>
+                        <input type="text" class="form-control" id="productoNombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Categoría</label>
+                        <select class="form-select" id="productoCategoria" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="tejidos">Tejidos</option>
+                            <option value="papel">Papel</option>
+                            <option value="madera">Madera</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="productoStock" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" id="productoDescripcion" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Precio</label>
+                        <input type="number" step="0.01" class="form-control" id="productoPrecio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Imagen</label>
+                        <input type="file" class="form-control" id="productoImagen" accept="image/*" required>
+                        <img id="vistaPrevia" class="img-fluid mt-2 d-none">
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="agregarProductoForm" class="btn btn-warning">Guardar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal para AGREGAR nuevo producto -->
-<div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="agregarProductoModalLabel" aria-hidden="true">
+<!-- Modal Ver Producto -->
+<div class="modal fade" id="verProductoModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Nuevo Producto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 class="modal-title">Detalles del Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="agregarProductoForm">
-                    <div class="mb-3">
-                        <label for="productoNombre" class="form-label">Nombre del Producto</label>
-                        <input type="text" class="form-control" id="productoNombre" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productoCategoria" class="form-label">Categoría</label>
-                        <select class="form-select" id="productoCategoria" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="tejidos">Tejidos</option>
-                            <option value="ceramica">Papel</option>
-                            <option value="madera">Madera</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productoStock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" id="productoStock" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productoDescripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="productoDescripcion" rows="2" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productoPrecio" class="form-label">Precio ($)</label>
-                        <input type="number" step="0.01" class="form-control" id="productoPrecio" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productoImagen" class="form-label">Imagen del Producto</label>
-                        <input type="file" class="form-control" id="productoImagen" accept="image/*" required>
-                        <img id="vistaPrevia" class="img-fluid mt-2 d-none" alt="Vista previa">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar Producto</button>
-                    </div>
-                </form>
+                <img id="verImagen" class="img-fluid mb-3">
+                <p><strong>Descripción: </strong><span id="verDescripcion"></span></p>
+                <p><strong>Precio: </strong><span id="verPrecio"></span></p>
             </div>
         </div>
     </div>

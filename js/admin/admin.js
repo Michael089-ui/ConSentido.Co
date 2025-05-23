@@ -1,13 +1,19 @@
 import { SidebarManager } from './sidebar.js';
-import { ProductosManager } from './inventory.js';
-import { TemplateManager } from './orders.js';
+import { InventoryManager } from './inventory.js';
+import { OrdersManager } from './orders.js';
+import { UsersManager } from './users.js';
+import { TemplateManager } from './template.js';
 
 class AdminManager {
     constructor() {
         this.verificarAdmin();
-        this.productosManager = new ProductosManager();
         this.templateManager = new TemplateManager();
         this.sidebarManager = new SidebarManager();
+        this.productosManager = new InventoryManager();
+        this.OrdersManager = new OrdersManager();
+        this.UsersManager = new UsersManager();
+
+
         this.init();
     }
 
@@ -53,7 +59,25 @@ class AdminManager {
                 contentContainer.innerHTML = html;
                 this.initializeSectionFeatures(seccion);
             })
-            .catch(error => this.mostrarError(error.message));
+            .catch(error => {
+                console.error('Error:', error);
+                contentContainer.innerHTML = `
+                    <div class="alert alert-danger m-4">
+                        Error al cargar la sección. Por favor intente nuevamente.
+                    </div>
+                `;
+            });
+    }
+
+    mostrarError(mensaje) {
+        const contentContainer = document.getElementById('content-container');
+        if (contentContainer) {
+            contentContainer.innerHTML = `
+                <div class="alert alert-danger m-4">
+                    ${mensaje}
+                </div>
+            `;
+        }
     }
 
     initializeSectionFeatures(seccion) {
@@ -68,7 +92,7 @@ class AdminManager {
     }
 
     static cerrarSesion() {
-        if(confirm('¿Está seguro de cerrar sesión?')) {
+        if (confirm('¿Está seguro de cerrar sesión?')) {
             localStorage.removeItem('currentUser');
             window.location.href = '/pages/customer/Login.html';
         }

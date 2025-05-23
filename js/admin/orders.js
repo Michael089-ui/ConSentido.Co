@@ -1,4 +1,4 @@
-export class PedidosManager {
+export class OrdersManager {
     constructor() {
         this.pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
     }

@@ -55,7 +55,7 @@ function handleLogin(e) {
 
         // Redireccionar según el rol
         if (user.rol === 'admin') {
-            window.location.href = '/pages/admin/Admin_Home.html';
+            window.location.href = '/pages/admin/admin.html';
         } else {
             window.location.href = '/index.html';
         }

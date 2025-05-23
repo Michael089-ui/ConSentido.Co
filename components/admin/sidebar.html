@@ -1,25 +1,31 @@
 <section id="sidebar">
-    <div class="sidebar">
+    <div class="sidebar-content">
         <div class="logo mb-4 text-center">
             <img src="/assets/images/ConSentido.co.png" alt="Logo ConSentido.co" class="logo-img">
         </div>
-        <p class="text-center">Administrador</p>
-        <nav class="nav flex-column">
+        
+        <div class="admin-info mb-4">
+            <p class="text-center mb-0 fw-bold">Administrador</p>
+            <p class="text-center text-muted small" id="admin-name"></p>
+        </div>
+        
+        <nav class="nav flex-column gap-2">
             <a href="#" class="nav-link" data-section="inventario">
                 <i class="fas fa-box"></i> Inventario
             </a>
-            <a href="#" class="nav-link" data-section="pedidos">
+            <a href="#" class="nav-link" data-section="orders">
                 <i class="fas fa-shopping-cart"></i> Pedidos
             </a>
-            <a href="#" class="nav-link" data-section="usuarios">
+            <a href="#" class="nav-link" data-section="users">
                 <i class="fas fa-users"></i> Usuarios
             </a>
             <a href="#" class="nav-link" data-section="perfil">
                 <i class="fas fa-user-edit"></i> Editar perfil
             </a>
         </nav>
-        <div class="mt-5">
-            <a href="#" class="nav-link text-danger" onclick="cerrarSesion()">
+        
+        <div class="mt-auto pt-4">
+            <a href="#" class="nav-link text-danger" onclick="window.adminManager.cerrarSesion()">
                 <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
             </a>
         </div>
