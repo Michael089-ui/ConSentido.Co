@@ -16,15 +16,11 @@
 </head>
 
 <body>
-
   <div id="nav-placeholder"></div>
 
   <main class="container mt-5 mb-5">
     <div class="row justify-content-center">
       <div class="col-md-8">
-
-
-
         <h1 class="text-center mb-4">Contáctanos</h1>
         <h2 class="text-center mb-4">Envíanos tus preguntas, sugerencias o felicitaciones</h2>
 
@@ -33,110 +29,93 @@
           <label class="form-check-label fw-bold" for="Vende">¿Quieres publicar tus artículos con nosotros?</label>
         </div>
 
-        <!-- Formulario superior -->
+        <!-- Formulario de contacto general -->
         <form action="https://formspree.io/f/xqaqkwko" method="POST" class="form-superior">
-
           <div class="mb-3">
             <label class="form-label">Nombre</label>
-            <input type="text" name="firstName" class="form-control" placeholder="Nombre" required>
+            <input type="text" name="firstName" class="form-control" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Apellido</label>
-            <input type="text" name="lastName" class="form-control" placeholder="Apellido">
+            <input type="text" name="lastName" class="form-control">
           </div>
 
           <div class="mb-3">
             <label class="form-label">Correo</label>
-            <input type="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
+            <input type="email" name="email" class="form-control" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Número de contacto</label>
-            <input type="tel" name="phone" class="form-control" placeholder="Número de contacto" required>
+            <input type="tel" name="phone" class="form-control" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Asunto</label>
-            <input type="text" name="subject" class="form-control" placeholder="¿De qué quieres hablarnos hoy?" required>
+            <input type="text" name="subject" class="form-control" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Mensaje</label>
-            <textarea name="message" class="form-control" placeholder="Ingresa el asunto de tu interés" required></textarea>
+            <textarea name="message" class="form-control" rows="4" required></textarea>
           </div>
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-warning text-white fw-bold">Enviar</button>
+            <button type="submit" class="btn btn-warning text-white fw-bold">
+              Enviar mensaje
+            </button>
           </div>
-
         </form>
 
-        <!-- Formulario inferior -->
-        <form action="https://formspree.io/f/xqaqkwko" method="POST" class="form-inferior mt-4" style="display: none;">
-
+        <!-- Formulario para vendedores -->
+        <form action="https://formspree.io/f/xqaqkwko" method="POST" class="form-inferior" style="display: none;">
           <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            <input type="text" name="firstName" class="form-control" placeholder="Nombre" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Apellido</label>
-            <input type="text" name="lastName" class="form-control" placeholder="Apellido">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" name="fullName" class="form-control" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Correo</label>
-            <input type="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
+            <input type="email" name="email" class="form-control" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Número de contacto</label>
-            <input type="tel" name="phone" class="form-control" placeholder="Número de contacto" required>
+            <input type="tel" name="phone" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Tipo de artesanía</label>
+            <select name="artType" class="form-select" required>
+              <option value="">Seleccione una opción</option>
+              <option value="tejidos">Tejidos</option>
+              <option value="madera">Madera</option>
+              <option value="papel">Papel</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción de sus productos</label>
+            <textarea name="productDescription" class="form-control" rows="4" required></textarea>
           </div>
 
           <div class="d-grid">
-
-            <button type="submit" class="btn btn-warning fw-bold">Enviar</button>
+            <button type="submit" class="btn btn-warning text-white fw-bold">
+              Enviar solicitud
+            </button>
           </div>
-
         </form>
-
       </div>
     </div>
   </main>
-
-  <div id="modal-success" class="modal" style="display: none;">
-    <div class="modal-content p-4 bg-light rounded shadow">
-      <p>Gracias por comunicarte con nosotros, estaremos en contacto pronto.</p>
-      <button id="modal-close" class="btn btn-danger mt-2">Cerrar</button>
-    </div>
-
-
-            <button type="submit" class="btn btn-warning text-white fw-bold">Enviar</button>
-          </div>
-
-        </form>
-
-      </div>
-    </div>
-  </main>
-
-  <div id="modal-success" class="modal" style="display: none;">
-    <div class="modal-content p-4 bg-light rounded shadow">
-      <p>Gracias por comunicarte con nosotros, estaremos en contacto pronto.</p>
-      <button id="modal-close" class="btn btn-danger mt-2">Cerrar</button>
-    </div>
-
-  </div>
 
   <div id="footer-content"></div>
 
-  
-  <script type="module" src="/js/customer/components.js"></script>
-  <script type="module" src="/js/customer/assets.js"></script>
-  <script type="module" src="/js/customer/pages.js"></script>
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/js/customer/components.js"></script>
+  <script type="module" src="/js/customer/contact.js"></script>
 </body>
 
 </html>

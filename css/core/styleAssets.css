@@ -6,13 +6,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 /* Reset CSS */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   scroll-behavior: smooth;
 }
@@ -20,32 +23,32 @@ html, body {
 /* Variables globales */
 :root {
   /* Paleta de colores principal */
-  --color-primary: #457b9d;
-  --color-secondary: #e63946;
-  --color-accent: #ffd166;
-  --color-light: #f8f9fa;
-  --color-dark: #222;
-  --color-gray: #888;
-  --color-light-gray: #ddd;
-  --color-beige: #cdc6b8;
-  --color-gold: #e6bc8a;
-  
+  --color-primary: #8B4513;           /* Marrón saddle */
+  --color-secondary: #D2691E;         /* Marrón chocolate */
+  --color-accent: #DEB887;            /* Beige burlywood */
+  --color-light: #FFF8DC;             /* Beige cornsilk */
+  --color-dark: #4a3a37;              /* Marrón oscuro */
+  --color-gray: #A1887F;              /* Marrón grisáceo */
+  --color-light-gray: #D7CCC8;        /* Gris beige claro */
+  --color-beige: #F5DEB3;             /* Beige wheat */
+  --color-gold: #DAA520;              /* Dorado */
+
   /* Colores de componentes */
-  --navbar-bg: rgba(186, 175, 164, 0.579);
+  --navbar-bg: rgba(139, 69, 19, 0.9);/* Navbar semi-transparente */
   --navbar-height: 80px;
-  --footer-bg: #9a6f42;
-  
+  --footer-bg: #70615c;               /* Footer marrón oscuro */
+
   /* Sistema de sombras */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.15);
-  
+
   /* Sistema de bordes redondeados */
   --border-radius-sm: 5px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 30px;
-  
+
   /* Espaciado base */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -58,11 +61,15 @@ html, body {
   --transition-default: 0.3s ease;
   --transition-slow: 0.5s ease;
 
-  
+
   --card-hover-transform: translateY(-8px) scale(1.02);
   --producto-card-width: 220px;
   --producto-img-height: 160px;
   --form-input-border: 2px solid var(--color-light-gray);
+
+  --login-box-width: 350px;
+  --login-box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  --login-bg-opacity: 0.95;
 }
 
 /* Estilos base del cuerpo */
@@ -75,19 +82,41 @@ body {
 }
 
 /* Sistema tipográfico */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 0;
   font-weight: 600;
   color: var(--color-dark);
   line-height: 1.2;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1rem; }
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
 
 p {
   margin-bottom: var(--spacing-md);
@@ -126,20 +155,54 @@ img {
 }
 
 /* Utilidades de espaciado */
-.m-0 { margin: 0; }
-.mt-1 { margin-top: var(--spacing-sm); }
-.mb-1 { margin-bottom: var(--spacing-sm); }
-.my-2 { margin: var(--spacing-md) 0; }
-.p-0 { padding: 0; }
-.p-1 { padding: var(--spacing-sm); }
-.p-2 { padding: var(--spacing-md); }
+.m-0 {
+  margin: 0;
+}
+
+.mt-1 {
+  margin-top: var(--spacing-sm);
+}
+
+.mb-1 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.my-2 {
+  margin: var(--spacing-md) 0;
+}
+
+.p-0 {
+  padding: 0;
+}
+
+.p-1 {
+  padding: var(--spacing-sm);
+}
+
+.p-2 {
+  padding: var(--spacing-md);
+}
 
 /* Utilidades de flex */
-.d-flex { display: flex; }
-.flex-column { flex-direction: column; }
-.justify-center { justify-content: center; }
-.align-center { align-items: center; }
-.flex-wrap { flex-wrap: wrap; }
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
 
 /* Grid y contenedores */
 .container {
@@ -151,20 +214,32 @@ img {
 
 /* Media queries */
 @media (max-width: 992px) {
-  html { font-size: 16px; }
-  
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.5rem; }
-  
+  html {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
   .container {
     padding: 0 var(--spacing-sm);
   }
 }
 
 @media (max-width: 768px) {
-  html { font-size: 14px; }
-  
+  html {
+    font-size: 14px;
+  }
+
   .container {
     padding: 0 var(--spacing-xs);
   }

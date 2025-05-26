@@ -1,0 +1,45 @@
+<div class="content p-4 bg-light rounded shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Pedidos</h2>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Estado del pedido</label>
+                    <select class="form-select" id="filtroPedido">
+                        <option value="">Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="proceso">En proceso</option>
+                        <option value="completado">Completado</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fecha</label>
+                    <input type="date" class="form-control" id="filtroPedidoFecha">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de pedidos -->
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID Pedido</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaPedidos">
+                <!-- Los pedidos se cargarán dinámicamente aquí -->
+            </tbody>
+        </table>
+    </div>
+</div>

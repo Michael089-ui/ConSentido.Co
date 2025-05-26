@@ -1,0 +1,60 @@
+{
+  "pedidos": [
+    {
+      "id": "1748030404901",
+      "usuario": {
+        "name": "Administrador",
+        "email": "admin@consentido.com",
+        "celular": ""
+      },
+      "productos": [
+        {
+          "id": "1",
+          "nombre": "Manillas",
+          "precio": 100000,
+          "cantidad": 5
+        }
+      ],
+      "total": 500000,
+      "fecha": "2025-05-23T20:00:04.901Z",
+      "estado": "pendiente"
+    },
+    {
+      "id": "1748033070662",
+      "usuario": {
+        "name": "Administrador",
+        "email": "admin@consentido.com",
+        "celular": ""
+      },
+      "productos": [
+        {
+          "id": "1",
+          "nombre": "Manillas",
+          "precio": 100000,
+          "cantidad": 1
+        }
+      ],
+      "total": 100000,
+      "fecha": "2025-05-23T20:44:30.662Z",
+      "estado": "pendiente"
+    },
+    {
+      "id": "1748034741439",
+      "usuario": {
+        "email": "estefania@correo.com",
+        "celular": ""
+      },
+      "productos": [
+        {
+          "id": "9c3f",
+          "nombre": "Caja Organizadora Tallada",
+          "precio": 45000,
+          "cantidad": 3
+        }
+      ],
+      "total": 135000,
+      "fecha": "2025-05-23T21:12:21.439Z",
+      "estado": "pendiente"
+    }
+  ]
+}
