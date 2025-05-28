@@ -3,22 +3,22 @@ CREATE DATABASE ConSentidoCo;
 USE ConSentidoCo;
 -- Tabla Usuario
 CREATE TABLE Usuario (
-    id_usuario INT PRIMARY KEY,
+    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
     contrasena VARCHAR(100),
     nombre VARCHAR(100),
     rol ENUM('Administrador', 'Usuario') NOT NULL
-);
+)ENGINE=InnoDB;
 
 -- Tabla Categoria
 CREATE TABLE Categoria (
-    id_categoria INT PRIMARY KEY,
+    id_categoria INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100),
     descripcion TEXT
-);
+)ENGINE=InnoDB;
 
 -- Tabla Producto
 CREATE TABLE Producto (
-    id_producto INT PRIMARY KEY,
+    id_producto INT PRIMARY KEY AUTO_INCREMENT,
     id_categoria INT,
     imagen VARCHAR(255),
     nombre VARCHAR(100),
@@ -27,25 +27,25 @@ CREATE TABLE Producto (
     precio DECIMAL(10,2),
     stock INT,
     FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria)
-);
+)ENGINE=InnoDB;
 
 -- Tabla Pedido
 CREATE TABLE Pedido (
-    id_pedido INT PRIMARY KEY,
+    id_pedido INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT,
     estado ENUM('En proceso', 'Enviado', 'Cancelado') NOT NULL,
     metodoPago VARCHAR(50),
     email VARCHAR(100),
     direccion TEXT,
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
-);
+)ENGINE=InnoDB;
 
 -- Tabla DetallePedido
 CREATE TABLE DetallePedido (
     id_pedido INT,
     id_categoria INT,
     id_producto INT,
-    id_detallePedido INT, -- Esto como parte de la PK es inusual
+    id_detallePedido INT,
     cantidad INT,
     precio DECIMAL(10,2),
     descripcion TEXT,
@@ -53,7 +53,7 @@ CREATE TABLE DetallePedido (
     FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido),
     FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria),
     FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
-);
+)ENGINE=InnoDB;
 
 -- Tabla Inventario
 CREATE TABLE Inventario (
@@ -67,4 +67,4 @@ CREATE TABLE Inventario (
     PRIMARY KEY (id_categoria, id_producto),
     FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria),
     FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
-);
+)ENGINE=InnoDB;
