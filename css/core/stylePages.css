@@ -170,11 +170,12 @@ main {
     padding: 2rem;
     border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
 }
-
+/* ===== CARRUSEL ===== */
 /* Hero Section Styles */
 .hero-section {
     position: relative;
     margin-bottom: 6rem;
+    margin-top: -40px;/*para que no hallan espacios entre el carrusel y el navbar */
 }
 
 .hero-section .carousel-item {

@@ -18,8 +18,8 @@
   --producto-img-height: 200px;
   --navbar-bg: rgba(122, 109, 63, 0.74);
 }
-
-.topbar {
+/* ===== SESSION QUE ESTABA SOBRE EL NAVBAR DONDE MOSTRABA SOBRE NOSOTROS-CONTACTANOS ===== */
+/* .topbar {
   position: fixed;
   top: 0;
   width: 100%;
@@ -39,12 +39,12 @@
        flex-end: alinea a la derecha
        space-between: distribuye el espacio entre elementos
        space-around: distribuye el espacio alrededor de elementos */
-    justify-content: flex-end;
-}
+    /* justify-content: flex-end;
+} */
 
 
 /* Estilos para los enlaces dentro de la topbar */
-.topbar a {
+/* .topbar a {
     color: var(--color-dark);
     text-decoration: none;
     font-size: 0.875rem;
@@ -57,18 +57,18 @@
 }
 
 /* Para espaciado entre elementos */
-.topbar .gap-3 {
+/* .topbar .gap-3 {
     display: flex;
     gap: 1rem;
     align-items: center;
-}
-
+}  */
+/* =====NAVBAR===== */
 .navbar {
   background-color: var(--navbar-bg) !important;
   backdrop-filter: blur(15px);
   box-shadow: var(--shadow-sm);
   position: fixed;
-  top: 40px;
+  top: 0; 
   width: 100%;
   z-index: 1000;
   padding: 0.5rem 0;
@@ -158,9 +158,6 @@
 .search-box .fa-search:hover {
   color: var(--color-primary);
 }
-
-
-
 .logo-navbar {
   max-height: 170px;
   /* o 40px si es muy grande */
@@ -200,43 +197,83 @@
 .login-box .btn-warning:hover {
   background-color: darken(var(--color-accent), 10%);
 }
-
-
-
-/* ===== Cards ===== */
-.card {
-  background: #fff;
-  border-radius: var(--card-radius);
-  box-shadow: var(--shadow-sm);
-  padding: 1.2rem;
-  transition: var(--transition-default);
+/* CONTENEDOR HISTORIAS QUE CAMBIAN VIDAS */
+.artesanos-section {
+  padding: 40px 5%; /* Padding relativo */
+  max-width: 1400px; /* Ancho máximo mayor */
+  margin: 0 auto;
 }
 
-/* Artesano Card */
+/* GRID DE CARDS - VERSIÓN DEFINITIVA */
+.artesanos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr)) !important; /* Columnas de ancho mínimo 300px */
+  gap: 30px;
+  width: 100%;
+  margin: 30px auto 0;
+}
+
+/* ESTILOS DE CARD - AJUSTADOS */
 .artesano-card {
-  flex: 1 1 45%;
-  background: #fff;
-  border-radius: var(--card-radius);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  text-align: left;
-  transition: var(--transition-default);
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 500px; /* Altura mínima fija */
 }
 
-.artesano-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
+/* IMAGEN */
 .artesano-card img {
   width: 100%;
-  height: 160px;
+  height: 220px; /* Altura fija para imágenes */
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 15px;
+  object-position: center;
 }
 
-/* Equipo Card */
+/* CONTENIDO DE TEXTO */
+.card-content {
+  padding: 25px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.artesano-card h3 {
+  margin: 0 0 12px 0;
+  color: #8B4513;
+  font-size: 1.3rem;
+}
+
+.artesano-frase {
+  font-style: italic;
+  color: #555;
+  margin: 0 0 20px 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.artesano-desc {
+  margin: 0;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .artesanos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .artesanos-section {
+    padding: 30px 20px;
+  }
+}
+
+/* NUESTRO EQUIPO*/
 .equipo-card {
   flex: 0 0 24%;
   background: #fff;
@@ -319,7 +356,7 @@
 }
 
 .logo-footer {
-  max-width: 160px;
+  max-width: 220px;
   height: auto;
   object-fit: contain;
   display: block;
