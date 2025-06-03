@@ -316,13 +316,13 @@ main {
     padding: 2rem 0;
 }
 
-/* Estilos para About Us */
+/* =====VISTA SOBRE NOSOTROS/ABOUT US ===== */
 .acerca-de-nosotros {
     padding: 60px 0;
     background-color: var(--color-light);
 }
 
-/* Sección Historia */
+/* =====VISTA SOBRE NOSOTROS/HISTORIA ===== */
 .nuestra-historia {
     padding: 80px 0;
     background: linear-gradient(to right, var(--color-light) 60%, var(--color-beige) 40%);
@@ -383,7 +383,7 @@ main {
     transform: scale(1.05);
 }
 
-/* Sección Misión */
+/* ===== VISTA SOBRE NOSOTROS/MISION ===== */
 .mision {
     padding: 80px 0;
     background-color: var(--color-light);
@@ -444,7 +444,7 @@ main {
     margin-bottom: 20px;
 }
 
-/* Sección Visión */
+/* ===== VISTA SOBRE NOSOTROS/VISION ===== */
 .vision {
     padding: 80px 0;
     background: linear-gradient(to left, var(--color-light) 60%, var(--color-beige) 40%);
@@ -505,7 +505,7 @@ main {
     transform: scale(1.05);
 }
 
-/* Sección Impacto Social */
+/* ===== VISTA SOBRE NOSOTROS/IMPACTO SOCIAL ===== */
 .impacto-social {
     padding: 80px 0;
     background-color: var(--color-light);
@@ -539,119 +539,156 @@ main {
     color: var(--color-dark);
     margin-top: 30px;
 }
-
-/* Sección Artesanos */
+ /* ===== VISTA SOBRE NOSOTROS/ARTESANOS-LIMPIO ===== */
 .artesanos-section {
-    padding: 80px 0;
-    background-color: var(--color-beige);
+  padding: 40px 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--color-beige); 
 }
 
 .artesanos-section h2 {
-    text-align: center;
-    color: var(--color-primary);
-    font-size: 2.5rem;
-    margin-bottom: 50px;
-    position: relative;
+  text-align: center;
+  color: var(--color-primary);
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  position: relative;
 }
 
 .artesanos-section h2::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background-color: var(--color-accent);
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: var(--color-accent);
 }
 
 .artesanos-grid {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-    padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr)) !important;
+  gap: 30px;
+  width: 100%;
+  margin: 30px auto 0;
 }
 
 .artesano-card {
-    background-color: var(--color-light);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: var(--shadow-md);
-    transition: transform 0.3s ease;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+  padding: 30px;
+  transition: transform 0.3s ease;
 }
 
 .artesano-card:hover {
-    transform: translateY(-10px);
+  transform: translateY(-10px);
 }
 
 .artesano-card img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 20px;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+  margin-bottom: 20px; 
+}
+
+.card-content {
+  padding: 25px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .artesano-card h3 {
-    color: var(--color-primary);
-    margin-bottom: 10px;
+  margin: 0 0 12px 0;
+  color: #8B4513;
+  font-size: 1.3rem;
 }
 
 .artesano-frase {
-    font-style: italic;
-    color: var(--color-secondary);
-    margin-bottom: 15px;
+  font-style: italic;
+  color: #555;
+  margin: 0 0 20px 0;
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
-/* Estilos para la sección de equipo */
+.artesano-desc {
+  margin: 0;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .artesanos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .artesanos-section {
+    padding: 30px 20px;
+  }
+}
+/* ===== VISTA SOBRE NOSOTROS/NUESTRO EQUIPO DE TRABAJO-LIMPIO===== */
 .equipo-section {
-    padding: 80px 0;
-    background-color: var(--color-light);
+  text-align: center;
+  padding: 80px 0;
+  background-color: var(--color-light);
 }
 
 .equipo-grid {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  padding: 0 20px;
 }
 
 .equipo-card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s ease;
-    box-shadow: var(--shadow-sm);
+  background: white;
+  border-radius: 15px; /* antes era var(--card-radius), ahora fijo */
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  /* flex: 0 0 24%; eliminado porque usas grid */
+  /* transform-style y perspective no son necesarios si no hay animación 3D */
 }
 
 .equipo-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-lg);
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
 }
 
 .equipo-card img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin: 0 auto 15px;
-    object-fit: cover;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  object-fit: cover;
+  /* object-fit: contain; eliminado porque es menos adecuado para fotos de personas */
 }
 
 .equipo-card h4 {
-    color: var(--color-primary);
-    margin-bottom: 5px;
-    font-size: 1.1rem;
+  color: var(--color-primary);
+  margin-bottom: 5px;
+  font-size: 1.1rem;
 }
 
 .equipo-card p {
-    font-size: 0.9rem;
-    color: var(--color-gray);
-    margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: var(--color-gray);
+  margin-bottom: 10px;
 }
 
 /* Media Queries */
