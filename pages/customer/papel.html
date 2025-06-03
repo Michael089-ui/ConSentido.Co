@@ -17,51 +17,41 @@
 <body data-categoria="papel">
     <div id="nav-placeholder"></div>
 
-    <!-- Contenedor principal -->
-    <div class="container-fluid p-0">
-        <!-- Banner principal -->
-        <div class="hero-section">
-    <div class="container-fluid">
-        <div class="row align-items-center" style="height: 60vh;">
-            <!-- Texto a la izquierda -->
-            <div class="col-md-6 text-white p-5" style="background-color: rgba(0, 0, 0, 0.6);">
-                <h1 class="display-4">Arte en Papel</h1>
-                <p class="lead">Descubre la magia del papel transformado <br>por las manos de nuestros artesanos</p>
+    <!-- Hero section -->
+    <!-- Hero section: Banner Papel -->
+    <section class="banner-papel">
+        <div class="banner-imagen-contenedor">
+            <img src="/assets/images/bannerpapel.jpg" alt="Papel" class="banner-imagen" />
+            <div class="banner-texto">
+                <h2>Arte en papel con propósito</h2>
+                <p>Detalles que inspiran segundas oportunidades.</p>
             </div>
-            <!-- Imagen a la derecha -->
-            <div class="col-md-6 p-0 h-100">
-                <img src="/assets/images/origami.jpg" 
-                     class="w-100 h-100" 
-                     alt="Banner Papel" 
-                     style="object-fit: cover;">
+        </div>
+    </section>
+
+    <!-- Sección de productos -->
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col">
+                <h2>Nuestros Productos</h2>
             </div>
+            <div class="col-auto">
+                <div class="d-flex gap-2">
+                    <select class="form-select" id="ordenarPor">
+                        <option value="">Ordenar por</option>
+                        <option value="precio-asc">Precio: Menor a Mayor</option>
+                        <option value="precio-desc">Precio: Mayor a Menor</option>
+                        <option value="nombre">Nombre</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid de productos -->
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="productos-grid">
+            <!-- Los productos se cargarán dinámicamente aquí -->
         </div>
     </div>
-</div>
-
-        <!-- Sección de productos -->
-        <div class="container my-5">
-            <div class="row mb-4">
-                <div class="col">
-                    <h2>Nuestros Productos</h2>
-                </div>
-                <div class="col-auto">
-                    <div class="d-flex gap-2">
-                        <select class="form-select" id="ordenarPor">
-                            <option value="">Ordenar por</option>
-                            <option value="precio-asc">Precio: Menor a Mayor</option>
-                            <option value="precio-desc">Precio: Mayor a Menor</option>
-                            <option value="nombre">Nombre</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Grid de productos -->
-            <div class="row row-cols-1 row-cols-md-3 g-4" id="productos-grid">
-                <!-- Los productos se cargarán dinámicamente aquí -->
-            </div>
-        </div>
     </div>
 
     <!-- Modal para detalles del producto -->
