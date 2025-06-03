@@ -316,193 +316,134 @@ main {
     padding: 2rem 0;
 }
 
-/* =====VISTA SOBRE NOSOTROS/ABOUT US ===== */
+/* ===== VISTA SOBRE NOSOTROS/ABOUT US/NUESTRA HISTORIA/MISION/VISION ===== */
 .acerca-de-nosotros {
-    padding: 60px 0;
+    padding: 0;
     background-color: var(--color-light);
+    font-family: 'Montserrat', sans-serif; /* Usar una fuente moderna */
 }
 
-/* =====VISTA SOBRE NOSOTROS/HISTORIA ===== */
-.nuestra-historia {
-    padding: 80px 0;
-    background: linear-gradient(to right, var(--color-light) 60%, var(--color-beige) 40%);
-}
-
-.historia-contenido {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 60px;
-    align-items: center;
-}
-
-.historia-contenido .texto {
-    padding-right: 40px;
-}
-
-.historia-contenido h2 {
-    color: var(--color-primary);
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-    position: relative;
-}
-
-.historia-contenido h2::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 80px;
-    height: 3px;
-    background-color: var(--color-accent);
-}
-
-.historia-contenido p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--color-dark);
-    margin-bottom: 20px;
-}
-
-.historia-contenido .imagen {
-    position: relative;
-    overflow: hidden;
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
-}
-
-.historia-contenido .imagen img {
-    width: 100%;
-    height: 500px;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.historia-contenido .imagen:hover img {
-    transform: scale(1.05);
-}
-
-/* ===== VISTA SOBRE NOSOTROS/MISION ===== */
-.mision {
-    padding: 80px 0;
-    background-color: var(--color-light);
-}
-
-.mision-contenido {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 60px;
-    align-items: center;
-}
-
-.imagen-mision {
-    position: relative;
-    overflow: hidden;
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
-}
-
-.imagen-mision img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.imagen-mision:hover img {
-    transform: scale(1.05);
-}
-
-.texto-mision {
-    padding-left: 40px;
-}
-
-.texto-mision h2 {
-    color: var(--color-primary);
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-    position: relative;
-}
-
-.texto-mision h2::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 80px;
-    height: 3px;
-    background-color: var(--color-accent);
-}
-
-.texto-mision p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--color-dark);
-    margin-bottom: 20px;
-}
-
-/* ===== VISTA SOBRE NOSOTROS/VISION ===== */
+/* ===== ESTILOS NUESTRA HISTORIA/MISION/VISION===== */
+.nuestra-historia, 
+.mision, 
 .vision {
-    padding: 80px 0;
-    background: linear-gradient(to left, var(--color-light) 60%, var(--color-beige) 40%);
-}
-
-.vision-contenido {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 60px;
+    min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+    display: flex;
     align-items: center;
+    padding: 0;
 }
 
+.historia-contenido, 
+.mision-contenido, 
+.vision-contenido {
+    max-width: 100%;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* División 50/50 */
+    height: 100vh;
+}
+
+/* ===== ESTILOS PARA LAS IMÁGENES ===== */
+.imagen, 
+.imagen-mision, 
+.imagen-vision {
+    height: 100%;
+    overflow: hidden;
+}
+
+.imagen img, 
+.imagen-mision img, 
+.imagen-vision img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.7s ease;
+}
+
+.imagen:hover img, 
+.imagen-mision:hover img, 
+.imagen-vision:hover img {
+    transform: scale(1.03);
+}
+
+/* ===== ESTILOS PARA LOS TEXTOS ===== */
+.texto, 
+.texto-mision, 
 .texto-vision {
-    padding-right: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px;
+    position: relative;
 }
 
+.texto h2, 
+.texto-mision h2, 
 .texto-vision h2 {
     color: var(--color-primary);
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-    position: relative;
+    font-size: 3rem; /* Más grande */
+    font-weight: 300; /* Más delgado */
+    letter-spacing: 2px; /* Espaciado elegante */
+    margin-bottom: 40px;
+    text-transform: uppercase;
 }
 
-.texto-vision h2::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 80px;
-    height: 3px;
-    background-color: var(--color-accent);
-}
-
+.texto p, 
+.texto-mision p, 
 .texto-vision p {
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--color-dark);
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    font-weight: 300;
 }
 
-.imagen-vision {
-    position: relative;
-    overflow: hidden;
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
+/* ===== FONDOS Y EFECTOS ESPECÍFICOS ===== */
+.nuestra-historia {
+    background: linear-gradient(to right, var(--color-light) 50%, var(--color-beige) 50%);
 }
 
-.imagen-vision img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    transition: transform 0.5s ease;
+.mision {
+    background: linear-gradient(to left, var(--color-light) 50%, var(--color-beige) 50%);
 }
 
-.imagen-vision:hover img {
-    transform: scale(1.05);
+.vision {
+    background: linear-gradient(to right, var(--color-light) 50%, var(--color-beige) 50%);
+}
+
+/* ===== EFECTO SUBRAYADO (como en la referencia) ===== */
+.texto h2::after, 
+.texto-mision h2::after, 
+.texto-vision h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 2px;
+    background-color: var(--color-accent);
+    margin-top: 15px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+    .historia-contenido, 
+    .mision-contenido, 
+    .vision-contenido {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .imagen, 
+    .imagen-mision, 
+    .imagen-vision {
+        height: 50vh;
+    }
+    
+    .texto, 
+    .texto-mision, 
+    .texto-vision {
+        padding: 40px;
+    }
 }
 
 /* ===== VISTA SOBRE NOSOTROS/IMPACTO SOCIAL ===== */
