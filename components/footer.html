@@ -18,8 +18,10 @@
                     <li class="mb-2"><a href="#" class="text-decoration-none text-light">Inicio</a></li>
                     <!-- <li class="mb-2"><a href="#" class="text-decoration-none text-light">Productos</a></li> -->
                     <!-- <li class="mb-2"><a href="#" class="text-decoration-none text-light">Servicios</a></li> -->
-                    <li class="mb-2"><a href="/pages/customer/contact_us.html" class="text-decoration-none text-light">Contáctanos</a></li>
-                    <li class="mb-2"><a href="/pages/customer/about_us.html" class="text-decoration-none text-light">Sobre Nosotros</a></li>
+                    <li class="mb-2"><a href="/pages/customer/contact_us.html"
+                            class="text-decoration-none text-light">Contáctanos</a></li>
+                    <li class="mb-2"><a href="/pages/customer/about_us.html"
+                            class="text-decoration-none text-light">Sobre Nosotros</a></li>
                 </ul>
             </div>
 
@@ -32,18 +34,19 @@
                     <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> Tu Dirección</li>
                 </ul>
             </div>
-             <!-- Newsletter -->
+            <!-- Newsletter -->
             <div class="col-md-3 mb-4">
                 <h5 class="mb-3">Novedades</h5>
                 <p>Suscríbete para recibir actualizaciones sobre nuevos productos y artesanos</p>
-                <form class="newsletter-form">
+                <form class="newsletter-form" id="newsletter-form">
                     <div class="input-group">
-                        <input type="email" class="form-control" placeholder="Tu correo electrónico" required>
-                        <button class="btn btn-warning" type="submit">Suscribirse</button>
+                        <input type="email" class="form-control" placeholder="Tu correo electrónico" required
+                            name="email">
+                        <button class="btn btn-warning" type="button" id="subscribe-btn">Suscribirse</button>
                     </div>
                 </form>
             </div>
-        
+
 
 
             <!-- Redes Sociales no se pueden agregar por ahora porque no existen 
@@ -68,4 +71,6 @@
         </div>
     </div>
     </div>
+
 </footer>
+<script src="/js/admin/footer.js"></script>
