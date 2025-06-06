@@ -1,6 +1,6 @@
 export class OrderService {
     constructor() {
-        this.apiUrl = 'http://localhost:3002';
+        this.apiUrl = 'http://localhost:8080';
     }
 
     async getAllOrders() {
@@ -13,6 +13,7 @@ export class OrderService {
             return [];
         }
     }
+
 
     async createOrder(orderData) {
         try {

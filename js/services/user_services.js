@@ -1,6 +1,6 @@
 export class UserService {
     constructor() {
-        this.apiUrl = 'http://localhost:3001';
+        this.apiUrl = 'http://localhost:8080/api';
     }
 
     async getAllUsers() {
@@ -70,4 +70,29 @@ export class UserService {
             throw error;
         }
     }
+
+
+    async registerUser(user) {
+    try {
+        const response = await fetch(`http://localhost:8080/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(user)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Error al registrar usuario');
+        }
+
+        return await response.text(); // porque tu backend devuelve un mensaje de texto
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
 }

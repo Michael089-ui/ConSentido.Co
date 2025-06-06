@@ -1,6 +1,6 @@
 export class DataService {
     constructor() {
-        this.apiUrl = 'http://localhost:3000';  // json-server URL
+        this.apiUrl = 'http://localhost:8080/api';  // json-server URL
     }
 
     async getAllProducts() {
