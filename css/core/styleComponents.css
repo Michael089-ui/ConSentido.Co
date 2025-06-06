@@ -61,13 +61,59 @@
   color: var(--color-primary);
 }
 
-/* Estilos para el contador del carrito */
+/* ESTILOS CONTADOR CARRITO */
 .nav-icon {
     position: relative;
     text-decoration: none;
     color: var(--color-dark);
 }
+/* ----- ESTILOS PARA LA LUPA ----- */
+.search-box {
+    width: 200px;
+    height: 36px; /* Altura similar a otros elementos */
+    margin-left: 10px;
+}
 
+.search-box .form-control {
+    padding-right: 32px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Borde sutil */
+    height: 100%;
+    color: var(--color-dark); /* Color de texto que coincide con la navbar */
+    font-size: 0.9rem;
+    backdrop-filter: blur(5px); /* Efecto de difuminado como la navbar */
+    transition: var(--transition-default);
+}
+
+/* Placeholder con transparencia */
+.search-box .form-control::placeholder {
+    color: rgba(var(--color-dark-rgb), 0.7); 
+}
+
+.search-box .btn-link {
+    color: rgba(var(--color-dark-rgb), 0.7);
+    padding: 0 10px;
+    height: 100%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+}
+
+.search-box .btn-link:hover {
+    color: var(--color-primary); /* Coincide con hover de nav-icon */
+}
+
+.search-box .fa-search {
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+/* Efecto hover para todo el searchbox */
+.search-box:hover .form-control {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
 .cart-counter {
     position: absolute;
     top: -8px;
