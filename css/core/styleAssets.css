@@ -1,18 +1,17 @@
 /* ===== ESTILOS BASE Y RECURSOS COMPARTIDOS =====
    Este archivo contiene variables globales, reset CSS, tipografía,
    y utilidades base que se usan en toda la aplicación */
-
-/* Importación de fuentes */
+/* =====IMPORTACION FUENTES===== */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-/* Reset CSS */
-*,
+/* ELIMINAR - BOOTSTRAP YA LOS TIENE-Reset CSS */
+/* *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
+} */
 
 html,
 body {
@@ -22,9 +21,9 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Variables globales */
+/*===== VARIABLES GLOBALES =====*/
 :root {
-  /* Paleta de colores principal */
+  /* =====PALETA COLORES PRINCIPAL===== */
   --color-primary: #8B4513;           /* Marrón saddle */
   --color-secondary: #D2691E;         /* Marrón chocolate */
   --color-accent: #DEB887;            /* Beige burlywood */
@@ -35,40 +34,39 @@ body {
   --color-beige: #F5DEB3;             /* Beige wheat */
   --color-gold: #DAA520;              /* Dorado */
 
-  /* Colores de componentes */
+  /* COLORES COMPONENTES ESPECIFICOS */
   --navbar-bg: rgba(139, 69, 19, 0.9);/* Navbar semi-transparente */
   --navbar-height: 80px;
   --footer-bg: #70615c;               /* Footer marrón oscuro */
 
-  /* Sistema de sombras */
+  /* SISTEMA SOMBRAS */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.15);
 
-  /* Sistema de bordes redondeados */
+  /* BORDES REDONDEADOS */
   --border-radius-sm: 5px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 30px;
 
-  /* Espaciado base */
+  /* ESPACIADO */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
   --spacing-xl: 4rem;
 
-  /* Transiciones */
+  /* TRANSICIONES */
   --transition-fast: 0.2s ease;
   --transition-default: 0.3s ease;
   --transition-slow: 0.5s ease;
 
-
+/* COMPONENTES ESPECIFICOS */
   --card-hover-transform: translateY(-8px) scale(1.02);
   --producto-card-width: 220px;
   --producto-img-height: 160px;
   --form-input-border: 2px solid var(--color-light-gray);
-
   --login-box-width: 350px;
   --login-box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   --login-bg-opacity: 0.95;
@@ -156,8 +154,8 @@ img {
   border-radius: 50%;
 }
 
-/* Utilidades de espaciado */
-.m-0 {
+/* ELIMINAR- EL BOOTSTRAP YA LOS TIENE -Utilidades de espaciado*/
+/* .m-0 {
   margin: 0;
 }
 
@@ -183,10 +181,10 @@ img {
 
 .p-2 {
   padding: var(--spacing-md);
-}
+} */
 
-/* Utilidades de flex */
-.d-flex {
+/*ELIMINAR -BOOTSTRAP YA LOS TIENE Utilidades de flex*/
+/* .d-flex {
   display: flex;
 }
 
@@ -204,7 +202,7 @@ img {
 
 .flex-wrap {
   flex-wrap: wrap;
-}
+} */
 
 /* Grid y contenedores */
 .container {
