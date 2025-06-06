@@ -1,4 +1,4 @@
-// Usuario admin hardcodeado
+ññ// Usuario admin hardcodeado
 const adminUser = {
     name: "Administrador",
     email: "admin@consentido.com",
