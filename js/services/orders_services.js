@@ -1,6 +1,7 @@
+import { BASE_API_URL }  from "./config";
 export class OrderService {
     constructor() {
-        this.apiUrl = 'http://localhost:8080';
+        this.apiUrl = BASE_API_URL; 
     }
 
     async getAllOrders() {
