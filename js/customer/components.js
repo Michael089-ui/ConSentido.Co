@@ -24,7 +24,7 @@ export class ComponentsManager {
                             <button class="btn btn-primary" onclick="productosVista.agregarAlCarrito(${producto.id})">
                                 <i class="fas fa-shopping-cart"></i> Agregar
                             </button>
-                        </div>
+                        </div>ñ
                     </div>
                 </div>
             </div>
