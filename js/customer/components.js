@@ -127,14 +127,30 @@ export class ComponentsManager {
         }
     }
 
-    static updateCartCounter() {
-        const counter = document.querySelector('.cart-counter');
-        if (counter) {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            counter.textContent = cart.length;
-            counter.style.display = cart.length > 0 ? 'flex' : 'none';
-        }
+    static async updateCartCounter() {
+    const counter = document.querySelector('.cart-counter');
+    if (!counter) return;
+
+    try {
+        // Obtener el carrito desde la API
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser || !currentUser.id) return;
+
+        const response = await fetch(`http://localhost:8080/api/carrito/${currentUser.id}`);
+        if (!response.ok) throw new Error('Error al obtener el carrito');
+
+        const carrito = await response.json();
+        const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+
+        counter.textContent = totalItems;
+        counter.style.display = totalItems > 0 ? 'flex' : 'none';
+
+    } catch (error) {
+        console.error('Error actualizando contador del carrito:', error);
+        counter.style.display = 'none';
     }
+}
+
 
     static initializeSearch() {
         const searchInput = document.querySelector('.search-box input');

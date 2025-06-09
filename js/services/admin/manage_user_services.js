@@ -1,5 +1,5 @@
 //Importación de la API
-import { BASE_API_URL } from "./config";
+import { BASE_API_URL } from "../config";
 
 //Clase para manejar -users-
 export class user_services{

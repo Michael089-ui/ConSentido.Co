@@ -1,4 +1,4 @@
-import { BASE_API_URL }  from "./config";
+import { BASE_API_URL }  from "../config";
 export class OrderService {
     constructor() {
         this.apiUrl = BASE_API_URL; 

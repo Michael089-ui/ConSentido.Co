@@ -1,18 +1,21 @@
-import { DataService } from '../services/data-services.js';
+// Importo el servicio que me permite acceder a productos desde la API
+import { product_services } from '../services/customer/product_services.js';
+// Importo el servicio que me permite manejar el carrito desde la API
+import { CustomerCartService } from '../services/customer/cart_services.js';
 
 export class ProductsManager {
     constructor() {
-        this.dataService = new DataService();
-        this.cart = JSON.parse(localStorage.getItem('cart')) || [];
-        // Esto me permite alamcenar la imagen del producto que se guarda en el local
-        this.productImages = JSON.parse(localStorage.getItem('productImages') || '{}');
+        // Instancio los servicios de productos y carrito para poder usarlos en este archivo
+        this.dataService = new product_services();
+        this.cartService = new CustomerCartService();
         this.initializeCartCounter();
     }
 
     async init() {
+        // Cargo los productos al iniciar la página y configuro los eventos
         await this.loadProducts();
         this.setupEventListeners();
-        this.initializeCartCounter();
+        this.updateCartCounterFromApi(); // Actualizo el contador de carrito directamente desde el backend
     }
 
     async loadProducts() {
@@ -22,15 +25,18 @@ export class ProductsManager {
 
             if (!productsContainer) return;
 
+            // Según la categoría actual cargo todos los productos o los de esa categoría
             const products = category ?
                 await this.dataService.getProductsByCategory(category) :
                 await this.dataService.getAllProducts();
 
-            if (products.length === 0) {
+            // Si no hay productos, muestro un mensaje vacío
+            if (!products || products.length === 0) {
                 this.showEmptyState(productsContainer);
                 return;
             }
 
+            // Renderizo las cards con los productos
             productsContainer.innerHTML = products
                 .map(product => this.createProductCard(product))
                 .join('');
@@ -41,21 +47,21 @@ export class ProductsManager {
     }
 
     getCurrentCategory() {
+        // Obtengo la categoría actual desde el atributo del body (la página la define)
         const body = document.querySelector('body');
         return body?.dataset.categoria;
     }
 
     createProductCard(product) {
-        const imageSrc = this.productImages[product.imagen] || product.imagen;
-        
+        // Creo el HTML de la tarjeta de producto
         return `
             <div class="col">
                 <div class="card h-100 producto-card">
-                    <img src="${imageSrc}" 
+                    <img src="${product.imagen}" 
                          class="card-img-top producto-img" 
                          alt="${product.nombre}"
                          style="height: 250px; object-fit: cover; cursor: pointer"
-                         onclick="productosManager.showProductDetail(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                         onclick='productosManager.showProductDetail(${JSON.stringify(product).replace(/"/g, '&quot;')})'>
                     <div class="card-body">
                         <h5 class="card-title">${product.nombre}</h5>
                         <p class="card-text">${product.descripcion?.substring(0, 100) || ''}...</p>
@@ -73,6 +79,7 @@ export class ProductsManager {
     }
 
     setupEventListeners() {
+        // Escucho los clics en los botones de agregar al carrito
         document.addEventListener('click', (e) => {
             if (e.target.closest('.add-to-cart')) {
                 const button = e.target.closest('.add-to-cart');
@@ -83,13 +90,13 @@ export class ProductsManager {
     }
 
     showProductDetail(product) {
+        // Muestro un modal con la información detallada del producto
         const modalContent = document.getElementById('productDetailContent');
-        const imageSrc = this.productImages[product.imagen] || product.imagen;
-        
+
         modalContent.innerHTML = `
             <div class="row">
                 <div class="col-md-6">
-                    <img src="${imageSrc}" class="img-fluid rounded" alt="${product.nombre}">
+                    <img src="${product.imagen}" class="img-fluid rounded" alt="${product.nombre}">
                 </div>
                 <div class="col-md-6">
                     <h3>${product.nombre}</h3>
@@ -113,45 +120,38 @@ export class ProductsManager {
         modal.show();
     }
 
-    addToCart(product) {
+    async addToCart(product) {
         try {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            
-            // Verificar si el producto ya está en el carrito
-            const existingItem = cart.find(item => item.id === product.id);
-            
-            if (existingItem) {
-                existingItem.cantidad += 1;
-            } else {
-                cart.push({
-                    id: product.id,
-                    nombre: product.nombre,
-                    precio: product.precio,
-                    cantidad: 1,
-                    imagen: product.imagen
-                });
-            }
-            
-            localStorage.setItem('cart', JSON.stringify(cart));
-            this.updateCartCounter();
+            // Envío el producto al backend para que lo agregue al carrito
+            await this.cartService.addToCart({ producto_id: product.id, cantidad: 1 });
+
+            // Actualizo el contador del carrito y muestro mensaje
+            await this.updateCartCounterFromApi();
             this.showMessage('Producto agregado al carrito', 'success');
         } catch (error) {
-            console.error('Error al agregar al carrito:', error);
-            this.showMessage('Error al agregar al carrito', 'danger');
+            console.error('Error agregando al carrito:', error);
+            this.showMessage('Hubo un error al agregar el producto', 'danger');
         }
     }
 
-    updateCartCounter() {
-        const counter = document.querySelector('.cart-counter');
-        if (counter) {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    async updateCartCounterFromApi() {
+        try {
+            // Traigo el carrito desde el backend y sumo las cantidades de productos
+            const cart = await this.cartService.getCart();
             const totalItems = cart.reduce((sum, item) => sum + item.cantidad, 0);
-            counter.textContent = totalItems;
-            counter.style.display = totalItems > 0 ? 'flex' : 'none';
+
+            const counter = document.querySelector('.cart-counter');
+            if (counter) {
+                counter.textContent = totalItems;
+                counter.style.display = totalItems > 0 ? 'flex' : 'none';
+            }
+        } catch (error) {
+            console.error('No se pudo actualizar el contador del carrito:', error);
         }
     }
 
     showMessage(message, type) {
+        // Muestro un mensaje tipo alerta en la pantalla
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
         alertDiv.style.zIndex = '1050';
@@ -164,17 +164,17 @@ export class ProductsManager {
     }
 
     initializeCartCounter() {
-        // Asegurarse de que el contador existe
+        // Inserto el contador visual en el ícono del carrito (si no existe)
         const cartIcon = document.querySelector('.nav-icon i.fa-shopping-cart');
         if (cartIcon && !document.querySelector('.cart-counter')) {
             const counter = document.createElement('span');
             counter.className = 'cart-counter';
             cartIcon.parentElement.appendChild(counter);
-            this.updateCartCounter();
         }
     }
 
     showEmptyState(container) {
+        // Si no hay productos en la categoría actual, muestro este mensaje
         container.innerHTML = `
             <div class="col-12 text-center">
                 <p class="text-muted">No hay productos disponibles en esta categoría.</p>
@@ -182,10 +182,11 @@ export class ProductsManager {
         `;
     }
 }
+
+// Expongo el manager globalmente para usarlo en los modales
 window.productosManager = new ProductsManager();
 
-// Inicializar cuando el DOM esté listo
+// Inicio el manager cuando se carga el DOM
 document.addEventListener('DOMContentLoaded', () => {
-    const productosManager = new ProductsManager();
-    productosManager.init().catch(console.error);  // Manejar errores de init
+    productosManager.init().catch(console.error);
 });
