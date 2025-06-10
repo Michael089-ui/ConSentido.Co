@@ -258,37 +258,6 @@
   margin-top: auto;
 }
 
-
-/* Cards de Productos */
-/* .producto-card {
-  background: #fff;
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: var(--spacing-md);
-  transition: var(--transition-default);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.producto-card:hover {
-  transform: var(--card-hover-transform);
-  box-shadow: var(--shadow-lg);
-}
-
-.producto-img {
-  width: 100%;
-  height: var(--producto-img-height);
-  object-fit: cover;
-  border-radius: var(--border-radius-md);
-  transition: opacity 0.3s ease;
-}
-
-.producto-img:hover {
-  opacity: 0.8;
-  cursor: pointer;
-} */
-
 /* Botones */
 .btn-primary-custom {
   background: var(--color-primary);
