@@ -34,24 +34,5 @@ export class UserServices {
         }
     }
 
-    // Método para cerrar la sesión del usuario
-    async logout() {
-        try {
-            // Realiza la petición al endpoint del backend para cerrar sesión
-            await fetch(`${this.apiUrl}/auth/logout`, {
-                method: 'POST', // Método HTTP POST para cerrar sesión
-                credentials: 'include' // Enviar cookies o token automáticamente
-            });
-
-            // No es necesario procesar la respuesta, solo verificar que no haya error
-
-        } catch (error) {
-            // Manejo de errores de red o servidor
-            console.error('Error al cerrar sesión:', error);
-            // No se lanza el error para no interrumpir el flujo
-        }
-
-        // Redirige al usuario a la página de inicio
-        window.location.href = '/index.html';
-    }
+    
 }
