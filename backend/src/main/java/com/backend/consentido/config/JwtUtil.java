@@ -1,10 +1,11 @@
-package com.backend.consentido.config;
+package com.backend.consentido.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +18,14 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // Clave secreta (reemplázala por algo más seguro en producción)
-    private static final String SECRET_KEY = "6E657665722D7573652D616C706163612D706C61696E2D74657874";
+    @Value("${jwt.secret:6E657665722D7573652D616C706163612D706C61696E2D74657874}")
+    private String secretKey;
+    
+    @Value("${jwt.expiration:36000000}") // 10 horas por defecto (en milisegundos)
+    private long jwtExpiration;
 
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -51,17 +55,17 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generarToken(UserDetails userDetails) {
-        return generarToken(new HashMap<>(), userDetails);
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generarToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -69,5 +73,14 @@ public class JwtUtil {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+    
+    // Método legacy para mantener compatibilidad con código existente
+    public String generarToken(UserDetails userDetails) {
+        return generateToken(userDetails);
+    }
+    
+    public String generarToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return generateToken(extraClaims, userDetails);
     }
 }

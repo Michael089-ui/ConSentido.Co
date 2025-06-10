@@ -1,4 +1,4 @@
-package com.backend.consentido.config;
+package com.backend.consentido.security;
 
 import com.backend.consentido.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
@@ -35,7 +35,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            try {
+                username = jwtUtil.extractUsername(jwt);
+            } catch (Exception e) {
+                logger.warn("Error al procesar token JWT: " + e.getMessage());
+            }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

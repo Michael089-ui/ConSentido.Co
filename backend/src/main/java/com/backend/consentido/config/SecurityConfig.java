@@ -1,5 +1,7 @@
 package com.backend.consentido.config;
 
+import com.backend.consentido.security.JwtRequestFilter;
+import com.backend.consentido.security.JwtUtil;
 import com.backend.consentido.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,14 +48,17 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/**",
-                                "/usuarios/**",
-                                "/productos/**",
-                                "/categorias/**",
-                                "/pedidos/**",
-                                "/inventario/**",
-                                "/detalles-pedido/**")
+                                "/api/auth/**",
+                                "/api/productos/**",
+                                "/api/categorias/**")
                         .permitAll()
+                        .requestMatchers(
+                                "/api/usuarios/**",
+                                "/api/pedidos/**",
+                                "/api/inventario/**",
+                                "/api/carrito/**",
+                                "/api/detalles-pedido/**")
+                        .authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -63,13 +68,15 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "https://main.d1ocyhpxfbuhy9.amplifyapp.com",
                 "http://localhost:5500",
                 "http://localhost:8080",
+                "http://localhost:3000",
                 "http://127.0.0.1:5500"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(List.of("Origin", "Content-Type", "Accept", "Authorization"));
+        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
