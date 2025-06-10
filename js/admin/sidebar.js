@@ -1,4 +1,4 @@
-import { AuthService } from '../services/auth_services.js'; // Corregido nombre del archivo
+import { AuthService } from '../services/auth-service.js'; // Corregido nombre del archivo
 import { UIService } from '../services/ui-service.js'; // Agregado servicio UI centralizado
 
 export class SidebarManager {

@@ -1,6 +1,6 @@
 import { ProductService } from '../services/customer/product_services.js';
 import { CustomerCartService } from '../services/customer/cart_services.js';
-import { AuthService } from '../services/auth_services.js';
+import { AuthService } from '../services/auth-service.js';
 import { UIService } from '../services/ui-service.js';
 import { ComponentsManager } from './components.js';
 
