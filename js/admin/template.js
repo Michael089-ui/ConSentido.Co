@@ -1,18 +1,36 @@
+// Importación del servicio UI centralizado
+import { UIService } from '../services/ui-service.js';
+
 // Clase para gestionar la carga dinámica de secciones en la interfaz administrativa
 export class TemplateManager {
     constructor() {
         // Objeto para almacenar templates cargados en caché para mejorar rendimiento
         this.templates = {};
+        
         // Ruta base para las secciones del panel administrativo
         this.basePath = '/pages/admin/section/';
+        
+        // Instanciar el servicio UI para mensajes y carga
+        this.uiService = new UIService();
+        
+        // Tiempo de expiración de caché en milisegundos (30 minutos)
+        this.cacheExpiration = 1800000;
+        
+        // Almacena timestamps de cuándo se cargó cada sección
+        this.cacheTimestamps = {};
     }
 
     // Método para cargar el contenido HTML de una sección dada
-    // Usa cache si la sección ya fue cargada previamente
+    // Usa cache si la sección ya fue cargada previamente y no ha expirado
     async loadSection(section) {
         try {
-            // Verificar si ya tenemos esta sección en caché
-            if (this.templates[section]) {
+            // Verificar si ya tenemos esta sección en caché y no ha expirado
+            const now = Date.now();
+            if (
+                this.templates[section] && 
+                this.cacheTimestamps[section] && 
+                now - this.cacheTimestamps[section] < this.cacheExpiration
+            ) {
                 return this.templates[section];
             }
 
@@ -42,8 +60,9 @@ export class TemplateManager {
             // Obtiene el contenido HTML como texto
             const html = await response.text();
             
-            // Guarda en caché para futuras referencias
+            // Guarda en caché con timestamp actual
             this.templates[section] = html;
+            this.cacheTimestamps[section] = now;
 
             // Retorna el contenido HTML
             return html;
@@ -53,18 +72,24 @@ export class TemplateManager {
             console.error(`Error cargando sección ${section}:`, error);
 
             // Retorna un mensaje HTML de error para mostrar en la interfaz
-            return `
-                <div class="alert alert-danger m-4">
-                    <h4 class="alert-heading">Error al cargar sección</h4>
-                    <p>No se pudo cargar la sección "${section}". Por favor intente nuevamente.</p>
-                    <hr>
-                    <p class="mb-0">Si el problema persiste, contacte al administrador del sistema.</p>
-                </div>
-            `;
+            return this.getErrorTemplate(section);
         }
     }
 
+    // Genera un template HTML de error consistente
+    getErrorTemplate(section) {
+        return `
+            <div class="alert alert-danger m-4">
+                <h4 class="alert-heading">Error al cargar sección</h4>
+                <p>No se pudo cargar la sección "${section}". Por favor intente nuevamente.</p>
+                <hr>
+                <p class="mb-0">Si el problema persiste, contacte al administrador del sistema.</p>
+            </div>
+        `;
+    }
+
     // Método para mostrar un indicador de carga en un contenedor dado
+    // Utiliza el UIService para mantener consistencia
     showLoading(container) {
         if (!container) return;
 
@@ -78,6 +103,7 @@ export class TemplateManager {
     }
 
     // Método para mostrar un mensaje de error en un contenedor dado
+    // Utiliza el UIService para mantener consistencia
     showError(container, message) {
         if (!container) return;
 
@@ -87,12 +113,29 @@ export class TemplateManager {
                 ${message}
             </div>
         `;
+        
+        // También mostrar mensaje global
+        this.uiService.showMessage(message, 'danger');
     }
 
-    // Método para limpiar la caché de templates
-    // Útil cuando se necesita recargar contenido actualizado
+    // Método para limpiar toda la caché de templates
     clearCache() {
         this.templates = {};
+        this.cacheTimestamps = {};
+    }
+    
+    // Método para limpiar la caché de una sección específica
+    clearSectionCache(section) {
+        if (this.templates[section]) {
+            delete this.templates[section];
+            delete this.cacheTimestamps[section];
+        }
+    }
+    
+    // Método para recargar una sección específica, ignorando la caché
+    async refreshSection(section) {
+        this.clearSectionCache(section);
+        return await this.loadSection(section);
     }
     
     // Método para precargar secciones comunes y mejorar la experiencia de usuario

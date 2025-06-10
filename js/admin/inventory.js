@@ -1,11 +1,13 @@
-// Importación del servicio para manejo de productos desde la ruta correcta
+// Importación de servicios necesarios
 import { ProductServices } from '../services/admin/manage_product_services.js';
+import { UIService } from '../services/ui-service.js'; // Importado el servicio UI centralizado
 
 export class InventoryManager {
     // Constructor que inicializa la instancia del servicio y el arreglo de productos
     constructor() {
         // Instanciamos el servicio específico para productos del panel de administración
         this.dataService = new ProductServices();
+        this.uiService = new UIService();
         this.productos = [];
     }
 
@@ -13,6 +15,41 @@ export class InventoryManager {
     async init() {
         await this.cargarProductos();
         this.setupEventListeners();
+        this.ensureModalsExist(); // Asegurar que existan los modales necesarios
+    }
+
+    // Asegura que los modales necesarios existan en el DOM
+    ensureModalsExist() {
+        // Modal de visualización de producto
+        if (!document.getElementById('verProductoModal')) {
+            this.uiService.createModal({
+                id: 'verProductoModal',
+                title: 'Detalles del Producto',
+                size: 'modal-lg',
+                content: '<div id="verProductoModalBody"></div>'
+            });
+        }
+        
+        // Modal de confirmación para eliminar
+        if (!document.getElementById('confirmarEliminarModal')) {
+            this.uiService.createModal({
+                id: 'confirmarEliminarModal',
+                title: 'Confirmar Eliminación',
+                content: '<p>¿Está seguro que desea eliminar este producto? Esta acción no se puede deshacer.</p>',
+                buttons: [
+                    {
+                        text: 'Cancelar',
+                        class: 'btn-secondary',
+                        close: true
+                    },
+                    {
+                        text: 'Eliminar',
+                        class: 'btn-danger',
+                        id: 'btnConfirmarEliminar'
+                    }
+                ]
+            });
+        }
     }
 
     // Carga productos desde backend y los renderiza
@@ -63,6 +100,16 @@ export class InventoryManager {
                 this.previsualizarImagen(e, preview);
             });
         }
+
+        // Configurar delegación de evento para botón de confirmar eliminación
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'btnConfirmarEliminar') {
+                const productId = e.target.dataset.productId;
+                if (productId) {
+                    this.procesarEliminacion(productId);
+                }
+            }
+        });
     }
 
     // Maneja el envío del formulario para agregar un producto
@@ -71,6 +118,12 @@ export class InventoryManager {
 
         try {
             const formData = new FormData(e.target);
+            
+            // Validar campos requeridos
+            if (!this.validarFormulario(formData)) {
+                return;
+            }
+            
             const fileInput = document.getElementById('productoImagen');
             const file = fileInput.files[0];
 
@@ -106,6 +159,30 @@ export class InventoryManager {
         }
     }
 
+    // Validar formulario de producto
+    validarFormulario(formData) {
+        const nombre = formData.get('productoNombre') || formData.get('editarNombre');
+        const precio = formData.get('productoPrecio') || formData.get('editarPrecio');
+        const stock = formData.get('productoStock') || formData.get('editarStock');
+        
+        if (!nombre || nombre.trim() === '') {
+            this.mostrarMensaje('El nombre del producto es obligatorio', 'warning');
+            return false;
+        }
+        
+        if (!precio || isNaN(parseFloat(precio)) || parseFloat(precio) <= 0) {
+            this.mostrarMensaje('El precio debe ser un número mayor que cero', 'warning');
+            return false;
+        }
+        
+        if (!stock || isNaN(parseInt(stock)) || parseInt(stock) < 0) {
+            this.mostrarMensaje('El stock debe ser un número no negativo', 'warning');
+            return false;
+        }
+        
+        return true;
+    }
+
     // Convierte un archivo de imagen a base64 para previsualización y envío
     convertImageToBase64(file) {
         return new Promise((resolve, reject) => {
@@ -120,6 +197,15 @@ export class InventoryManager {
     renderProductos(productos) {
         const tablaProductos = document.getElementById('tablaProductos');
         if (!tablaProductos) return;
+
+        if (!productos || productos.length === 0) {
+            tablaProductos.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center">No hay productos disponibles</td>
+                </tr>
+            `;
+            return;
+        }
 
         tablaProductos.innerHTML = productos.map(producto => this.crearFilaProducto(producto)).join('');
 
@@ -186,13 +272,13 @@ export class InventoryManager {
                 <td>$${(producto.precio || 0).toLocaleString()}</td>
                 <td>
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-info view-btn" data-id="${producto.id}">
+                        <button class="btn btn-sm btn-info view-btn" data-id="${producto.id}" title="Ver detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-warning edit-btn" data-id="${producto.id}">
+                        <button class="btn btn-sm btn-warning edit-btn" data-id="${producto.id}" title="Editar producto">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-id="${producto.id}">
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${producto.id}" title="Eliminar producto">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -221,26 +307,37 @@ export class InventoryManager {
         try {
             // Obtener el producto directamente desde el array local en memoria
             const producto = this.productos.find(p => p.id === id);
-            if (!producto) return;
+            if (!producto) {
+                this.mostrarMensaje('Producto no encontrado', 'warning');
+                return;
+            }
 
             const modalContent = `
                 <div class="row">
                     <div class="col-md-6">
-                        <img src="${producto.imagen || '/assets/images/default-product.png'}" class="img-fluid" alt="${producto.nombre}">
+                        <img src="${producto.imagen || '/assets/images/default-product.png'}" class="img-fluid rounded" alt="${producto.nombre}">
                     </div>
                     <div class="col-md-6">
                         <h4>${producto.nombre}</h4>
-                        <p><strong>Categoría:</strong> ${producto.categoria}</p>
-                        <p><strong>Stock:</strong> ${producto.stock}</p>
-                        <p><strong>Precio:</strong> $${producto.precio.toLocaleString()}</p>
-                        <p><strong>Descripción:</strong> ${producto.descripcion}</p>
+                        <p><strong>Categoría:</strong> ${producto.categoria || 'No especificada'}</p>
+                        <p><strong>Stock:</strong> ${producto.stock || 0}</p>
+                        <p><strong>Precio:</strong> $${(producto.precio || 0).toLocaleString()}</p>
+                        <div class="mb-3">
+                            <strong>Estado:</strong> 
+                            <span class="badge bg-${producto.stock > 5 ? 'success' : 'warning'}">
+                                ${producto.stock > 5 ? 'Disponible' : 'Stock bajo'}
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Descripción:</strong>
+                            <p class="mb-0">${producto.descripcion || 'Sin descripción'}</p>
+                        </div>
                     </div>
                 </div>
             `;
 
             document.getElementById('verProductoModalBody').innerHTML = modalContent;
-            const modal = new bootstrap.Modal(document.getElementById('verProductoModal'));
-            modal.show();
+            this.uiService.showModal('verProductoModal');
         } catch (error) {
             console.error('Error al ver producto:', error);
             this.mostrarMensaje('Error al cargar el producto', 'danger');
@@ -251,15 +348,18 @@ export class InventoryManager {
     async editarProducto(id) {
         try {
             const producto = this.productos.find(p => p.id === id);
-            if (!producto) return;
+            if (!producto) {
+                this.mostrarMensaje('Producto no encontrado', 'warning');
+                return;
+            }
 
             const form = document.getElementById('editarProductoForm');
             form.querySelector('#editarId').value = producto.id;
             form.querySelector('#editarNombre').value = producto.nombre;
-            form.querySelector('#editarCategoria').value = producto.categoria;
-            form.querySelector('#editarStock').value = producto.stock;
-            form.querySelector('#editarPrecio').value = producto.precio;
-            form.querySelector('#editarDescripcion').value = producto.descripcion;
+            form.querySelector('#editarCategoria').value = producto.categoria || '';
+            form.querySelector('#editarStock').value = producto.stock || 0;
+            form.querySelector('#editarPrecio').value = producto.precio || 0;
+            form.querySelector('#editarDescripcion').value = producto.descripcion || '';
 
             const preview = form.querySelector('#editarVistaPrevia');
             if (preview) {
@@ -275,19 +375,37 @@ export class InventoryManager {
         }
     }
 
-    // Elimina un producto tras confirmación del usuario
+    // Muestra diálogo de confirmación para eliminar un producto
     async eliminarProducto(id) {
-        if (confirm('¿Está seguro de eliminar este producto?')) {
-            try {
-                // Eliminar el producto a través del servicio
-                await this.dataService.deleteProduct(id);
-                // Actualizar la lista de productos
-                await this.cargarProductos();
-                this.mostrarMensaje('Producto eliminado exitosamente', 'success');
-            } catch (error) {
-                console.error('Error al eliminar producto:', error);
-                this.mostrarMensaje('Error al eliminar el producto', 'danger');
+        const btnConfirmar = document.getElementById('btnConfirmarEliminar');
+        if (btnConfirmar) {
+            btnConfirmar.dataset.productId = id;
+            this.uiService.showModal('confirmarEliminarModal');
+        } else {
+            // Fallback al método antiguo si no existe el modal de confirmación
+            if (confirm('¿Está seguro de eliminar este producto?')) {
+                await this.procesarEliminacion(id);
             }
+        }
+    }
+
+    // Procesa la eliminación del producto tras confirmación
+    async procesarEliminacion(id) {
+        try {
+            // Eliminar el producto a través del servicio
+            await this.dataService.deleteProduct(id);
+            // Actualizar la lista de productos
+            await this.cargarProductos();
+            this.mostrarMensaje('Producto eliminado exitosamente', 'success');
+            
+            // Cerrar el modal de confirmación si existe
+            const confirmarModal = bootstrap.Modal.getInstance(document.getElementById('confirmarEliminarModal'));
+            if (confirmarModal) {
+                confirmarModal.hide();
+            }
+        } catch (error) {
+            console.error('Error al eliminar producto:', error);
+            this.mostrarMensaje('Error al eliminar el producto', 'danger');
         }
     }
 
@@ -295,6 +413,13 @@ export class InventoryManager {
     async handleEditarProducto(e) {
         e.preventDefault();
         try {
+            const formData = new FormData(e.target);
+            
+            // Validar campos requeridos
+            if (!this.validarFormulario(formData)) {
+                return;
+            }
+            
             const id = document.getElementById('editarId').value;
             const fileInput = document.getElementById('editarImagen');
             let base64Image = null;
@@ -329,21 +454,10 @@ export class InventoryManager {
         }
     }
 
-    // Muestra mensajes de alerta en la interfaz
+    // Muestra mensajes de alerta en la interfaz usando UIService
     mostrarMensaje(mensaje, tipo) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
-        alertDiv.role = 'alert';
-        alertDiv.innerHTML = `
-            ${mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        `;
-
-        const container = document.querySelector('.content');
-        if (container) {
-            container.insertBefore(alertDiv, container.firstChild);
-            setTimeout(() => alertDiv.remove(), 3000);
-        }
+        // Usar UIService en lugar de manipular el DOM directamente
+        this.uiService.showMessage(mensaje, tipo);
     }
 
     // Previsualiza la imagen seleccionada en un input file
@@ -365,6 +479,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Solo inicializar si no es cargado por AdminManager
     if (!window.adminManager) {
         window.inventoryManager = new InventoryManager();
-        window.inventoryManager.init();
+        window.inventoryManager.init().catch(error => {
+            console.error('Error inicializando InventoryManager:', error);
+        });
     }
 });

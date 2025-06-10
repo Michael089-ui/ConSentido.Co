@@ -66,6 +66,16 @@ export class SearchManager {
                 const productId = addButton.dataset.id;
                 this.addToCart(productId);
             }
+            
+            // Delegación para imágenes de productos (ver detalles)
+            const productImg = e.target.closest('.producto-img');
+            if (productImg) {
+                e.preventDefault();
+                const productId = productImg.closest('.card').querySelector('.btn-agregar-carrito').dataset.id;
+                if (productId) {
+                    this.showProductDetail(productId);
+                }
+            }
         });
     }
 
@@ -127,32 +137,9 @@ export class SearchManager {
             return;
         }
 
-        container.innerHTML = productos.map(producto => this.createProductCard(producto)).join('');
-    }
-
-    // Crear una tarjeta de producto HTML
-    createProductCard(producto) {
-        return `
-            <div class="col">
-                <div class="card h-100 producto-card">
-                    <img src="${producto.imagen}"
-                         class="card-img-top producto-img"
-                         alt="${producto.nombre}"
-                         style="height: 250px; object-fit: cover; cursor: pointer"
-                         onclick="searchManager.showProductDetail('${producto.id}')">
-                    <div class="card-body">
-                        <h5 class="card-title">${producto.nombre}</h5>
-                        <p class="card-text">${producto.descripcion?.substring(0, 100) || ''}...</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="h5 mb-0">$${producto.precio?.toLocaleString()}</span>
-                            <button class="btn btn-warning btn-agregar-carrito" data-id="${producto.id}">
-                                <i class="fas fa-shopping-cart"></i> Agregar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+        container.innerHTML = productos.map(producto => 
+            ComponentsManager.createProductCard(producto)
+        ).join('');
     }
 
     // Mostrar detalles de un producto en un modal
@@ -189,8 +176,8 @@ export class SearchManager {
                 </div>
             `;
 
-            const modal = new bootstrap.Modal(document.getElementById('productDetailModal'));
-            modal.show();
+            // Mostrar el modal usando el servicio UI para consistencia
+            this.uiService.showModal('productDetailModal');
         } catch (error) {
             console.error('Error al mostrar detalles del producto:', error);
             this.showMessage('No se pudieron cargar los detalles del producto', 'danger');
