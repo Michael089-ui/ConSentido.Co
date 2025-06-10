@@ -32,15 +32,158 @@
         </div>
     </section>
 
-    <!-- Sección de Productos cargados de forma dinámica -->
-
-    <section class="container mt-5 mb-5">
-        <h3 class="text-center mb-4">Nuestros Productos de Madera</h3>
-        <div class="row row-cols-1 row-cols-md-3 g-4" id="productos-grid">
-            <!-- Los productos se cargarán dinámicamente aquí -->
+    <!-- Sección de productos -->
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col">
+                <h2>Nuestros Productos</h2>
+            </div>
+            <div class="col-auto">
+                <div class="d-flex gap-2">
+                    <select class="form-select" id="ordenarPor">
+                        <option value="">Ordenar por</option>
+                        <option value="precio-asc">Precio: Menor a Mayor</option>
+                        <option value="precio-desc">Precio: Mayor a Menor</option>
+                        <option value="nombre">Nombre</option>
+                    </select>
+                </div>
+            </div>
         </div>
-    </section>
 
+        <!-- Grid de productos -->
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="productos-grid">
+            <!-- Producto 1 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/bandeja.jpg" class="card-img-top" alt="bandeja">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Bandeja Rustica</h5>
+                        <p class="card-text">Bandeja robusta elaborada en madera natural. Perfecta para servir desayunos 
+                            con estilo y amor artesanal.</p>
+                        <p class="fw-bold text-primary mb-3">$95.000 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div> 
+            </div>
+
+            <!-- Producto 2 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/cajaVintage.jpg" class="card-img-top" alt="vintage">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Set cajas Vintage</h5>
+                        <p class="card-text">Juego de tres cajas de madera estilo vintage, elaboradas a mano con detalles envejecidos
+                             y herrajes decorativos.</p>
+                        <p class="fw-bold text-primary mb-3">$110.000 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 3 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/Cubiertos.jpg" class="card-img-top" alt="Cubiertos">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Set de Cubiertos</h5>
+                        <p class="card-text">set de cubiertos tallados a mano en madera natural, compuesto por cuchara, tenedor y cuchillo. 
+                            Cada pieza ha sido pulida cuidadosamente para ofrecer una textura suave y ergonómica. </p>
+                        <p class="fw-bold text-primary mb-3">$88.000 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 4 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/cuenco.jpg" class="card-img-top" alt="cuenco">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Cuenco Rustico</h5>
+                        <p class="card-text">Cuenco hecho a mano con madera seleccionada, tallado y pulido por artesanos con gran dedicación. 
+                            Su acabado rústico y cálido lo hace ideal para servir frutas, frutos secos o simplemente decorar espacios</p>
+                        <p class="fw-bold text-primary mb-3">$47.500 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 5 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/escultura.jpg" class="card-img-top" alt="escultura">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Escultura Pareja</h5>
+                        <p class="card-text">Escultura tallada a mano que representa el abrazo eterno de una pareja. Hecha en madera reciclada 
+                            con acabados suaves al tacto y formas armoniosas, transmite amor, conexión y esperanza.</p>
+                        <p class="fw-bold text-primary mb-3">$162.000 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 6 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/Jarron.jpg" class="card-img-top" alt="jarron">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Jarron</h5>
+                        <p class="card-text"> jarrón tallado a mano en madera natural, con líneas limpias y una textura 
+                            cálida que realza cualquier espacio.</p>
+                        <p class="fw-bold text-primary mb-3">$182.000 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 7 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/Perchero.jpg" class="card-img-top" alt="perchero">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Perchero</h5>
+                        <p class="card-text">Práctico y elegante perchero hecho a mano en madera sólida, ideal para organizar abrigos, bolsos y accesorios con estilo. 
+                            Su acabado rústico y duradero aporta calidez y funcionalidad a cualquier entrada o habitación.</p>
+                        <p class="fw-bold text-primary mb-3">$144.000 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 8 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/portavela.jpg" class="card-img-top" alt="portavela">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Set Portavelas</h5>
+                        <p class="card-text">Encantador separador de libros hecho a mano con técnica de origami,
+                            representando un tierno conejo. Ideal para lectores amantes del arte en papel.</p>
+                        <p class="fw-bold text-primary mb-3">$88.000 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 9 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="/assets/images/reloj.jpg" class="card-img-top" alt="reloj">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Reloj</h5>
+                        <p class="card-text">Elegante reloj hecho a mano con madera natural, que combina funcionalidad y 
+                            diseño rústico. Su acabado pulido y detalles únicos hacen de este reloj una pieza decorativa ideal para cualquier espacio, aportando calidez y personalidad.</p>
+                        <p class="fw-bold text-primary mb-3">$99.500 COP</p>
+                        <button class="btn btn-outline-primary mt-auto">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal para detalles del producto -->
     <div class="modal fade" id="productDetailModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">

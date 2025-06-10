@@ -197,9 +197,70 @@
   background-color: darken(var(--color-accent), 10%);
 }
 /* Componentes específicos del comprador */
+/* PRODUCTOS CATEGORIAS TEJIDO, MADERA, PAPEL*/
+.col {/* Opcional: controla el ancho máximo del contenedor si quieres */
+  max-width: 300px; /* o el ancho que prefieras */
+  margin: 0 auto; /* centra en pantallas pequeñas si es necesario */
+  margin-bottom: 1.5rem;/*Espacio entre card y card*/
+}
+
+.card {
+  width: 100%; /* que ocupe todo el ancho del .col */
+  height: 420px; /* altura fija para todas las cards, ajusta a gusto */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-img-top {
+  height: 180px; /* altura fija para la imagen */
+  object-fit: cover; /* recorta la imagen para que se ajuste sin deformar */
+  width: calc(100% - 1rem); /* reduce ancho para dejar espacio */
+  margin: 0.5rem; /* espacio alrededor de la imagen */
+  border-radius: 0.25rem; /* para que el borde redondeado coincida */
+  display: block; /* evita espacio extra por ser img inline */
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  min-height: 2.6em; /* para que títulos cortos o largos mantengan espacio similar */
+}
+
+.card-text {
+  flex-grow: 1; /* para que el texto tome espacio disponible y empuje el botón abajo */
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  overflow: hidden; /* evitar que textos largos desborden */
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* limita a 4 líneas */
+  -webkit-box-orient: vertical;
+}
+
+.fw-bold {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  align-self: stretch;
+  margin-top: auto;
+}
+
 
 /* Cards de Productos */
-.producto-card {
+/* .producto-card {
   background: #fff;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
@@ -226,7 +287,7 @@
 .producto-img:hover {
   opacity: 0.8;
   cursor: pointer;
-}
+} */
 
 /* Botones */
 .btn-primary-custom {
