@@ -1,9 +1,10 @@
-// Este archivo se encarga de manejar el carrito de compras del cliente
+// Este archivo se encarga de manejar el carrito de compras del cliente, comunicándose con el backend
 
 import { BASE_API_URL } from "../config.js";
 
 export class cart_service {
     constructor() {
+        // Guardamos la URL base de la API para usarla en las peticiones
         this.apiUrl = BASE_API_URL;
     }
 
@@ -15,11 +16,11 @@ export class cart_service {
             return await response.json();
         } catch (error) {
             console.error('Error al obtener el carrito:', error);
-            return [];
+            return []; // Retornamos un array vacío para evitar fallos en la UI
         }
     }
 
-    // Agrego un producto al carrito desde el backend
+    // Agrego un producto al carrito enviando los datos al backend
     async addToCart(producto) {
         try {
             const response = await fetch(`${this.apiUrl}/carrito`, {
@@ -28,34 +29,38 @@ export class cart_service {
                 body: JSON.stringify(producto)
             });
             if (!response.ok) throw new Error('No se pudo agregar el producto al carrito');
-            return await response.json();
+            return await response.json(); // Retornamos la respuesta del backend (carrito actualizado o confirmación)
         } catch (error) {
             console.error('Error al agregar al carrito:', error);
-            throw error;
+            throw error; // Propagamos el error para que la UI pueda manejarlo
         }
     }
 
-    // Elimino un producto del carrito
+    // Elimino un producto del carrito usando su ID
     async removeFromCart(productId) {
         try {
             const response = await fetch(`${this.apiUrl}/carrito/${productId}`, {
                 method: 'DELETE'
             });
             if (!response.ok) throw new Error('No se pudo eliminar el producto del carrito');
+            // No retornamos nada, solo confirmamos que se eliminó correctamente
         } catch (error) {
             console.error('Error al eliminar del carrito:', error);
+            throw error; // Propagamos el error para manejo en la UI
         }
     }
 
-    // Limpio todo el carrito
+    // Limpio todo el carrito eliminando todos los productos
     async clearCart() {
         try {
             const response = await fetch(`${this.apiUrl}/carrito`, {
                 method: 'DELETE'
             });
             if (!response.ok) throw new Error('No se pudo vaciar el carrito');
+            // Confirmación de carrito vacío, no retornamos datos
         } catch (error) {
             console.error('Error al vaciar el carrito:', error);
+            throw error; // Propagamos el error para manejo en la UI
         }
     }
 }

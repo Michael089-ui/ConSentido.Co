@@ -1,10 +1,10 @@
-// filepath: c:\Users\chave\Bootcamp\ConSentido.Co\js\customer\search.js
-import { DataService } from '../services/data-services.js';
+import { product_services } from '../services/product_services.js';
 
 class SearchManager {
     constructor() {
-        this.dataService = new DataService();
-        this.productImages = JSON.parse(localStorage.getItem('productImages') || '{}');
+        this.dataService = new product_services();
+        this.currentResults = []; // Guardar resultados de búsqueda
+        this.currentCategoryFilter = null; // Categoría seleccionada para filtrar
         this.init();
     }
 
@@ -13,29 +13,44 @@ class SearchManager {
         if (this.searchTerm) {
             await this.performSearch(this.searchTerm);
         }
+
+        // Aquí podrías agregar el listener para el filtro por categoría, por ejemplo:
+        const categorySelect = document.getElementById('categoryFilter');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', (e) => {
+                this.currentCategoryFilter = e.target.value || null;
+                this.applyCategoryFilter();
+            });
+        }
     }
 
     async performSearch(query) {
         try {
-            const productos = await this.dataService.getAllProducts();
-            const resultados = this.filterProducts(productos, query);
-            this.updateSearchStats(query, resultados.length);
-            this.renderResults(resultados);
+            this.currentResults = await this.dataService.searchProductsByKeyword(query);
+            this.currentCategoryFilter = null; // Resetear filtro de categoría
+            this.updateSearchStats(query, this.currentResults.length);
+            this.renderResults(this.currentResults);
         } catch (error) {
             console.error('Error en la búsqueda:', error);
             this.showError();
         }
     }
 
-    filterProducts(productos, query) {
-        const searchTerm = query.toLowerCase();
-        return productos.filter(producto => {
-            return (
-                producto.nombre?.toLowerCase().includes(searchTerm) ||
-                producto.descripcion?.toLowerCase().includes(searchTerm) ||
-                producto.categoria?.toLowerCase().includes(searchTerm)
-            );
-        });
+    applyCategoryFilter() {
+        if (!this.currentCategoryFilter) {
+            // Sin filtro, mostrar todos los resultados de la búsqueda
+            this.renderResults(this.currentResults);
+            this.updateSearchStats(this.searchTerm, this.currentResults.length);
+            return;
+        }
+
+        // Filtrar localmente por categoría
+        const filtered = this.currentResults.filter(producto => 
+            producto.categoria?.toLowerCase() === this.currentCategoryFilter.toLowerCase()
+        );
+
+        this.renderResults(filtered);
+        this.updateSearchStats(this.searchTerm, filtered.length);
     }
 
     updateSearchStats(query, count) {
@@ -54,15 +69,12 @@ class SearchManager {
         if (!container) return;
 
         if (productos.length === 0) {
-            container.innerHTML = `
-                <div class="col-12 text-center py-5">
+            container.innerHTML =
+                `<div class="col-12 text-center py-5">
                     <i class="fas fa-search fa-3x text-muted mb-3"></i>
                     <p class="lead">No encontramos productos que coincidan con tu búsqueda</p>
-                    <a href="/index.html" class="btn btn-warning mt-3">
-                        Volver al inicio
-                    </a>
-                </div>
-            `;
+                    <a href="/index.html" class="btn btn-warning mt-3">Volver al inicio</a>
+                </div>`;
             return;
         }
 
@@ -70,13 +82,12 @@ class SearchManager {
     }
 
     createProductCard(producto) {
-        const imageSrc = this.productImages[producto.imagen] || producto.imagen;
-        
+        const imageSrc = producto.imagen;
         return `
             <div class="col">
                 <div class="card h-100 producto-card">
-                    <img src="${imageSrc}" 
-                         class="card-img-top producto-img" 
+                    <img src="${imageSrc}"
+                         class="card-img-top producto-img"
                          alt="${producto.nombre}"
                          style="height: 250px; object-fit: cover; cursor: pointer"
                          onclick="searchManager.showProductDetail(${JSON.stringify(producto)})">
@@ -85,7 +96,7 @@ class SearchManager {
                         <p class="card-text">${producto.descripcion?.substring(0, 100) || ''}...</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="h5 mb-0">$${producto.precio?.toLocaleString()}</span>
-                            <button class="btn btn-warning add-to-cart" 
+                            <button class="btn btn-warning add-to-cart"
                                     data-product='${JSON.stringify(producto)}'>
                                 <i class="fas fa-shopping-cart"></i> Agregar
                             </button>
@@ -98,8 +109,8 @@ class SearchManager {
 
     showProductDetail(product) {
         const modalContent = document.getElementById('productDetailContent');
-        const imageSrc = this.productImages[product.imagen] || product.imagen;
-        
+        const imageSrc = product.imagen;
+
         modalContent.innerHTML = `
             <div class="row">
                 <div class="col-md-6">
@@ -115,7 +126,7 @@ class SearchManager {
                             Stock: ${product.stock} unidades
                         </span>
                     </div>
-                    <button class="btn btn-warning w-100 add-to-cart" 
+                    <button class="btn btn-warning w-100 add-to-cart"
                             data-product='${JSON.stringify(product)}'>
                         <i class="fas fa-shopping-cart"></i> Agregar al carrito
                     </button>
@@ -130,13 +141,12 @@ class SearchManager {
     showError() {
         const container = document.getElementById('search-results');
         if (container) {
-            container.innerHTML = `
-                <div class="col-12">
+            container.innerHTML =
+                `<div class="col-12">
                     <div class="alert alert-danger text-center">
                         Error al realizar la búsqueda. Por favor intenta nuevamente.
                     </div>
-                </div>
-            `;
+                </div>`;
         }
     }
 }

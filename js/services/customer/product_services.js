@@ -56,7 +56,7 @@ export class product_services {
     // Obtener productos por categoría
     async getProductsByCategory(categoria) {
         try {
-            const response = await fetch(`${this.apiUrl}/productos/categoria/${categoria}`);
+            const response = await fetch(`${this.apiUrl}/productos/categoria/${encodeURIComponent(categoria)}`);
             if (!response.ok) throw new Error('No se pudieron obtener los productos por categoría');
             return await response.json();
         } catch (error) {
@@ -64,5 +64,18 @@ export class product_services {
             return [];
         }
     }
-    
+
+    // Buscar productos por palabra clave (nombre, descripción, categoría)
+    async searchProductsByKeyword(keyword) {
+        try {
+            const response = await fetch(`${this.apiUrl}/productos/buscar?q=${encodeURIComponent(keyword)}`);
+            if (!response.ok) {
+                throw new Error('No se pudieron obtener los productos para la búsqueda');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error al buscar productos:', error);
+            return [];
+        }
+    }
 }

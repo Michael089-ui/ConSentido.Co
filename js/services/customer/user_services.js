@@ -2,7 +2,7 @@
 import { BASE_API_URL } from "../config";
 
 //Clase para manejar -users-
-export class user_services{
+export class UserServices{
     // Constructor de la clase que se ejecuta cuando se crea una nueva instancia
     constructor(){
         // URL base del backend como propiedad de la clase
