@@ -47,7 +47,12 @@ export class OrderService {
      * @returns {Promise<Object>} Datos de la orden creada
      */
     async createOrder(orderData) {
-        return await this.httpService.post(this.endpoint, orderData);
+        try {
+            return await this.httpService.post(this.endpoint, orderData);
+        } catch (error) {
+            console.error('Error al crear pedido:', error);
+            throw error; // Re-lanzar para manejar en el componente
+        }
     }
 
     /**
@@ -57,8 +62,13 @@ export class OrderService {
      * @returns {Promise<Object>} Datos actualizados de la orden
      */
     async updateOrderStatus(id, status) {
-        return await this.httpService.patch(`${this.endpoint}/${id}`, { 
-            estado: status 
-        });
+        try {
+            return await this.httpService.patch(`${this.endpoint}/${id}`, { 
+                estado: status 
+            });
+        } catch (error) {
+            console.error(`Error al actualizar estado del pedido ${id}:`, error);
+            throw error; // Re-lanzar para manejar en el componente
+        }
     }
 }

@@ -1,137 +1,85 @@
-// Importación de la URL base de la API desde configuración
-import { BASE_API_URL } from "../config.js";
+// Importamos el servicio HTTP centralizado en lugar de usar fetch directamente
+import { HttpService } from "../http-service.js";
 
-// Clase para manejar operaciones relacionadas con productos (lado administrador)
+/**
+ * Clase para gestionar operaciones relacionadas con productos (panel administrador)
+ * Utiliza HttpService para centralizar todas las peticiones a la API
+ */
 export class ProductServices {
-    // Constructor que inicializa la URL base del backend
+    /**
+     * Constructor que inicializa los servicios necesarios
+     */
     constructor() {
-        this.apiUrl = BASE_API_URL;
+        this.httpService = new HttpService();
+        this.endpoint = '/productos';
     }
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // Métodos CRUD para interactuar con la API del backend
-
-    // Método para obtener todos los productos
+    /**
+     * Obtiene todos los productos disponibles
+     * @returns {Promise<Array>} Lista de productos o array vacío
+     */
     async getAllProducts() {
         try {
-            // Petición GET para obtener todos los productos
-            const response = await fetch(`${this.apiUrl}/productos`, {
-                credentials: 'include' // Enviar cookies o token automáticamente si aplica
-            });
-
-            // Validar que la respuesta sea exitosa
-            if (!response.ok) {
-                throw new Error('No se pudieron obtener los productos');
-            }
-
-            // Retornar la lista de productos en formato JSON
-            return await response.json();
-
+            return await this.httpService.get(this.endpoint);
         } catch (error) {
-            // Manejo de errores y retorno de lista vacía en caso de fallo
             console.error('Error al obtener productos:', error);
             return [];
         }
     }
 
-    // Método para obtener un producto por su ID
+    /**
+     * Obtiene un producto específico por su ID
+     * @param {string} id - ID del producto a consultar
+     * @returns {Promise<Object|null>} Datos del producto o null si no existe
+     */
     async getProductById(id) {
         try {
-            // Petición GET para obtener un producto específico
-            const response = await fetch(`${this.apiUrl}/productos/${id}`, {
-                credentials: 'include'
-            });
-
-            // Validar que la respuesta sea exitosa
-            if (!response.ok) {
-                throw new Error(`No se pudo obtener el producto con ID ${id}`);
-            }
-
-            // Retornar el producto encontrado en formato JSON
-            return await response.json();
-
+            return await this.httpService.get(`${this.endpoint}/${id}`);
         } catch (error) {
-            // Manejo de errores y retorno null si falla
             console.error(`Error al obtener producto con ID ${id}:`, error);
             return null;
         }
     }
 
-    // Método para crear un nuevo producto
+    /**
+     * Crea un nuevo producto en el sistema
+     * @param {Object} productData - Datos del producto a crear
+     * @returns {Promise<Object>} Datos del producto creado
+     */
     async createProduct(productData) {
         try {
-            // Petición POST para crear un nuevo producto
-            const response = await fetch(`${this.apiUrl}/productos`, {
-                method: 'POST', // Método HTTP POST para crear recurso
-                headers: {
-                    'Content-Type': 'application/json' // Indica que se envía JSON
-                },
-                credentials: 'include',
-                body: JSON.stringify(productData) // Convertir objeto a JSON
-            });
-
-            // Validar que la respuesta sea exitosa
-            if (!response.ok) {
-                throw new Error('No se pudo crear el producto');
-            }
-
-            // Retornar el producto creado en formato JSON
-            return await response.json();
-
+            return await this.httpService.post(this.endpoint, productData);
         } catch (error) {
-            // Manejo de errores de red o servidor
             console.error('Error al crear producto:', error);
-            throw error;
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 
-    // Método para actualizar un producto existente
+    /**
+     * Actualiza un producto existente
+     * @param {string} id - ID del producto a actualizar
+     * @param {Object} newData - Nuevos datos del producto
+     * @returns {Promise<Object>} Datos actualizados del producto
+     */
     async updateProduct(id, newData) {
         try {
-            // Petición PUT para actualizar un producto
-            const response = await fetch(`${this.apiUrl}/productos/${id}`, {
-                method: 'PUT', // Método HTTP PUT para actualizar recurso
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify(newData)
-            });
-
-            // Validar que la respuesta sea exitosa
-            if (!response.ok) {
-                throw new Error(`No se pudo actualizar el producto con ID ${id}`);
-            }
-
-            // Retornar el producto actualizado en formato JSON
-            return await response.json();
-
+            return await this.httpService.put(`${this.endpoint}/${id}`, newData);
         } catch (error) {
-            // Manejo de errores y relanzamiento para que el llamador lo gestione
             console.error(`Error al actualizar producto con ID ${id}:`, error);
-            throw error;
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 
-    // Método para eliminar un producto
+    /**
+     * Elimina un producto del sistema
+     * @param {string} id - ID del producto a eliminar
+     * @returns {Promise<boolean>} true si se eliminó correctamente
+     */
     async deleteProduct(id) {
         try {
-            // Petición DELETE para eliminar un producto
-            const response = await fetch(`${this.apiUrl}/productos/${id}`, {
-                method: 'DELETE',
-                credentials: 'include'
-            });
-
-            // Validar que la respuesta sea exitosa
-            if (!response.ok) {
-                throw new Error(`No se pudo eliminar el producto con ID ${id}`);
-            }
-
-            // Retornar true si la eliminación fue exitosa
+            await this.httpService.delete(`${this.endpoint}/${id}`);
             return true;
-
         } catch (error) {
-            // Manejo de errores y retorno false si falla
             console.error(`Error al eliminar producto con ID ${id}:`, error);
             return false;
         }
