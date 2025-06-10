@@ -1,16 +1,15 @@
-
-// Servicio para manejar peticiones HTTP a la API
-// Centraliza la lógica de fetch, manejo de errores y headers
-
-
+/**
+ * Servicio para manejar peticiones HTTP a la API
+ * Centraliza la lógica de fetch, manejo de errores y headers
+ */
 export class HttpService {
   constructor() {
     this.baseUrl = "https://kpn9ajcasp.us-east-1.awsapprunner.com";
-
+    
+    // Mapa de rutas según la estructura real del backend
     this.routeMap = {
-      
-      'usuarios': '/usuarios',
-      'usuario': '/usuarios',
+      'usuarios': '/api/usuarios',
+      'usuario': '/api/usuarios',
       'productos': '/productos',
       'producto': '/productos',
       'categorias': '/categorias',
@@ -19,13 +18,16 @@ export class HttpService {
       'pedidos': '/pedidos',
       'pedido': '/pedidos',
       'inventario': '/inventario',
-      'detalles-pedido': '/detalles-pedido'
+      'detalles-pedido': '/detalles-pedido',
+      'carrito': '/api/carrito'
     };
   }
 
-
+  /**
+   * Mapea un endpoint a la ruta correcta según la estructura del backend
+   */
   mapEndpoint(endpoint) {
-    // Remover barra inicial si existe
+    // Normalizar: remover barra inicial si existe
     const path = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
     
     // Obtener la primera parte de la ruta (antes de la siguiente barra)
@@ -37,8 +39,8 @@ export class HttpService {
       return this.routeMap[firstSegment] + restOfPath;
     }
     
-    // Si no hay mapeo, devolver el endpoint original
-    return endpoint;
+    // Si no hay mapeo, devolver el endpoint original con barra inicial
+    return endpoint.startsWith('/') ? endpoint : '/' + endpoint;
   }
 
   /**
@@ -48,43 +50,38 @@ export class HttpService {
    * @returns {Promise<any>} - Respuesta de la API
    */
   async request(endpoint, options = {}) {
-
-    // Mapear al endpoint correcto según la configuración del backend
-    const mappedEndpoint = this.mapEndpoint(endpoint);
-    const URL = `${this.baseUrl}${mappedEndpoint}`;
-    
-    console.log(`Realizando petición a: ${url}`);
-
-    // Asegurarse que el endpoint comience con /
-    if (!endpoint.startsWith('/')) {
-      endpoint = '/' + endpoint;
-    }
-
-    const url = `${this.baseUrl}${endpoint}`;
-
-    // Configuración por defecto
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      },
-      credentials: 'include', // Enviar cookies automáticamente
-      ...options
-    };
-
-    // Si hay un body y es un objeto, convertirlo a JSON
-    if (config.body && typeof config.body === 'object') {
-      config.body = JSON.stringify(config.body);
-    }
-
     try {
+      // Mapear al endpoint correcto según la configuración del backend
+      const mappedEndpoint = this.mapEndpoint(endpoint);
+      const url = `${this.baseUrl}${mappedEndpoint}`;
+      
+      console.log(`🔍 Realizando petición a: ${url}`);
+
+      // Configuración por defecto
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers
+        },
+        credentials: 'include', // Enviar cookies automáticamente
+        ...options
+      };
+
+      // Si hay un body y es un objeto, convertirlo a JSON
+      if (config.body && typeof config.body === 'object') {
+        config.body = JSON.stringify(config.body);
+      }
+
       const response = await fetch(url, config);
 
       // Manejar respuesta no exitosa
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({
-          message: 'Error de servidor'
-        }));
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          errorData = { message: `Error ${response.status}: ${response.statusText}` };
+        }
 
         throw {
           status: response.status,
@@ -99,9 +96,14 @@ export class HttpService {
       }
 
       // Convertir respuesta a JSON
-      return await response.json();
+      const data = await response.json();
+      return data;
     } catch (error) {
-      console.error(`Error en petición a ${endpoint}:`, error);
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        console.error(`❌ Error de conexión a ${endpoint}. El servidor podría estar caído o la URL incorrecta.`);
+      } else {
+        console.error(`❌ Error en petición a ${endpoint}:`, error);
+      }
       throw error;
     }
   }
