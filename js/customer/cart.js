@@ -1,7 +1,7 @@
 // Importación de servicios necesarios para órdenes y carrito
 import { OrderService } from '../services/customer/orders_services.js';
 import { CustomerCartService } from '../services/customer/cart_services.js';
-import { AuthService } from '../services/auth_services.js';  // Corregido el path de importación
+import { AuthService } from '../services/auth-service.js';  // Corregido el path de importación
 
 export class CartManager {
     // Constructor que inicializa los servicios necesarios y el estado del carrito

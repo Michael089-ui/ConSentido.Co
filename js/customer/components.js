@@ -1,5 +1,5 @@
 // Importación de servicios necesarios
-import { AuthService } from '../services/auth_services.js';  // Corregido el path
+import { AuthService } from '../services/auth-service.js';  // Corregido el path
 import { CustomerCartService } from '../services/customer/cart_services.js';
 import { UIService } from '../services/ui-service.js';  // Agregado el servicio UI
 

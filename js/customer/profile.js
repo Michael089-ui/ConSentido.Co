@@ -1,7 +1,7 @@
 // Importa los servicios necesarios
 import { CustomerUserService } from '../services/customer/user_services.js';  // Servicio para usuario comprador
 import { OrderService } from '../services/customer/orders_services.js'; // Servicio para pedidos
-import { AuthService } from '../services/auth_services.js';
+import { AuthService } from '../services/auth-service.js';
 import { UIService } from '../services/ui-service.js'; // Servicio UI centralizado
 
 export class ProfileManager {

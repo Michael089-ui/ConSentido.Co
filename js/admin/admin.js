@@ -4,7 +4,7 @@ import { InventoryManager } from './inventory.js';
 import { OrdersManager } from './orders.js';
 import { UsersManager } from './users.js';
 import { TemplateManager } from './template.js';
-import { AuthService } from '../services/auth_services.js'; // Corregido nombre del archivo
+import { AuthService } from '../services/auth-service.js'; // Corregido nombre del archivo
 import { UIService } from '../services/ui-service.js'; // Agregado servicio UI centralizado
 
 export class AdminManager {
