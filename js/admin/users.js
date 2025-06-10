@@ -1,5 +1,5 @@
 // Importación del servicio para manejo de usuarios desde el archivo correcto
-import { UserServices } from '../services/manage_users_services.js';
+import { UserServices } from '../services/admin/manage_users_services.js';
 
 export class UsersManager {
     // Constructor que inicializa la instancia del servicio y el arreglo de usuarios

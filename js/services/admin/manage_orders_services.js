@@ -30,6 +30,27 @@ export class OrderService {
         }
     }
 
+
+    // Método para obtener un pedido por su ID
+    async getOrderById(orderId) {
+        try {
+            const response = await fetch(`${this.apiUrl}/pedidos/${orderId}`, {
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error(`No se pudo obtener el pedido con ID ${orderId}`);
+            }
+
+            // Retorna el pedido encontrado en formato JSON
+            return await response.json();
+
+        } catch (error) {
+            console.error(`Error al obtener el pedido con ID ${orderId}:`, error);
+            return null;
+        }
+    }
+
     // Método para crear una nueva orden
     async createOrder(orderData) {
         try {
