@@ -1,12 +1,24 @@
-import { BASE_API_URL } from './config.js';
+// Servicio para manejar peticiones HTTP a la API
+// Centraliza la lógica de fetch, manejo de errores y headers
 
-/**
- * Servicio para manejar peticiones HTTP a la API
- * Centraliza la lógica de fetch, manejo de errores y headers
- */
 export class HttpService {
   constructor() {
-    this.baseUrl = BASE_API_URL;
+    this.baseUrl = "https://kpn9ajcasp.us-east-1.awsapprunner.com";
+
+    this.routeMap = {
+      
+      'usuarios': '/usuarios',
+      'usuario': '/usuarios',
+      'productos': '/productos',
+      'producto': '/productos',
+      'categorias': '/categorias',
+      'categoria': '/categorias',
+      'auth': '/auth',
+      'pedidos': '/pedidos',
+      'pedido': '/pedidos',
+      'inventario': '/inventario',
+      'detalles-pedido': '/detalles-pedido'
+    };
   }
 
   /**
