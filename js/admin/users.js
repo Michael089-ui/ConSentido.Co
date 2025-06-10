@@ -1,16 +1,16 @@
 // Importación del servicio para manejo de usuarios desde el archivo correcto
-import { UserServices } from '../services/admin/manage_users_services.js';
+import { UserServices } from '../services/admin/manage_user_services.js';
 
 export class UsersManager {
     // Constructor que inicializa la instancia del servicio y el arreglo de usuarios
     constructor() {
+        // Instancia del servicio específico para usuarios del panel de administración
         this.userService = new UserServices();
         this.users = [];
     }
 
     // Método para inicializar la carga de usuarios y configurar eventos
     async init() {
-        console.log('Inicializando UsersManager...');
         await this.loadUsers();
         this.setupEventListeners();
     }
@@ -18,10 +18,9 @@ export class UsersManager {
     // Método para cargar la lista de usuarios desde el backend
     async loadUsers() {
         try {
-            console.log('Cargando usuarios...');
+            // Obtenemos todos los usuarios desde la API
             const users = await this.userService.getAllUser();
-            console.log('Usuarios cargados:', users);
-
+            
             // Validar que la respuesta sea un arreglo
             if (!Array.isArray(users)) {
                 console.error('Se esperaba un arreglo de usuarios pero se recibió:', typeof users);
@@ -40,7 +39,6 @@ export class UsersManager {
 
     // Método para renderizar la tabla de usuarios en el DOM
     renderUsers(users) {
-        console.log('Renderizando usuarios:', users);
         const tableBody = document.getElementById('tablaUsuarios');
         if (!tableBody) {
             console.error('Elemento tbody con id "tablaUsuarios" no encontrado');
@@ -49,7 +47,6 @@ export class UsersManager {
 
         // Generar el HTML para cada fila de usuario y asignarlo al tbody
         const html = users.map(user => this.createUserRow(user)).join('');
-        console.log('HTML generado para usuarios:', html);
         tableBody.innerHTML = html;
 
         // Inicializar eventos para los botones de cada fila
@@ -60,7 +57,7 @@ export class UsersManager {
     createUserRow(user) {
         return `
             <tr>
-                <td>${user.name || ''}</td>
+                <td>${user.nombre || ''}</td>
                 <td>${user.email || ''}</td>
                 <td>${user.rol || 'cliente'}</td>
                 <td>
@@ -102,99 +99,134 @@ export class UsersManager {
 
     // Método para mostrar los detalles de un usuario en un modal
     async viewUser(id) {
-        const user = this.users.find(u => u.id === id);
-        if (!user) return;
+        try {
+            // Obtener usuario específico desde el backend o usar la caché local
+            let user = this.users.find(u => u.id === id);
+            
+            // Si se necesitan detalles adicionales, se puede hacer una petición específica
+            if (!user) {
+                user = await this.userService.getUserById(id);
+                if (!user) {
+                    this.showMessage('No se pudo encontrar el usuario', 'danger');
+                    return;
+                }
+            }
 
-        const modalContent = `
-            <div class="row">
-                <div class="col-12">
-                    <h4>Detalles del Usuario</h4>
-                    <hr>
-                    <p><strong>Nombre:</strong> ${user.name}</p>
-                    <p><strong>Email:</strong> ${user.email}</p>
-                    <p><strong>Rol:</strong> ${user.rol}</p>
-                    <p><strong>Estado:</strong> ${user.estado}</p>
-                    <p><strong>Tipo Documento:</strong> ${user.tipoDoc || 'No especificado'}</p>
-                    <p><strong>Número Documento:</strong> ${user.numeroDoc || 'No especificado'}</p>
-                    <p><strong>Celular:</strong> ${user.celular || 'No especificado'}</p>
+            const modalContent = `
+                <div class="row">
+                    <div class="col-12">
+                        <h4>Detalles del Usuario</h4>
+                        <hr>
+                        <p><strong>Nombre:</strong> ${user.nombre || 'No especificado'}</p>
+                        <p><strong>Email:</strong> ${user.email || 'No especificado'}</p>
+                        <p><strong>Rol:</strong> ${user.rol || 'cliente'}</p>
+                        <p><strong>Estado:</strong> ${user.estado || 'inactivo'}</p>
+                        <p><strong>Teléfono:</strong> ${user.telefono || 'No especificado'}</p>
+                        <p><strong>Dirección:</strong> ${user.direccion || 'No especificado'}</p>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
 
-        // Mostrar modal con la información del usuario
-        const modal = new bootstrap.Modal(document.getElementById('userModal'));
-        document.getElementById('userModalBody').innerHTML = modalContent;
-        modal.show();
+            // Mostrar modal con la información del usuario
+            document.getElementById('userModalBody').innerHTML = modalContent;
+            const modal = new bootstrap.Modal(document.getElementById('userModal'));
+            modal.show();
+        } catch (error) {
+            console.error('Error al ver usuario:', error);
+            this.showMessage('Error al cargar los detalles del usuario', 'danger');
+        }
     }
 
     // Método para mostrar el formulario de edición de usuario en un modal
     async editUser(id) {
-        const user = this.users.find(u => u.id === id);
-        if (!user) return;
+        try {
+            const user = this.users.find(u => u.id === id);
+            if (!user) {
+                this.showMessage('No se pudo encontrar el usuario', 'danger');
+                return;
+            }
 
-        const modalContent = `
-            <form id="editUserForm">
-                <input type="hidden" id="userId" value="${user.id}">
-                <div class="mb-3">
-                    <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="editName" value="${user.name}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" id="editEmail" value="${user.email}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Rol</label>
-                    <select class="form-select" id="editRol">
-                        <option value="cliente" ${user.rol === 'cliente' ? 'selected' : ''}>Cliente</option>
-                        <option value="admin" ${user.rol === 'admin' ? 'selected' : ''}>Administrador</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" id="editEstado">
-                        <option value="activo" ${user.estado === 'activo' ? 'selected' : ''}>Activo</option>
-                        <option value="inactivo" ${user.estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Guardar cambios</button>
-            </form>
-        `;
+            const modalContent = `
+                <form id="editUserForm">
+                    <input type="hidden" id="userId" value="${user.id}">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="editNombre" value="${user.nombre || ''}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editEmail" value="${user.email || ''}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="editTelefono" value="${user.telefono || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="editDireccion" value="${user.direccion || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select class="form-select" id="editRol">
+                            <option value="cliente" ${user.rol === 'cliente' ? 'selected' : ''}>Cliente</option>
+                            <option value="admin" ${user.rol === 'admin' ? 'selected' : ''}>Administrador</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" id="editEstado">
+                            <option value="activo" ${user.estado === 'activo' ? 'selected' : ''}>Activo</option>
+                            <option value="inactivo" ${user.estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </form>
+            `;
 
-        // Mostrar modal con formulario de edición
-        const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
-        document.getElementById('editUserModalBody').innerHTML = modalContent;
+            // Mostrar modal con formulario de edición
+            document.getElementById('editUserModalBody').innerHTML = modalContent;
+            const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            modal.show();
 
-        // Asignar evento para manejar el envío del formulario
-        document.getElementById('editUserForm').addEventListener('submit', (e) => this.handleEditUser(e));
-
-        modal.show();
+            // Asignar evento para manejar el envío del formulario
+            const form = document.getElementById('editUserForm');
+            // Eliminar eventos previos para evitar duplicaciones
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+            newForm.addEventListener('submit', (e) => this.handleEditUser(e));
+        } catch (error) {
+            console.error('Error al editar usuario:', error);
+            this.showMessage('Error al cargar el formulario de edición', 'danger');
+        }
     }
 
     // Método para manejar el envío del formulario de edición y actualizar el usuario
     async handleEditUser(e) {
         e.preventDefault();
 
-        // Recopilar datos del formulario
-        const userData = {
-            name: document.getElementById('editName').value,
-            email: document.getElementById('editEmail').value,
-            rol: document.getElementById('editRol').value,
-            estado: document.getElementById('editEstado').value
-        };
-
-        const userId = document.getElementById('userId').value;
-
         try {
+            const userId = document.getElementById('userId').value;
+            
+            // Recopilar datos del formulario
+            const userData = {
+                nombre: document.getElementById('editNombre').value,
+                email: document.getElementById('editEmail').value,
+                telefono: document.getElementById('editTelefono').value,
+                direccion: document.getElementById('editDireccion').value,
+                rol: document.getElementById('editRol').value,
+                estado: document.getElementById('editEstado').value
+            };
+
             // Actualizar usuario en backend
             await this.userService.updateUser(userId, userData);
-            // Recargar lista de usuarios
-            await this.loadUsers();
-
+            
             // Cerrar modal de edición
             const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
             modal.hide();
-
+            
+            // Recargar lista de usuarios
+            await this.loadUsers();
+            
             this.showMessage('Usuario actualizado exitosamente', 'success');
         } catch (error) {
             console.error('Error al actualizar usuario:', error);
@@ -208,8 +240,10 @@ export class UsersManager {
             try {
                 // Eliminar usuario en backend
                 await this.userService.deleteUser(id);
+                
                 // Recargar lista de usuarios
                 await this.loadUsers();
+                
                 this.showMessage('Usuario eliminado exitosamente', 'success');
             } catch (error) {
                 console.error('Error al eliminar usuario:', error);
@@ -224,7 +258,7 @@ export class UsersManager {
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
         alertDiv.innerHTML = `
             ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         `;
         const container = document.querySelector('.content');
         if (container) {
@@ -235,6 +269,45 @@ export class UsersManager {
 
     // Método para configurar eventos globales si es necesario
     setupEventListeners() {
-        // agregar aquí
+        // Configurar evento para formulario de agregar usuario si existe
+        const addUserForm = document.getElementById('addUserForm');
+        if (addUserForm) {
+            addUserForm.addEventListener('submit', (e) => this.handleAddUser(e));
+        }
+    }
+
+    // Método para manejar agregar un nuevo usuario
+    async handleAddUser(e) {
+        e.preventDefault();
+        
+        try {
+            const form = e.target;
+            const newUser = {
+                nombre: form.querySelector('#newNombre').value,
+                email: form.querySelector('#newEmail').value,
+                telefono: form.querySelector('#newTelefono').value,
+                direccion: form.querySelector('#newDireccion').value,
+                rol: form.querySelector('#newRol').value,
+                estado: 'activo',
+                contrasena: form.querySelector('#newContrasena').value
+            };
+            
+            await this.userService.registerUser(newUser);
+            
+            // Cerrar modal si existe
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            if (modal) modal.hide();
+            
+            // Resetear formulario
+            form.reset();
+            
+            // Recargar lista de usuarios
+            await this.loadUsers();
+            
+            this.showMessage('Usuario agregado exitosamente', 'success');
+        } catch (error) {
+            console.error('Error al agregar usuario:', error);
+            this.showMessage('Error al agregar usuario', 'danger');
+        }
     }
 }

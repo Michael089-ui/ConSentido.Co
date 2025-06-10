@@ -1,19 +1,26 @@
-import { DataService } from '../services/data-services.js';
+// Importación del servicio para manejo de productos desde la ruta correcta
+import { ProductServices } from '../services/admin/manage_product_services.js';
 
 export class InventoryManager {
+    // Constructor que inicializa la instancia del servicio y el arreglo de productos
     constructor() {
-        this.dataService = new DataService();
+        // Instanciamos el servicio específico para productos del panel de administración
+        this.dataService = new ProductServices();
+        this.productos = [];
     }
 
+    // Inicializa la carga de productos y configuración de eventos
     async init() {
         await this.cargarProductos();
         this.setupEventListeners();
     }
 
+    // Carga productos desde backend y los renderiza
     async cargarProductos() {
         try {
+            // Obtenemos todos los productos desde la API
             const productos = await this.dataService.getAllProducts();
-            this.productos = productos; // Guardar los productos en la instancia
+            this.productos = productos;
             this.renderProductos(productos);
         } catch (error) {
             console.error('Error al cargar productos:', error);
@@ -21,20 +28,21 @@ export class InventoryManager {
         }
     }
 
+    // Configura los event listeners para formularios, filtros e inputs
     setupEventListeners() {
-        // Formulario para agregar producto
         const formAgregar = document.getElementById('agregarProductoForm');
         if (formAgregar) {
             formAgregar.addEventListener('submit', (e) => this.handleAgregarProducto(e));
         }
 
-        // Previsualización de imagen
         const inputImagen = document.getElementById('productoImagen');
         if (inputImagen) {
-            inputImagen.addEventListener('change', (e) => this.previsualizarImagen(e));
+            inputImagen.addEventListener('change', (e) => {
+                const preview = document.getElementById('vistaPrevia');
+                this.previsualizarImagen(e, preview);
+            });
         }
 
-        // Filtros
         const buscarInput = document.getElementById('buscarProducto');
         const categoriaSelect = document.getElementById('filtroCategoria');
         const stockSelect = document.getElementById('filtroStock');
@@ -43,13 +51,11 @@ export class InventoryManager {
         if (categoriaSelect) categoriaSelect.addEventListener('change', () => this.aplicarFiltros());
         if (stockSelect) stockSelect.addEventListener('change', () => this.aplicarFiltros());
 
-        // Formulario para editar producto
         const formEditar = document.getElementById('editarProductoForm');
         if (formEditar) {
             formEditar.addEventListener('submit', (e) => this.handleEditarProducto(e));
         }
 
-        // Previsualización de imagen en edición
         const inputImagenEditar = document.getElementById('editarImagen');
         if (inputImagenEditar) {
             inputImagenEditar.addEventListener('change', (e) => {
@@ -59,6 +65,7 @@ export class InventoryManager {
         }
     }
 
+    // Maneja el envío del formulario para agregar un producto
     async handleAgregarProducto(e) {
         e.preventDefault();
 
@@ -67,41 +74,29 @@ export class InventoryManager {
             const fileInput = document.getElementById('productoImagen');
             const file = fileInput.files[0];
 
-            // Convertir imagen a base64 y guardar en localStorage
-            const base64Image = await this.convertImageToBase64(file);
-            const uniquePrefix = Date.now() + '-';
-            const safeFileName = uniquePrefix + file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
-            const imagePath = `/assets/images/products/${safeFileName}`;
+            // Convertir imagen a base64 para enviar al backend
+            const base64Image = file ? await this.convertImageToBase64(file) : null;
 
-            // Guardar imagen en localStorage
-            const images = JSON.parse(localStorage.getItem('productImages') || '{}');
-            images[imagePath] = base64Image;
-            localStorage.setItem('productImages', JSON.stringify(images));
-
-
-            //Cuando se maneje backend aquí se debe utilizar para mover el archvio por ahora no hace falta
-
+            // Construir objeto producto con datos del formulario y la imagen en base64
             const producto = {
                 nombre: formData.get('productoNombre'),
                 categoria: formData.get('productoCategoria'),
                 stock: parseInt(formData.get('productoStock')),
                 descripcion: formData.get('productoDescripcion'),
                 precio: parseFloat(formData.get('productoPrecio')),
-                imagen: imagePath,
+                imagenBase64: base64Image, // Enviar base64 para que backend la procese
                 estado: 'activo'
             };
 
-            await this.dataService.addProduct(producto);
+            // Crear producto en backend a través del servicio
+            await this.dataService.createProduct(producto);
             await this.cargarProductos();
 
-            // Close modal using Bootstrap
+            // Cerrar modal y resetear formulario
             const modal = document.getElementById('agregarProductoModal');
             const bootstrapModal = bootstrap.Modal.getInstance(modal);
-            if (bootstrapModal) {
-                bootstrapModal.hide();
-            }
+            if (bootstrapModal) bootstrapModal.hide();
 
-            // Reset form
             e.target.reset();
 
             this.mostrarMensaje('Producto agregado exitosamente', 'success');
@@ -111,6 +106,7 @@ export class InventoryManager {
         }
     }
 
+    // Convierte un archivo de imagen a base64 para previsualización y envío
     convertImageToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -120,16 +116,18 @@ export class InventoryManager {
         });
     }
 
+    // Renderiza la tabla de productos en el DOM
     renderProductos(productos) {
         const tablaProductos = document.getElementById('tablaProductos');
         if (!tablaProductos) return;
 
         tablaProductos.innerHTML = productos.map(producto => this.crearFilaProducto(producto)).join('');
 
-        // Reinicializar los event listeners de los botones
+        // Inicializar eventos para botones de acción
         this.initBotonesAcciones();
     }
 
+    // Aplica filtros de búsqueda, categoría y stock sobre los productos
     aplicarFiltros() {
         try {
             if (!Array.isArray(this.productos)) {
@@ -172,9 +170,10 @@ export class InventoryManager {
         }
     }
 
+    // Crea el HTML para una fila de producto en la tabla
     crearFilaProducto(producto) {
-        const images = JSON.parse(localStorage.getItem('productImages') || '{}');
-        const imageSrc = images[producto.imagen] || producto.imagen;
+        // Usar la URL o ruta que venga del backend para la imagen
+        const imageSrc = producto.imagen || '/assets/images/default-product.png';
 
         return `
             <tr>
@@ -202,8 +201,8 @@ export class InventoryManager {
         `;
     }
 
+    // Inicializa los event listeners para los botones de acción en cada fila
     initBotonesAcciones() {
-        // Event listeners para los botones de acción
         document.querySelectorAll('.view-btn').forEach(btn => {
             btn.addEventListener('click', () => this.verProducto(btn.dataset.id));
         });
@@ -217,125 +216,17 @@ export class InventoryManager {
         });
     }
 
-    determinarEstadoStock(cantidad) {
-        if (cantidad <= 5) return 'danger';
-        if (cantidad <= 15) return 'warning';
-        return 'success';
-    }
-
-    agregarProducto(producto) {
-        producto.id = Date.now();
-        this.productos.push(producto);
-        this.guardarProductos();
-        return producto;
-    }
-
-    obtenerProductos(categoria = null) {
-        if (categoria) {
-            return this.productos.filter(p => p.categoria === categoria);
-        }
-        return this.productos;
-    }
-
-    actualizarProducto(id, datosActualizados) {
-        const index = this.productos.findIndex(p => p.id === id);
-        if (index !== -1) {
-            this.productos[index] = { ...this.productos[index], ...datosActualizados };
-            this.guardarProductos();
-            return true;
-        }
-        return false;
-    }
-
-    async handleEditarProducto(e) {
-        e.preventDefault();
-        try {
-            const id = document.getElementById('editarId').value;
-            const fileInput = document.getElementById('editarImagen');
-            let imagePath = document.getElementById('editarVistaPrevia').src;
-
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const base64Image = await this.convertImageToBase64(file);
-                const uniquePrefix = Date.now() + '-';
-                const safeFileName = uniquePrefix + file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
-                imagePath = `/assets/images/products/${safeFileName}`;
-
-                // Guardar nueva imagen en localStorage
-                const images = JSON.parse(localStorage.getItem('productImages') || '{}');
-                images[imagePath] = base64Image;
-                localStorage.setItem('productImages', JSON.stringify(images));
-            }
-
-            const productoActualizado = {
-                nombre: document.getElementById('editarNombre').value,
-                categoria: document.getElementById('editarCategoria').value,
-                stock: parseInt(document.getElementById('editarStock').value),
-                descripcion: document.getElementById('editarDescripcion').value,
-                precio: parseFloat(document.getElementById('editarPrecio').value),
-                imagen: imagePath,
-                estado: 'activo'
-            };
-
-            await this.dataService.updateProduct(id, productoActualizado);
-            await this.cargarProductos();
-
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editarProductoModal'));
-            modal.hide();
-            
-            this.mostrarMensaje('Producto actualizado exitosamente', 'success');
-        } catch (error) {
-            console.error('Error al actualizar producto:', error);
-            this.mostrarMensaje('Error al actualizar el producto', 'danger');
-        }
-    }
-
-    guardarProductos() {
-        localStorage.setItem('productos', JSON.stringify(this.productos));
-    }
-
-    mostrarMensaje(mensaje, tipo) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
-        alertDiv.role = 'alert';
-        alertDiv.innerHTML = `
-            ${mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        `;
-
-        const container = document.querySelector('.content');
-        if (container) {
-            container.insertBefore(alertDiv, container.firstChild);
-            setTimeout(() => alertDiv.remove(), 3000);
-        }
-    }
-
-
-    previsualizarImagen(e, previewElementId) {
-        const file = e.target.files[0];
-        const preview = previewElementId;
-        if (preview && file) {
-            preview.classList.remove('d-none');
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                preview.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
+    // Muestra el modal con los detalles de un producto
     async verProducto(id) {
         try {
+            // Obtener el producto directamente desde el array local en memoria
             const producto = this.productos.find(p => p.id === id);
             if (!producto) return;
-
-            const images = JSON.parse(localStorage.getItem('productImages') || '{}');
-            const imageSrc = images[producto.imagen] || producto.imagen;
 
             const modalContent = `
                 <div class="row">
                     <div class="col-md-6">
-                        <img src="${imageSrc}" class="img-fluid" alt="${producto.nombre}">
+                        <img src="${producto.imagen || '/assets/images/default-product.png'}" class="img-fluid" alt="${producto.nombre}">
                     </div>
                     <div class="col-md-6">
                         <h4>${producto.nombre}</h4>
@@ -356,12 +247,12 @@ export class InventoryManager {
         }
     }
 
+    // Muestra el modal para editar un producto y llena el formulario con los datos actuales
     async editarProducto(id) {
         try {
             const producto = this.productos.find(p => p.id === id);
             if (!producto) return;
 
-            // Llenar el formulario de edición
             const form = document.getElementById('editarProductoForm');
             form.querySelector('#editarId').value = producto.id;
             form.querySelector('#editarNombre').value = producto.nombre;
@@ -370,12 +261,9 @@ export class InventoryManager {
             form.querySelector('#editarPrecio').value = producto.precio;
             form.querySelector('#editarDescripcion').value = producto.descripcion;
 
-            // Mostrar la imagen actual
-            const images = JSON.parse(localStorage.getItem('productImages') || '{}');
-            const imageSrc = images[producto.imagen] || producto.imagen;
             const preview = form.querySelector('#editarVistaPrevia');
             if (preview) {
-                preview.src = imageSrc;
+                preview.src = producto.imagen || '/assets/images/default-product.png';
                 preview.classList.remove('d-none');
             }
 
@@ -387,10 +275,13 @@ export class InventoryManager {
         }
     }
 
+    // Elimina un producto tras confirmación del usuario
     async eliminarProducto(id) {
         if (confirm('¿Está seguro de eliminar este producto?')) {
             try {
+                // Eliminar el producto a través del servicio
                 await this.dataService.deleteProduct(id);
+                // Actualizar la lista de productos
                 await this.cargarProductos();
                 this.mostrarMensaje('Producto eliminado exitosamente', 'success');
             } catch (error) {
@@ -399,4 +290,81 @@ export class InventoryManager {
             }
         }
     }
+
+    // Maneja el envío del formulario para editar un producto
+    async handleEditarProducto(e) {
+        e.preventDefault();
+        try {
+            const id = document.getElementById('editarId').value;
+            const fileInput = document.getElementById('editarImagen');
+            let base64Image = null;
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                base64Image = await this.convertImageToBase64(file);
+            }
+
+            const productoActualizado = {
+                nombre: document.getElementById('editarNombre').value,
+                categoria: document.getElementById('editarCategoria').value,
+                stock: parseInt(document.getElementById('editarStock').value),
+                descripcion: document.getElementById('editarDescripcion').value,
+                precio: parseFloat(document.getElementById('editarPrecio').value),
+                // Solo enviar imagen si se seleccionó una nueva
+                ...(base64Image && { imagenBase64: base64Image }),
+                estado: 'activo'
+            };
+
+            // Actualizar el producto a través del servicio
+            await this.dataService.updateProduct(id, productoActualizado);
+            await this.cargarProductos();
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editarProductoModal'));
+            modal.hide();
+
+            this.mostrarMensaje('Producto actualizado exitosamente', 'success');
+        } catch (error) {
+            console.error('Error al actualizar producto:', error);
+            this.mostrarMensaje('Error al actualizar el producto', 'danger');
+        }
+    }
+
+    // Muestra mensajes de alerta en la interfaz
+    mostrarMensaje(mensaje, tipo) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
+        alertDiv.role = 'alert';
+        alertDiv.innerHTML = `
+            ${mensaje}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        `;
+
+        const container = document.querySelector('.content');
+        if (container) {
+            container.insertBefore(alertDiv, container.firstChild);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+    }
+
+    // Previsualiza la imagen seleccionada en un input file
+    previsualizarImagen(e, preview) {
+        const file = e.target.files[0];
+        if (preview && file) {
+            preview.classList.remove('d-none');
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                preview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 }
+
+// Inicializar cuando se carga el DOM si se usa como módulo independiente
+document.addEventListener('DOMContentLoaded', () => {
+    // Solo inicializar si no es cargado por AdminManager
+    if (!window.adminManager) {
+        window.inventoryManager = new InventoryManager();
+        window.inventoryManager.init();
+    }
+});

@@ -14,15 +14,17 @@ export class ProductServices {
     // Método para obtener todos los productos
     async getAllProducts() {
         try {
+            // Petición GET para obtener todos los productos
             const response = await fetch(`${this.apiUrl}/productos`, {
                 credentials: 'include' // Enviar cookies o token automáticamente si aplica
             });
 
+            // Validar que la respuesta sea exitosa
             if (!response.ok) {
                 throw new Error('No se pudieron obtener los productos');
             }
 
-            // Retorna la lista de productos en formato JSON
+            // Retornar la lista de productos en formato JSON
             return await response.json();
 
         } catch (error) {
@@ -35,18 +37,21 @@ export class ProductServices {
     // Método para obtener un producto por su ID
     async getProductById(id) {
         try {
+            // Petición GET para obtener un producto específico
             const response = await fetch(`${this.apiUrl}/productos/${id}`, {
                 credentials: 'include'
             });
 
+            // Validar que la respuesta sea exitosa
             if (!response.ok) {
                 throw new Error(`No se pudo obtener el producto con ID ${id}`);
             }
 
-            // Retorna el producto encontrado en formato JSON
+            // Retornar el producto encontrado en formato JSON
             return await response.json();
 
         } catch (error) {
+            // Manejo de errores y retorno null si falla
             console.error(`Error al obtener producto con ID ${id}:`, error);
             return null;
         }
@@ -55,20 +60,22 @@ export class ProductServices {
     // Método para crear un nuevo producto
     async createProduct(productData) {
         try {
+            // Petición POST para crear un nuevo producto
             const response = await fetch(`${this.apiUrl}/productos`, {
                 method: 'POST', // Método HTTP POST para crear recurso
                 headers: {
                     'Content-Type': 'application/json' // Indica que se envía JSON
                 },
                 credentials: 'include',
-                body: JSON.stringify(productData) // Convierte el objeto a JSON
+                body: JSON.stringify(productData) // Convertir objeto a JSON
             });
 
+            // Validar que la respuesta sea exitosa
             if (!response.ok) {
                 throw new Error('No se pudo crear el producto');
             }
 
-            // Retorna el producto creado en formato JSON
+            // Retornar el producto creado en formato JSON
             return await response.json();
 
         } catch (error) {
@@ -81,6 +88,7 @@ export class ProductServices {
     // Método para actualizar un producto existente
     async updateProduct(id, newData) {
         try {
+            // Petición PUT para actualizar un producto
             const response = await fetch(`${this.apiUrl}/productos/${id}`, {
                 method: 'PUT', // Método HTTP PUT para actualizar recurso
                 headers: {
@@ -90,14 +98,16 @@ export class ProductServices {
                 body: JSON.stringify(newData)
             });
 
+            // Validar que la respuesta sea exitosa
             if (!response.ok) {
                 throw new Error(`No se pudo actualizar el producto con ID ${id}`);
             }
 
-            // Retorna el producto actualizado en formato JSON
+            // Retornar el producto actualizado en formato JSON
             return await response.json();
 
         } catch (error) {
+            // Manejo de errores y relanzamiento para que el llamador lo gestione
             console.error(`Error al actualizar producto con ID ${id}:`, error);
             throw error;
         }
@@ -106,19 +116,22 @@ export class ProductServices {
     // Método para eliminar un producto
     async deleteProduct(id) {
         try {
+            // Petición DELETE para eliminar un producto
             const response = await fetch(`${this.apiUrl}/productos/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
 
+            // Validar que la respuesta sea exitosa
             if (!response.ok) {
                 throw new Error(`No se pudo eliminar el producto con ID ${id}`);
             }
 
-            // Retorna true si la eliminación fue exitosa
+            // Retornar true si la eliminación fue exitosa
             return true;
 
         } catch (error) {
+            // Manejo de errores y retorno false si falla
             console.error(`Error al eliminar producto con ID ${id}:`, error);
             return false;
         }

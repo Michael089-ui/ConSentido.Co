@@ -1,45 +1,72 @@
+import { AuthService } from '../services/auth-service.js';
+
 export class SidebarManager {
+    // Constructor que inicializa las propiedades y servicios necesarios
     constructor() {
+        // Elemento principal del sidebar en el DOM
         this.sidebar = document.querySelector('.admin-sidebar');
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.verificarAdmin(); // Mover verificación aquí
+        
+        // Servicio de autenticación para manejar sesiones
+        this.authService = new AuthService();
+        
+        // Usuario actual obtenido a través del servicio
+        this.currentUser = this.authService.getCurrentUser();
+        
+        // Inicializar el sidebar
         this.init();
     }
 
+    // Verifica que el usuario actual tenga permisos de administrador
+    // Si no los tiene, redirige al login
     verificarAdmin() {
         if (!this.currentUser || this.currentUser.rol !== 'admin') {
-            window.location.href = '/pages/customer/Login.html';
+            window.location.href = '../customer/login.html';
             return false;
         }
         return true;
     }
 
+    // Inicializa el sidebar cargando el contenido y configurando eventos
     async init() {
         try {
+            // Verificar permisos antes de continuar
+            if (!this.verificarAdmin()) return;
+            
+            // Cargar contenido HTML del sidebar
             await this.loadSidebar();
+            
+            // Configurar eventos de navegación y logout
             this.initializeListeners();
+            
+            // Marcar la sección activa y actualizar perfil
             this.updateActiveSection();
             this.updateUserProfile();
         } catch (error) {
-            console.error('Error initializing sidebar:', error);
+            console.error('Error inicializando sidebar:', error);
         }
     }
 
+    // Carga el contenido HTML del sidebar desde el servidor
     async loadSidebar() {
         try {
             const response = await fetch('/components/admin/sidebar.html');
+            if (!response.ok) {
+                throw new Error(`Error cargando sidebar: ${response.status}`);
+            }
             const html = await response.text();
             if (this.sidebar) {
                 this.sidebar.innerHTML = html;
             }
         } catch (error) {
-            console.error('Error loading sidebar:', error);
+            console.error('Error cargando sidebar:', error);
         }
     }
 
+    // Configura los eventos de navegación y cierre de sesión
     initializeListeners() {
         if (!this.sidebar) return;
 
+        // Agregar eventos de navegación a los enlaces del menú
         this.sidebar.querySelectorAll('.nav-link[data-section]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -47,6 +74,7 @@ export class SidebarManager {
             });
         });
 
+        // Agregar evento de cierre de sesión
         const logoutButton = this.sidebar.querySelector('.text-danger');
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
@@ -56,68 +84,24 @@ export class SidebarManager {
         }
     }
 
+    // Maneja la navegación entre secciones del panel
     handleNavigation(linkElement) {
         const section = linkElement.dataset.section;
         
-        // Actualizar clase activa
+        // Actualizar clase activa en el menú
         this.sidebar.querySelectorAll('.nav-link').forEach(link => {
             link.classList.remove('active');
         });
         linkElement.classList.add('active');
 
-        // Disparar evento de navegación
+        // Disparar evento personalizado para que AdminManager maneje el cambio de sección
         const event = new CustomEvent('sidebarNavigation', {
             detail: { section }
         });
         document.dispatchEvent(event);
     }
 
-    loadSection(section) {
-        const contentContainer = document.getElementById('content-container');
-        
-        // Mostrar indicador de carga
-        contentContainer.innerHTML = `
-            <div class="text-center p-5">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Cargando...</span>
-                </div>
-            </div>
-        `;
-
-        // Cargar el contenido de la sección
-        fetch(`/pages/admin/sections/${section}.html`)
-            .then(response => response.text())
-            .then(html => {
-                contentContainer.innerHTML = html;
-                this.initializeSectionFeatures(section);
-            })
-            .catch(error => {
-                console.error('Error loading section:', error);
-                contentContainer.innerHTML = `
-                    <div class="alert alert-danger m-4">
-                        Error al cargar la sección. Por favor intente nuevamente.
-                    </div>
-                `;
-            });
-    }
-
-    initializeSectionFeatures(section) {
-        switch(section) {
-            case 'inventario':
-                // Inicializar funcionalidades de inventario
-                window.adminManager?.productosManager?.init();
-                break;
-            case 'pedidos':
-                // Inicializar funcionalidades de pedidos
-                this.initPedidosFeatures();
-                break;
-            case 'usuarios':
-                // Inicializar funcionalidades de usuarios
-                this.initUsuariosFeatures();
-                break;
-        }
-    }
-
+    // Actualiza la sección activa basada en la URL o sección por defecto
     updateActiveSection() {
         const currentSection = window.location.hash.slice(1) || 'dashboard';
         const activeLink = this.sidebar.querySelector(`[data-section="${currentSection}"]`);
@@ -126,6 +110,7 @@ export class SidebarManager {
         }
     }
 
+    // Actualiza la información del perfil en el sidebar
     updateUserProfile() {
         if (!this.currentUser) return;
 
@@ -140,10 +125,13 @@ export class SidebarManager {
         }
     }
 
+    // Maneja el cierre de sesión con confirmación
     handleLogout() {
         if (confirm('¿Está seguro que desea cerrar sesión?')) {
-            localStorage.removeItem('currentUser');
-            window.location.href = '/pages/customer/login.html';
+            // Usar el servicio de autenticación para cerrar sesión
+            this.authService.logout();
+            // Redireccionar al login
+            window.location.href = '../customer/login.html';
         }
     }
 }

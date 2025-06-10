@@ -106,8 +106,7 @@ export class OrdersManager {
     // Método para mostrar los detalles de un pedido en un modal
     async viewOrder(orderId) {
         try {
-            // Aquí debes obtener los detalles completos del pedido desde el backend
-            // usando el orderId y el servicio OrderService
+            // obtener los detalles completos del pedido desde el backend usando el orderId y el servicio OrderService
             const order = await this.orderService.getOrderById(orderId);
 
             if (!order) {
