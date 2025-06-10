@@ -2,6 +2,7 @@
 import { ProductService } from '../services/customer/product_services.js';
 import { CustomerCartService } from '../services/customer/cart_services.js';
 import { ComponentsManager } from './components.js';
+import { UIService } from '../services/ui-service.js';  // Importación del servicio UI centralizado
 
 export class FeaturedProductsManager {
     // Constructor que inicializa los servicios necesarios
@@ -9,6 +10,7 @@ export class FeaturedProductsManager {
         // Servicios para acceder a productos y manejar el carrito
         this.productService = new ProductService();
         this.cartService = new CustomerCartService();
+        this.uiService = new UIService();  // Instanciar el servicio UI
         
         // Iniciar la carga de productos
         this.init();
@@ -69,26 +71,14 @@ export class FeaturedProductsManager {
     // Método para asegurar que el modal de detalles exista en el DOM
     ensureModalExists() {
         if (!document.getElementById('productDetailModal')) {
-            document.body.insertAdjacentHTML('beforeend', this.createModal());
+            // Usar UIService para crear el modal en lugar de insertarlo directamente
+            this.uiService.createModal({
+                id: 'productDetailModal',
+                title: 'Detalle del Producto',
+                size: 'modal-lg',
+                content: '<div id="productDetailContent"></div>'
+            });
         }
-    }
-
-    // Método para crear el HTML del modal de detalles
-    createModal() {
-        return `
-            <div class="modal fade" id="productDetailModal" tabindex="-1">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Detalle del Producto</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body" id="productDetailContent">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
     }
 
     // Método para configurar los event listeners
@@ -151,7 +141,7 @@ export class FeaturedProductsManager {
                 </div>
             `;
 
-            // Mostrar el modal
+            // Mostrar el modal usando bootstrap
             const modal = new bootstrap.Modal(document.getElementById('productDetailModal'));
             modal.show();
         } catch (error) {
@@ -172,7 +162,7 @@ export class FeaturedProductsManager {
             // Actualizar el contador del carrito
             await ComponentsManager.updateCartCounter();
             
-            // Mostrar mensaje de éxito
+            // Mostrar mensaje de éxito usando UIService
             this.showMessage('Producto agregado al carrito', 'success');
         } catch (error) {
             console.error('Error al agregar producto al carrito:', error);
@@ -180,17 +170,9 @@ export class FeaturedProductsManager {
         }
     }
 
-    // Método para mostrar mensajes de alerta
+    // Método para mostrar mensajes de alerta usando UIService
     showMessage(message, type) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
-        alertDiv.style.zIndex = '1050';
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(alertDiv);
-        setTimeout(() => alertDiv.remove(), 3000);
+        this.uiService.showMessage(message, type);
     }
 
     // Método para mostrar un mensaje de error cuando no se pueden cargar los productos

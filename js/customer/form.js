@@ -1,12 +1,13 @@
 // Importación de servicios necesarios para el registro de usuarios
 import { CustomerUserService } from '../services/customer/user_services.js';
-import { ComponentsManager } from './components.js';
+import { UIService } from '../services/ui-service.js';  // Importando el servicio UI centralizado
 
 export class RegistrationManager {
     // Constructor que inicializa los servicios y elementos necesarios
     constructor() {
-        // Servicio de usuarios para el lado del cliente
+        // Servicios centralizados
         this.userService = new CustomerUserService();
+        this.uiService = new UIService();
         
         // Formulario de registro
         this.form = document.querySelector(".form-registro");
@@ -61,16 +62,22 @@ export class RegistrationManager {
         }
     }
 
-    // Método para mostrar mensajes de alerta en el formulario
+    // Método para mostrar mensajes de alerta usando el servicio UI centralizado
     showMessage(message, type) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show mt-2`;
-        alertDiv.innerHTML = `
+        // Si el mensaje debe aparecer dentro del formulario (contextual)
+        const formAlert = document.createElement('div');
+        formAlert.className = `alert alert-${type} alert-dismissible fade show mt-2`;
+        formAlert.innerHTML = `
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
-        this.form.insertBefore(alertDiv, this.form.firstChild);
-        setTimeout(() => alertDiv.remove(), 4000);
+        this.form.insertBefore(formAlert, this.form.firstChild);
+        setTimeout(() => formAlert.remove(), 4000);
+        
+        // También usamos el servicio de UI para mensajes globales
+        if (type === 'success') {
+            this.uiService.showMessage(message, type);
+        }
     }
 }
 

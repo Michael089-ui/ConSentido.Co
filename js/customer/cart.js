@@ -1,7 +1,7 @@
 // Importación de servicios necesarios para órdenes y carrito
 import { OrderService } from '../services/customer/orders_services.js';
 import { CustomerCartService } from '../services/customer/cart_services.js';
-import { AuthService } from '../services/auth-service.js';
+import { AuthService } from '../services/auth_services.js';  // Corregido el path de importación
 
 export class CartManager {
     // Constructor que inicializa los servicios necesarios y el estado del carrito
@@ -135,11 +135,8 @@ export class CartManager {
             const producto = this.cart.find(item => item.id === id);
             if (!producto) return;
 
-            // Enviamos al backend la actualización de cantidad
-            await this.cartService.addToCart({ 
-                producto_id: id, 
-                cantidad: newQuantity 
-            });
+            // Usar el método updateQuantity específico en lugar de addToCart
+            await this.cartService.updateQuantity(id, newQuantity);
 
             // Recargamos el carrito para mantener sincronía con backend
             await this.loadCartFromBackend();

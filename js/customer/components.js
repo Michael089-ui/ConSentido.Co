@@ -1,6 +1,7 @@
 // Importación de servicios necesarios
-import { AuthService } from '../services/auth-service.js';
+import { AuthService } from '../services/auth_services.js';  // Corregido el path
 import { CustomerCartService } from '../services/customer/cart_services.js';
+import { UIService } from '../services/ui-service.js';  // Agregado el servicio UI
 
 export class ComponentsManager {
     // Método para inicializar animaciones en tarjetas del equipo
@@ -190,7 +191,7 @@ export class ComponentsManager {
             // Actualizar contador del carrito
             await this.updateCartCounter();
             
-            // Mostrar mensaje de éxito
+            // Mostrar mensaje de éxito usando UIService
             this.showMessage('Producto agregado al carrito', 'success');
         } catch (error) {
             console.error('Error al agregar al carrito:', error);
@@ -198,17 +199,10 @@ export class ComponentsManager {
         }
     }
 
-    // Método para mostrar mensajes de alerta
+    // Método para mostrar mensajes de alerta usando UIService
     static showMessage(message, type) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
-        alertDiv.style.zIndex = '1050';
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(alertDiv);
-        setTimeout(() => alertDiv.remove(), 3000);
+        const uiService = new UIService();
+        uiService.showMessage(message, type);
     }
 
     // Método para inicializar la búsqueda
@@ -253,9 +247,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 export class ModalManager {
     static initModal() {
+        // Reemplazar con UIService para gestionar modales
+        const uiService = new UIService();
         const modal = document.getElementById('modal-success');
+        
+        if (!modal) {
+            return {
+                show: () => uiService.createModal({
+                    id: 'success-modal',
+                    title: 'Operación Exitosa',
+                    content: 'La operación se completó correctamente',
+                    size: 'modal-sm'
+                }).show(),
+                hide: () => {}
+            };
+        }
+        
         const modalClose = document.getElementById('modal-close');
-
         modalClose?.addEventListener('click', () => {
             modal.style.display = 'none';
         });
