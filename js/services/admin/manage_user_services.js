@@ -1,131 +1,87 @@
-//Importación de la API
-import { BASE_API_URL } from "../config";
+// Importamos el servicio HTTP centralizado en lugar de usar fetch directamente
+import { HttpService } from "../http-service.js";
 
-//Clase para manejar -users-
-export class user_services{
-    // Constructor de la clase que se ejecuta cuando se crea una nueva instancia
-    constructor(){
-        // URL base del backend como propiedad de la clase
-        this.apiUrl = BASE_API_URL;
+/**
+ * Clase para gestionar operaciones relacionadas con usuarios (panel administrador)
+ * Utiliza HttpService para centralizar todas las peticiones a la API
+ */
+export class UserServices {
+    /**
+     * Constructor que inicializa los servicios necesarios
+     */
+    constructor() {
+        this.httpService = new HttpService();
+        this.endpoint = '/usuarios';
     }
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // Métodos que tendra la clase que permitirá que podamos hacer llamadas a la API del backend (CRUD)
-    
-    //Método para registrar un nuevo User (CREATE)
-    async registerUser(userData){
-        //try para manejo de errores 
+    /**
+     * Registra un nuevo usuario en el sistema
+     * @param {Object} userData - Datos del usuario a crear
+     * @returns {Promise<Object>} Datos del usuario creado
+     */
+    async registerUser(userData) {
         try {
-            const response = await fetch(`${this.apiUrl}/usuarios`,{
-                method: 'POST',//aquí estamos indicando el tipo de peticion que se hará
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(userData)//se convierte los datos a JSON
-            });
-
-            if(!response.ok){
-                throw new Error('No se pudo registrar el usuario');
-            }
-
-            //Si la peticion fue correcta se convierte el objeto
-            return await response.json();
-            
+            return await this.httpService.post(this.endpoint, userData);
         } catch (error) {
-
-            //si hubo errores de red o servidor, se muestra en consola
-            console.error('Error al registrar el usuario', error);
-            throw error;
-            
+            console.error('Error al registrar usuario:', error);
+            throw error; // Re-lanzar para manejar en el componente
         }
-
     }
 
-    //Método para obtener lista de todos los usuarios
-    async getAllUser(){
+    /**
+     * Obtiene todos los usuarios del sistema
+     * @returns {Promise<Array>} Lista de usuarios o array vacío
+     */
+    async getAllUser() {
         try {
-
-            const response = await fetch(`${this.apiUrl}/usuarios`);
-
-            // si la respuesta no fue exitosa, lanzamos error
-            if (!response.ok) {
-                throw new Error('No se pudieron obtener los usuarios');
-            }
-
-            // si todo bien, retornamos los datos en formato JSON
-            return await response.json();
-
+            return await this.httpService.get(this.endpoint);
         } catch (error) {
-            // si hay error, lo mostramos y devolvemos lista vacía
             console.error('Error al obtener usuarios:', error);
             return [];
         }
     }
 
-
-     //Método para obtener un solo usuario por su ID
+    /**
+     * Obtiene un usuario específico por su ID
+     * @param {string} id - ID del usuario a consultar
+     * @returns {Promise<Object|null>} Datos del usuario o null si no existe
+     */
     async getUserById(id) {
         try {
-            // petición GET para un solo usuario
-            const response = await fetch(`${this.apiUrl}/usuarios/${id}`);
-
-            if (!response.ok) {
-                throw new Error(`No se pudo obtener el usuario con ID ${id}`);
-            }
-
-            // se retorna el usuario encontrado
-            return await response.json();
-
+            return await this.httpService.get(`${this.endpoint}/${id}`);
         } catch (error) {
-            console.error(`Error al obtener el usuario con ID ${id}:`, error);
-            return null; // retornamos null si hubo error
+            console.error(`Error al obtener usuario con ID ${id}:`, error);
+            return null;
         }
     }
 
-    //Método para actualizar info de un usuario
+    /**
+     * Actualiza datos de un usuario existente
+     * @param {string} id - ID del usuario a actualizar
+     * @param {Object} newData - Nuevos datos del usuario
+     * @returns {Promise<Object>} Datos actualizados del usuario
+     */
     async updateUser(id, newData) {
         try {
-            // usamos PUT 
-            const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newData)
-            });
-
-            if (!response.ok) {
-                throw new Error(`No se pudo actualizar el usuario con ID ${id}`);
-            }
-
-            // retornamos el resultado actualizado
-            return await response.json();
-
+            return await this.httpService.put(`${this.endpoint}/${id}`, newData);
         } catch (error) {
-            console.error(`Error al actualizar el usuario con ID ${id}:`, error);
-            throw error;
+            console.error(`Error al actualizar usuario con ID ${id}:`, error);
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 
-    //Método para eliminar un usuario por ID
+    /**
+     * Elimina un usuario del sistema
+     * @param {string} id - ID del usuario a eliminar
+     * @returns {Promise<boolean>} true si se eliminó correctamente
+     */
     async deleteUser(id) {
         try {
-            // petición DELETE para eliminar el usuario
-            const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                throw new Error(`No se pudo eliminar el usuario con ID ${id}`);
-            }
-
-            // si todo va bien, devolvemos true
+            await this.httpService.delete(`${this.endpoint}/${id}`);
             return true;
-
         } catch (error) {
-            console.error(`Error al eliminar el usuario con ID ${id}:`, error);
+            console.error(`Error al eliminar usuario con ID ${id}:`, error);
             return false;
         }
     }
 }
-

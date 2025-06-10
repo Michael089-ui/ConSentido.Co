@@ -1,131 +1,69 @@
-//Importación de la API
-import { BASE_API_URL } from "../config";
+import { HttpService } from "../http-service.js";
 
-//Clase para manejar -users-
-export class user_services{
-    // Constructor de la clase que se ejecuta cuando se crea una nueva instancia
-    constructor(){
-        // URL base del backend como propiedad de la clase
-        this.apiUrl = BASE_API_URL;
+/**
+ * Clase para gestionar operaciones relacionadas con el usuario cliente
+ * Utiliza HttpService para centralizar todas las peticiones a la API
+ */
+export class CustomerUserService {
+    /**
+     * Constructor que inicializa los servicios necesarios
+     */
+    constructor() {
+        this.httpService = new HttpService();
+        this.endpoint = '/usuarios';
     }
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // Métodos que tendra la clase que permitirá que podamos hacer llamadas a la API del backend (CRUD)
+    /**
+     * Obtiene el perfil del usuario actualmente autenticado
+     * @returns {Promise<Object|null>} - Datos del usuario o null si no existe sesión
+     */
+    async getCurrentUser() {
+        try {
+            return await this.httpService.get(`${this.endpoint}/perfil`);
+        } catch (error) {
+            console.error('Error al obtener el perfil del usuario:', error);
+            return null;
+        }
+    }
     
-    //Método para registrar un nuevo User (CREATE)
-    async registerUser(userData){
-        //try para manejo de errores 
+    /**
+     * Registra un nuevo usuario en el sistema
+     * @param {Object} userData - Datos del usuario a registrar
+     * @returns {Promise<Object>} - Datos del usuario registrado
+     */
+    async registerUser(userData) {
         try {
-            const response = await fetch(`${this.apiUrl}/usuarios`,{
-                method: 'POST',//aquí estamos indicando el tipo de peticion que se hará
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(userData)//se convierte los datos a JSON
-            });
-
-            if(!response.ok){
-                throw new Error('No se pudo registrar el usuario');
-            }
-
-            //Si la peticion fue correcta se convierte el objeto
-            return await response.json();
-            
+            return await this.httpService.post(`${this.endpoint}/registro`, userData);
         } catch (error) {
-
-            //si hubo errores de red o servidor, se muestra en consola
-            console.error('Error al registrar el usuario', error);
-            throw error;
-            
-        }
-
-    }
-
-    //Método para obtener lista de todos los usuarios
-    async getAllUser(){
-        try {
-
-            const response = await fetch(`${this.apiUrl}/usuarios`);
-
-            // si la respuesta no fue exitosa, lanzamos error
-            if (!response.ok) {
-                throw new Error('No se pudieron obtener los usuarios');
-            }
-
-            // si todo bien, retornamos los datos en formato JSON
-            return await response.json();
-
-        } catch (error) {
-            // si hay error, lo mostramos y devolvemos lista vacía
-            console.error('Error al obtener usuarios:', error);
-            return [];
+            console.error('Error en el registro de usuario:', error);
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 
-
-     //Método para obtener un solo usuario por su ID
-    async getUserById(id) {
+    /**
+     * Actualiza la información del perfil de usuario
+     * @param {Object} userData - Nuevos datos del usuario
+     * @returns {Promise<Object>} - Perfil actualizado
+     */
+    async updateProfile(userData) {
         try {
-            // petición GET para un solo usuario
-            const response = await fetch(`${this.apiUrl}/usuarios/${id}`);
-
-            if (!response.ok) {
-                throw new Error(`No se pudo obtener el usuario con ID ${id}`);
-            }
-
-            // se retorna el usuario encontrado
-            return await response.json();
-
+            return await this.httpService.put(`${this.endpoint}/actualizar`, userData);
         } catch (error) {
-            console.error(`Error al obtener el usuario con ID ${id}:`, error);
-            return null; // retornamos null si hubo error
+            console.error('Error al actualizar perfil:', error);
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 
-    //Método para actualizar info de un usuario
-    async updateUser(id, newData) {
+    /**
+     * Obtiene el historial de pedidos del usuario
+     * @returns {Promise<Array>} - Lista de pedidos del usuario
+     */
+    async getOrderHistory() {
         try {
-            // usamos PUT 
-            const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newData)
-            });
-
-            if (!response.ok) {
-                throw new Error(`No se pudo actualizar el usuario con ID ${id}`);
-            }
-
-            // retornamos el resultado actualizado
-            return await response.json();
-
+            return await this.httpService.get('/pedidos/historial');
         } catch (error) {
-            console.error(`Error al actualizar el usuario con ID ${id}:`, error);
-            throw error;
-        }
-    }
-
-    //Método para eliminar un usuario por ID
-    async deleteUser(id) {
-        try {
-            // petición DELETE para eliminar el usuario
-            const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                throw new Error(`No se pudo eliminar el usuario con ID ${id}`);
-            }
-
-            // si todo va bien, devolvemos true
-            return true;
-
-        } catch (error) {
-            console.error(`Error al eliminar el usuario con ID ${id}:`, error);
-            return false;
+            console.error('Error al obtener historial de pedidos:', error);
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 }
-

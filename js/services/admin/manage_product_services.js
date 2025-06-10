@@ -1,104 +1,83 @@
-//Importación de la API
-import { BASE_API_URL } from "../config";
+// Importamos el servicio HTTP centralizado en lugar de usar fetch directamente
+import { HttpService } from "../http-service.js";
 
-//Clase para manejar -products-
-export class product_services {
-    
+/**
+ * Clase para gestionar operaciones relacionadas con productos (panel administrador)
+ * Utiliza HttpService para centralizar todas las peticiones a la API
+ */
+export class ProductServices {
+    /**
+     * Constructor que inicializa los servicios necesarios
+     */
     constructor() {
-        // URL base para conectar con el backend
-        this.apiUrl = BASE_API_URL;
+        this.httpService = new HttpService();
+        this.endpoint = '/productos';
     }
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // Métodos de la clase que permiten conectar el frontend con el backend 
-
-    // Método para obtener todos los productos
+    /**
+     * Obtiene todos los productos disponibles
+     * @returns {Promise<Array>} Lista de productos o array vacío
+     */
     async getAllProducts() {
         try {
-            const response = await fetch(`${this.apiUrl}/productos`);
-
-            if (!response.ok) {
-                throw new Error('No se pudieron obtener los productos');
-            }
-
-            return await response.json();
+            return await this.httpService.get(this.endpoint);
         } catch (error) {
             console.error('Error al obtener productos:', error);
             return [];
         }
     }
 
-    // Método para obtener un producto por su ID
+    /**
+     * Obtiene un producto específico por su ID
+     * @param {string} id - ID del producto a consultar
+     * @returns {Promise<Object|null>} Datos del producto o null si no existe
+     */
     async getProductById(id) {
         try {
-            const response = await fetch(`${this.apiUrl}/productos/${id}`);
-
-            if (!response.ok) {
-                throw new Error(`No se pudo obtener el producto con ID ${id}`);
-            }
-
-            return await response.json();
+            return await this.httpService.get(`${this.endpoint}/${id}`);
         } catch (error) {
             console.error(`Error al obtener producto con ID ${id}:`, error);
             return null;
         }
     }
 
-    // Método para crear un nuevo producto
+    /**
+     * Crea un nuevo producto en el sistema
+     * @param {Object} productData - Datos del producto a crear
+     * @returns {Promise<Object>} Datos del producto creado
+     */
     async createProduct(productData) {
         try {
-            const response = await fetch(`${this.apiUrl}/productos`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(productData)
-            });
-
-            if (!response.ok) {
-                throw new Error('No se pudo crear el producto');
-            }
-
-            return await response.json();
+            return await this.httpService.post(this.endpoint, productData);
         } catch (error) {
             console.error('Error al crear producto:', error);
-            throw error;
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 
-    // Método para actualizar un producto existente
+    /**
+     * Actualiza un producto existente
+     * @param {string} id - ID del producto a actualizar
+     * @param {Object} newData - Nuevos datos del producto
+     * @returns {Promise<Object>} Datos actualizados del producto
+     */
     async updateProduct(id, newData) {
         try {
-            const response = await fetch(`${this.apiUrl}/productos/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newData)
-            });
-
-            if (!response.ok) {
-                throw new Error(`No se pudo actualizar el producto con ID ${id}`);
-            }
-
-            return await response.json();
+            return await this.httpService.put(`${this.endpoint}/${id}`, newData);
         } catch (error) {
             console.error(`Error al actualizar producto con ID ${id}:`, error);
-            throw error;
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 
-    // Método para eliminar un producto
+    /**
+     * Elimina un producto del sistema
+     * @param {string} id - ID del producto a eliminar
+     * @returns {Promise<boolean>} true si se eliminó correctamente
+     */
     async deleteProduct(id) {
         try {
-            const response = await fetch(`${this.apiUrl}/productos/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                throw new Error(`No se pudo eliminar el producto con ID ${id}`);
-            }
-
+            await this.httpService.delete(`${this.endpoint}/${id}`);
             return true;
         } catch (error) {
             console.error(`Error al eliminar producto con ID ${id}:`, error);

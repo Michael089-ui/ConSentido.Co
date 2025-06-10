@@ -1,19 +1,21 @@
 <div class="content p-4 bg-light rounded shadow-sm">
-    <!-- Encabezado -->
+    <!-- Encabezado principal de la sección -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Gestión de Usuarios</h2>
     </div>
 
-    <!-- Filtros -->
+    <!-- Filtros para búsqueda y selección por rol -->
     <div class="card mb-4">
         <div class="card-body">
             <div class="row g-3">
+                <!-- Campo para buscar usuarios por nombre o email -->
                 <div class="col-md-4">
-                    <label class="form-label">Buscar usuario</label>
+                    <label class="form-label" for="buscarUsuario">Buscar usuario</label>
                     <input type="text" class="form-control" id="buscarUsuario" placeholder="Nombre o email...">
                 </div>
+                <!-- Selector para filtrar usuarios por rol -->
                 <div class="col-md-4">
-                    <label class="form-label">Rol</label>
+                    <label class="form-label" for="filtroRol">Rol</label>
                     <select class="form-select" id="filtroRol">
                         <option value="">Todos</option>
                         <option value="cliente">Cliente</option>
@@ -24,7 +26,7 @@
         </div>
     </div>
 
-    <!-- Tabla de usuarios -->
+    <!-- Tabla responsiva para mostrar la lista de usuarios -->
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
@@ -37,36 +39,36 @@
                 </tr>
             </thead>
             <tbody id="tablaUsuarios">
-                <!-- Los usuarios se cargarán dinámicamente aquí -->
+                <!-- Los usuarios se cargarán dinámicamente aquí desde JS -->
             </tbody>
         </table>
     </div>
 
-    <!-- Modal Ver Usuario -->
-    <div class="modal fade" id="userModal" tabindex="-1">
+    <!-- Modal para mostrar detalles de un usuario -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detalles del Usuario</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body" id="userModalBody">
-                    <!-- Contenido dinámico -->
+                    <!-- Contenido dinámico cargado desde JS -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Editar Usuario -->
-    <div class="modal fade" id="editUserModal" tabindex="-1">
+    <!-- Modal para editar un usuario -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Editar Usuario</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body" id="editUserModalBody">
-                    <!-- Contenido dinámico -->
+                    <!-- Contenido dinámico cargado desde JS -->
                 </div>
             </div>
         </div>

@@ -1,86 +1,122 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const switchVender = document.getElementById('Vende');
-    const formSuperior = document.querySelector('.form-superior');
-    const formInferior = document.querySelector('.form-inferior');
-    const mainContainer = document.querySelector('main');
+// Importación de servicios necesarios
+import { HttpService } from '../services/http-service.js';
+import { UIService } from '../services/ui-service.js';
+import { FORM_CONFIG } from './assets.js';
 
-    // Manejar el cambio del switch
-    switchVender.addEventListener('change', function() {
-        if (this.checked) {
-            formSuperior.style.display = 'none';
-            formInferior.style.display = 'block';
-            mainContainer.style.backgroundColor = '#f8f4e9'; // Color beige claro
-        } else {
-            formSuperior.style.display = 'block';
-            formInferior.style.display = 'none';
-            mainContainer.style.backgroundColor = 'white';
-        }
-    });
+export class ContactManager {
+    // Constructor que inicializa los elementos y configuraciones
+    constructor() {
+        // Elementos del DOM
+        this.switchVender = document.getElementById('Vende');
+        this.formSuperior = document.querySelector('.form-superior');
+        this.formInferior = document.querySelector('.form-inferior');
+        this.mainContainer = document.querySelector('main');
+        
+        // Servicios
+        this.httpService = new HttpService();
+        this.uiService = new UIService();
+        
+        // Inicializar la página
+        this.init();
+    }
 
-    // Manejar envío de formularios
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
+    // Método de inicialización
+    init() {
+        // Verificar que estamos en la página de contacto
+        if (!this.switchVender || !this.formSuperior || !this.formInferior) return;
+        
+        // Configurar el manejo del cambio de modo
+        this.setupFormToggle();
+        
+        // Configurar los eventos de envío de formularios
+        this.setupFormSubmissions();
+    }
 
-            try {
-                const formData = new FormData(this);
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    showSuccessModal();
-                } else {
-                    throw new Error('Error al enviar el formulario');
-                }
-            } catch (error) {
-                showMessage('Error al enviar el formulario. Por favor intente nuevamente.', 'danger');
+    // Configura el cambio entre formularios con el switch
+    setupFormToggle() {
+        this.switchVender.addEventListener('change', () => {
+            if (this.switchVender.checked) {
+                this.formSuperior.style.display = 'none';
+                this.formInferior.style.display = 'block';
+                document.body.classList.remove(FORM_CONFIG.backgrounds.urgent);
+                document.body.classList.add(FORM_CONFIG.backgrounds.light);
+            } else {
+                this.formSuperior.style.display = 'block';
+                this.formInferior.style.display = 'none';
+                document.body.classList.remove(FORM_CONFIG.backgrounds.light);
+                document.body.classList.add(FORM_CONFIG.backgrounds.urgent);
             }
         });
-    });
+    }
 
-    function showSuccessModal() {
-        const modalHtml = `
-            <div class="modal fade" id="successModal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body text-center py-4">
-                            <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
-                            <h4>¡Mensaje enviado con éxito!</h4>
-                            <p>Gracias por contactarnos. Nos comunicaremos contigo pronto.</p>
-                            <button class="btn btn-warning mt-3" onclick="window.location.href='/index.html'">
-                                Volver al inicio
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        const modal = new bootstrap.Modal(document.getElementById('successModal'));
-        modal.show();
-
-        // Remover el modal cuando se cierre
-        document.getElementById('successModal').addEventListener('hidden.bs.modal', function() {
-            this.remove();
-            window.location.href = '/index.html';
+    // Configura los eventos de envío para ambos formularios
+    setupFormSubmissions() {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.handleFormSubmit(e.target);
+            });
         });
     }
 
-    function showMessage(message, type) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.querySelector('main').prepend(alertDiv);
-        setTimeout(() => alertDiv.remove(), 3000);
+    // Maneja el envío de formularios
+    async handleFormSubmit(form) {
+        try {
+            // Determinar el endpoint basado en el tipo de formulario
+            const isVendorForm = form.classList.contains('form-inferior');
+            const endpoint = isVendorForm ? FORM_CONFIG.endpoints.vendor : FORM_CONFIG.endpoints.contact;
+            
+            // Convertir FormData a objeto para usar con HttpService
+            const formData = new FormData(form);
+            const formDataObj = {};
+            formData.forEach((value, key) => {
+                formDataObj[key] = value;
+            });
+            
+            // Usar HttpService para enviar datos
+            await this.httpService.post(endpoint, formDataObj);
+            
+            // Resetear formulario y mostrar mensaje de éxito
+            form.reset();
+            this.showSuccessModal();
+        } catch (error) {
+            console.error('Error al enviar formulario:', error);
+            this.uiService.showMessage('Error al enviar el formulario. Por favor intente nuevamente.', 'danger');
+        }
     }
+
+    // Muestra un modal de éxito al enviar el formulario
+    showSuccessModal() {
+        const modalConfig = {
+            id: 'successModal',
+            title: '¡Mensaje enviado con éxito!',
+            content: `
+                <div class="text-center">
+                    <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                    <p>Gracias por contactarnos. Nos comunicaremos contigo pronto.</p>
+                </div>
+            `,
+            buttons: [
+                {
+                    text: 'Volver al inicio',
+                    class: 'btn-warning',
+                    callback: () => window.location.href = '/index.html'
+                }
+            ],
+            onClose: () => window.location.href = '/index.html'
+        };
+        
+        this.uiService.createModal(modalConfig).show();
+    }
+
+    // Muestra mensajes de alerta en la interfaz
+    showMessage(message, type) {
+        this.uiService.showMessage(message, type);
+    }
+}
+
+// Inicializar el manager cuando se carga el DOM
+document.addEventListener('DOMContentLoaded', () => {
+    new ContactManager();
 });

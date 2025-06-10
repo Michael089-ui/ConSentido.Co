@@ -1,60 +1,74 @@
-import { BASE_API_URL }  from "../config";
+// Importamos el servicio HTTP centralizado en lugar de usar fetch directamente
+import { HttpService } from "../http-service.js";
+
+/**
+ * Clase para gestionar operaciones relacionadas con órdenes (panel administrador)
+ * Utiliza HttpService para centralizar todas las peticiones a la API
+ */
 export class OrderService {
+    /**
+     * Constructor que inicializa los servicios necesarios
+     */
     constructor() {
-        this.apiUrl = BASE_API_URL; 
+        this.httpService = new HttpService();
+        this.endpoint = '/pedidos';
     }
 
+    /**
+     * Obtiene todos los pedidos disponibles
+     * @returns {Promise<Array>} Lista de pedidos o array vacío
+     */
     async getAllOrders() {
         try {
-            const response = await fetch(`${this.apiUrl}/pedidos`);
-            if (!response.ok) throw new Error('Error al cargar pedidos');
-            return await response.json();
+            return await this.httpService.get(this.endpoint);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error al obtener pedidos:', error);
             return [];
         }
     }
 
-
-    async createOrder(orderData) {
+    /**
+     * Obtiene un pedido específico por su ID
+     * @param {string} orderId - ID del pedido a consultar
+     * @returns {Promise<Object|null>} Datos del pedido o null si no existe
+     */
+    async getOrderById(orderId) {
         try {
-            console.log('Enviando orden:', orderData);
-            const response = await fetch(`${this.apiUrl}/pedidos`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderData)
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response:', errorText);
-                throw new Error('Error al crear pedido');
-            }
-
-            return await response.json();
+            return await this.httpService.get(`${this.endpoint}/${orderId}`);
         } catch (error) {
-            console.error('Error en createOrder:', error);
-            throw error;
+            console.error(`Error al obtener pedido ${orderId}:`, error);
+            return null;
         }
     }
 
+    /**
+     * Crea una nueva orden en el sistema
+     * @param {Object} orderData - Datos de la orden a crear
+     * @returns {Promise<Object>} Datos de la orden creada
+     */
+    async createOrder(orderData) {
+        try {
+            return await this.httpService.post(this.endpoint, orderData);
+        } catch (error) {
+            console.error('Error al crear pedido:', error);
+            throw error; // Re-lanzar para manejar en el componente
+        }
+    }
+
+    /**
+     * Actualiza el estado de una orden existente
+     * @param {string} id - ID de la orden a actualizar
+     * @param {string} status - Nuevo estado para la orden
+     * @returns {Promise<Object>} Datos actualizados de la orden
+     */
     async updateOrderStatus(id, status) {
         try {
-            const response = await fetch(`${this.apiUrl}/pedidos/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ estado: status })
+            return await this.httpService.patch(`${this.endpoint}/${id}`, { 
+                estado: status 
             });
-            
-            if (!response.ok) throw new Error('Error al actualizar estado');
-            return await response.json();
         } catch (error) {
-            console.error('Error:', error);
-            throw error;
+            console.error(`Error al actualizar estado del pedido ${id}:`, error);
+            throw error; // Re-lanzar para manejar en el componente
         }
     }
 }

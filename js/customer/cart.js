@@ -1,18 +1,38 @@
-import { OrderService } from '../services/orders_services.js';
+// Importación de servicios necesarios para órdenes y carrito
+import { OrderService } from '../services/customer/orders_services.js';
+import { CustomerCartService } from '../services/customer/cart_services.js';
+import { AuthService } from '../services/auth-service.js';  // Corregido el path de importación
 
 export class CartManager {
+    // Constructor que inicializa los servicios necesarios y el estado del carrito
     constructor() {
+        // Instanciamos los servicios para órdenes, carrito y autenticación
         this.orderService = new OrderService();
-        this.cart = JSON.parse(localStorage.getItem('cart')) || [];
+        this.cartService = new CustomerCartService();
+        this.authService = new AuthService();
+        this.cart = []; // Carrito sincronizado con backend
         this.init();
     }
 
-    init() {
+    // Inicializamos cargando el carrito desde backend y actualizando la UI
+    async init() {
+        await this.loadCartFromBackend();
         this.updateCartCounter();
         this.renderCart();
         this.setupEventListeners();
     }
 
+    // Obtengo el carrito del usuario actual desde el backend
+    async loadCartFromBackend() {
+        try {
+            this.cart = await this.cartService.getCart();
+        } catch (error) {
+            console.error('Error cargando carrito desde backend:', error);
+            this.cart = []; // En caso de error, inicializo carrito vacío
+        }
+    }
+
+    // Actualizo el contador visual del carrito en la interfaz
     updateCartCounter() {
         const counter = document.querySelector('.cart-counter');
         if (counter) {
@@ -22,6 +42,7 @@ export class CartManager {
         }
     }
 
+    // Renderizo los productos del carrito y el resumen en la interfaz
     renderCart() {
         const cartContainer = document.getElementById('cart-items');
         const summaryContainer = document.getElementById('cart-summary');
@@ -76,7 +97,6 @@ export class CartManager {
             `;
         }).join('');
 
-        // Modificar la parte del resumen
         summaryContainer.innerHTML = `
             <div class="p-3">
                 <h5 class="border-bottom pb-2">Resumen del pedido</h5>
@@ -99,54 +119,66 @@ export class CartManager {
         `;
     }
 
+    // Configuración de event listeners adicionales si se requieren
     setupEventListeners() {
-        // Event listeners adicionales si son necesarios
+        // Por ahora no hay listeners adicionales
     }
 
-    updateQuantity(id, newQuantity) {
+    // Actualizo la cantidad de un producto en el carrito y sincronizo con backend
+    async updateQuantity(id, newQuantity) {
         if (newQuantity < 1) {
-            this.removeItem(id);
+            await this.removeItem(id);
             return;
         }
-        
-        const itemIndex = this.cart.findIndex(item => item.id === id);
-        if (itemIndex !== -1) {
-            this.cart[itemIndex].cantidad = newQuantity;
-            this.saveCart();
+
+        try {
+            const producto = this.cart.find(item => item.id === id);
+            if (!producto) return;
+
+            // Usar el método updateQuantity específico en lugar de addToCart
+            await this.cartService.updateQuantity(id, newQuantity);
+
+            // Recargamos el carrito para mantener sincronía con backend
+            await this.loadCartFromBackend();
             this.renderCart();
             this.updateCartCounter();
+        } catch (error) {
+            console.error('Error actualizando cantidad:', error);
+            this.showMessage('Error al actualizar la cantidad', 'danger');
         }
     }
 
-    removeItem(id) {
-        this.cart = this.cart.filter(item => item.id !== id);
-        this.saveCart();
-        this.renderCart();
-        this.updateCartCounter();
-        this.showMessage('Producto eliminado del carrito', 'success');
+    // Elimino un producto del carrito y sincronizo con backend
+    async removeItem(id) {
+        try {
+            await this.cartService.removeFromCart(id);
+            await this.loadCartFromBackend();
+            this.renderCart();
+            this.updateCartCounter();
+            this.showMessage('Producto eliminado del carrito', 'success');
+        } catch (error) {
+            console.error('Error eliminando producto:', error);
+            this.showMessage('Error al eliminar el producto', 'danger');
+        }
     }
 
-    saveCart() {
-        localStorage.setItem('cart', JSON.stringify(this.cart));
-    }
-
+    // Finalizo la orden enviando los datos al backend y limpio el carrito
     async finalizeOrder() {
         try {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            // Verifico si el usuario está autenticado usando el servicio
+            const currentUser = await this.authService.getCurrentUser();
             if (!currentUser) {
                 window.location.href = '/pages/customer/Login.html?redirect=cart';
                 return;
             }
 
-            console.log('Iniciando finalización de orden...');
-            
+            // Preparo los datos de la orden
             const orderData = {
-                id: Date.now().toString(),
                 usuario: {
                     id: currentUser.id,
-                    name: currentUser.name,
+                    nombre: currentUser.nombre,
                     email: currentUser.email,
-                    celular: currentUser.celular || ''
+                    telefono: currentUser.telefono || ''
                 },
                 productos: this.cart.map(item => ({
                     id: item.id,
@@ -156,29 +188,32 @@ export class CartManager {
                 })),
                 total: this.cart.reduce((sum, item) => sum + (item.precio * item.cantidad), 0),
                 fecha: new Date().toISOString(),
-                estado: 'pendiente'
+                estado: 'pendiente',
+                direccionEnvio: currentUser.direccion || '',
+                metodoPago: 'whatsapp'
             };
 
-            console.log('Orden preparada:', orderData);
-
-            // Intentar crear la orden
+            // Creo la orden en backend
             await this.orderService.createOrder(orderData);
-            console.log('Orden creada exitosamente');
-            
-            // Limpiar carrito
-            this.cart = [];
-            this.saveCart();
+
+            // Limpio el carrito en backend
+            await this.cartService.clearCart();
+
+            // Refresco el carrito local y la UI
+            await this.loadCartFromBackend();
             this.updateCartCounter();
-            
-            // Mostrar modal de confirmación
+            this.renderCart();
+
+            // Muestro modal de confirmación
             this.showWhatsAppModal();
-            
+
         } catch (error) {
-            console.error('Error detallado:', error);
+            console.error('Error finalizando orden:', error);
             this.showMessage('Error al procesar el pedido: ' + error.message, 'danger');
         }
     }
 
+    // Muestro modal de confirmación con mensaje y redirección
     showWhatsAppModal() {
         const modalHtml = `
             <div class="modal fade" id="whatsappModal" tabindex="-1">
@@ -202,13 +237,14 @@ export class CartManager {
         const modal = new bootstrap.Modal(document.getElementById('whatsappModal'));
         modal.show();
 
-        // Remover el modal del DOM cuando se cierre
+        // Remuevo el modal del DOM al cerrarse y redirijo al inicio
         document.getElementById('whatsappModal').addEventListener('hidden.bs.modal', function () {
             this.remove();
             window.location.href = '/index.html';
         });
     }
 
+    // Muestro mensajes temporales en pantalla para feedback al usuario
     showMessage(message, type) {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
@@ -222,5 +258,5 @@ export class CartManager {
     }
 }
 
-// Inicializar y exponer globalmente
+// Inicializo y expongo globalmente para uso en la UI
 window.cartManager = new CartManager();

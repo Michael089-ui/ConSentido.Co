@@ -1,70 +1,46 @@
-ññ// Usuario admin hardcodeado
-const adminUser = {
-    name: "Administrador",
-    email: "admin@consentido.com",
-    password: "admin123",
-    rol: "admin"
-};
+import { AuthService } from './services/auth-service.js';
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Asegurarse de que el admin existe en localStorage
-    const usuarios = JSON.parse(localStorage.getItem('usuariosRegistrados')) || [];
-    if (!usuarios.some(u => u.email === adminUser.email)) {
-        usuarios.push(adminUser);
-        localStorage.setItem('usuariosRegistrados', JSON.stringify(usuarios));
-    }
-
-    // Manejar el formulario de login
+document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
-    const loginMessage = document.getElementById('loginMessage');
-
     if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-    // Manejar visibilidad de la contraseña
-    const eyeIcon = document.getElementById('eye-icon');
-    const passwordInput = document.getElementById('loginPassword');
-    
-    if (eyeIcon && passwordInput) {
-        eyeIcon.addEventListener('click', () => {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            eyeIcon.classList.toggle('fa-eye');
-            eyeIcon.classList.toggle('fa-eye-slash');
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Mostrar indicador de carga
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Accediendo...';
+            }
+
+            try {
+                // Instanciar el servicio aquí para asegurar que siempre es fresco
+                const authService = new AuthService();
+                
+                // Pasar credenciales como objeto según espera el método login
+                const user = await authService.login({ email, password });
+
+                // Según el rol, redirigir a la interfaz correspondiente
+                if (user.rol === 'admin') {
+                    window.location.href = './admin/admin.html';
+                } else {
+                    window.location.href = '../index.html';
+                }
+
+            } catch (error) {
+                // Restaurar botón
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Acceder';
+                }
+                showMessage(error.message || 'Credenciales incorrectas', 'danger');
+            }
         });
     }
 });
-
-function handleLogin(e) {
-    e.preventDefault();
-
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    const usuarios = JSON.parse(localStorage.getItem('usuariosRegistrados')) || [];
-    const user = usuarios.find(u => u.email === email && u.password === password);
-
-    if (user) {
-        // Guardar todos los datos relevantes del usuario
-        localStorage.setItem('currentUser', JSON.stringify({
-            nombre: user.nombre || user.name,
-            apellido: user.apellido || user.lastName,
-            email: user.email,
-            telefono: user.telefono || user.phone,
-            direccion: user.direccion || user.address,
-            rol: user.rol
-        }));
-
-        if (user.rol === 'admin') {
-            window.location.href = '../admin/admin.html';
-        } else {
-            window.location.href = '../../index.html';
-        }
-    } else {
-        showMessage('Credenciales incorrectas', 'danger');
-    }
-}
 
 function showMessage(message, type) {
     const loginMessage = document.getElementById('loginMessage');
@@ -74,5 +50,3 @@ function showMessage(message, type) {
         loginMessage.textContent = message;
     }
 }
-
-export { adminUser };
