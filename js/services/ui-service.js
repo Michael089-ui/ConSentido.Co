@@ -50,11 +50,21 @@ export class UIService {
       onClose = null
     } = options;
     
+    // Verificar si bootstrap está disponible
+    if (typeof bootstrap === 'undefined') {
+      console.error('Bootstrap no está disponible. Asegúrese de incluir Bootstrap JS.');
+      return null;
+    }
+    
     // Verificar si ya existe un modal con este ID
     let modalElement = document.getElementById(id);
     
     // Si existe, removerlo para evitar duplicados
     if (modalElement) {
+      // Eliminar instancia de Bootstrap si existe
+      const oldModal = bootstrap.Modal.getInstance(modalElement);
+      if (oldModal) oldModal.dispose();
+      
       modalElement.remove();
     }
     
@@ -96,8 +106,17 @@ export class UIService {
       contentElement: document.getElementById(`${id}-content`),
       show: () => modal.show(),
       hide: () => modal.hide(),
+      dispose: () => {
+        // Limpiar correctamente los recursos
+        if (onClose) {
+          modalElement.removeEventListener('hidden.bs.modal', onClose);
+        }
+        modal.dispose();
+        modalElement.remove();
+      },
       setContent: (newContent) => {
-        document.getElementById(`${id}-content`).innerHTML = newContent;
+        const contentElem = document.getElementById(`${id}-content`);
+        if (contentElem) contentElem.innerHTML = newContent;
       }
     };
   }
@@ -139,6 +158,13 @@ export class UIService {
         onClose: () => resolve(false)
       });
       
+      // Si no se pudo crear el modal, resolver con false
+      if (!confirmModal) {
+        console.error('No se pudo crear el modal de confirmación');
+        resolve(false);
+        return;
+      }
+      
       // Mostrar modal
       confirmModal.show();
       
@@ -146,15 +172,48 @@ export class UIService {
       const confirmBtn = document.getElementById('btn-confirm');
       const cancelBtn = document.getElementById('btn-cancel');
       
-      confirmBtn.addEventListener('click', () => {
+      // Manejadores de eventos para los botones
+      const handleConfirm = () => {
+        cleanupListeners();
         confirmModal.hide();
         resolve(true);
-      });
+      };
       
-      cancelBtn.addEventListener('click', () => {
+      const handleCancel = () => {
+        cleanupListeners();
         confirmModal.hide();
         resolve(false);
-      });
+      };
+      
+      // Función para limpiar los event listeners
+      const cleanupListeners = () => {
+        if (confirmBtn) confirmBtn.removeEventListener('click', handleConfirm);
+        if (cancelBtn) cancelBtn.removeEventListener('click', handleCancel);
+      };
+      
+      // Agregar event listeners
+      if (confirmBtn) confirmBtn.addEventListener('click', handleConfirm);
+      if (cancelBtn) cancelBtn.addEventListener('click', handleCancel);
     });
+  }
+  
+  /**
+   * Muestra un mensaje de éxito
+   * @param {string} message - Mensaje a mostrar
+   * @param {HTMLElement} container - Contenedor donde mostrar el mensaje
+   * @param {number} timeout - Tiempo en ms para ocultar el mensaje
+   */
+  showSuccess(message, container = document.body, timeout = 3000) {
+    return this.showMessage(message, 'success', container, timeout);
+  }
+  
+  /**
+   * Muestra un mensaje de error
+   * @param {string} message - Mensaje de error
+   * @param {HTMLElement} container - Contenedor donde mostrar el error
+   * @param {number} timeout - Tiempo en ms para ocultar el mensaje
+   */
+  showError(message, container = document.body, timeout = 3000) {
+    return this.showMessage(message, 'danger', container, timeout);
   }
 }
