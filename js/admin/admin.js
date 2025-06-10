@@ -25,8 +25,8 @@ export class AdminManager {
 
     // Verifica que el usuario actual sea administrador, consultando el token de sesión
     // Si el usuario no tiene permisos, redirige al login
-    verificarAdmin() {
-        const currentUser = this.authService.getCurrentUser();
+    async verificarAdmin() {
+        const currentUser = await this.authService.getCurrentUser();
         if (!currentUser || currentUser.rol !== 'admin') {
             window.location.href = '../customer/login.html';
             return false;

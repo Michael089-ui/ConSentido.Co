@@ -1,8 +1,8 @@
-import { product_services } from '../services/product_services.js';
+import { ProductService } from '../services/customer/product_services.js';
 
 class SearchManager {
     constructor() {
-        this.dataService = new product_services();
+        this.dataService = new ProductService();
         this.currentResults = []; // Guardar resultados de búsqueda
         this.currentCategoryFilter = null; // Categoría seleccionada para filtrar
         this.init();

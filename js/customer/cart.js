@@ -169,7 +169,7 @@ export class CartManager {
     async finalizeOrder() {
         try {
             // Verifico si el usuario está autenticado usando el servicio
-            const currentUser = this.authService.getCurrentUser();
+            const currentUser = await this.authService.getCurrentUser();
             if (!currentUser) {
                 window.location.href = '/pages/customer/Login.html?redirect=cart';
                 return;

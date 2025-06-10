@@ -1,5 +1,5 @@
 // Importa los servicios necesarios
-import { UserServices } from '../services/customer/user_services.js';  // Servicio para usuario comprador
+import { CustomerUserService} from '../services/customer/user_services.js';  // Servicio para usuario comprador
 import { OrderService } from '../services/customer/orders_services.js'; // Servicio para pedidos
 import { AuthService } from '../services/auth_services.js';
 
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 class ProfileManager {
     constructor() {
         // Instancia los servicios
-        this.userService = new UserServices();
+        this.userService = new CustomerUserService();
         this.authService = new AuthService();
         this.orderService = new OrderService();
         this.currentUser = null; // Usuario inicialmente no cargado

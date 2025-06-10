@@ -1,5 +1,5 @@
 // Importo el servicio que me permite acceder a productos desde la API
-import { product_services } from '../services/customer/product_services.js';
+import { ProductService } from '../services/customer/product_services.js';
 // Importo el servicio que me permite manejar el carrito desde la API
 import { CustomerCartService } from '../services/customer/cart_services.js';
 

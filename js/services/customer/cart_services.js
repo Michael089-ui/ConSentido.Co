@@ -2,7 +2,7 @@
 
 import { BASE_API_URL } from "../config.js";
 
-export class cart_service {
+export class CustomerCartService {
     constructor() {
         // Guardamos la URL base de la API para usarla en las peticiones
         this.apiUrl = BASE_API_URL;
