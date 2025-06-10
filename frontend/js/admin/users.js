@@ -1,30 +1,63 @@
 // Importación del servicio para manejo de usuarios desde el archivo correcto
 import { UserServices } from '../services/admin/manage_user_services.js';
+import { UIService } from '../services/ui-service.js';
 
+/**
+ * Clase que gestiona los usuarios en el panel de administración
+ * Permite listar, crear, editar y eliminar usuarios
+ */
 export class UsersManager {
-    // Constructor que inicializa la instancia del servicio y el arreglo de usuarios
+    /**
+     * Constructor que inicializa servicios y estado interno
+     */
     constructor() {
-        // Instancia del servicio específico para usuarios del panel de administración
+        // Servicios necesarios
         this.userService = new UserServices();
+        this.uiService = new UIService();
+        
+        // Almacenamiento de usuarios
         this.users = [];
     }
 
-    // Método para inicializar la carga de usuarios y configurar eventos
+    /**
+     * Inicializa el gestor de usuarios, cargando datos y eventos
+     * @async
+     */
     async init() {
-        await this.loadUsers();
-        this.setupEventListeners();
+        try {
+            await this.loadUsers();
+            this.setupEventListeners();
+            console.log('Gestor de usuarios inicializado correctamente');
+        } catch (error) {
+            console.error('Error al inicializar gestor de usuarios:', error);
+            this.showMessage('Error al inicializar. Verifique la conexión con el servidor', 'danger');
+        }
     }
 
-    // Método para cargar la lista de usuarios desde el backend
+    /**
+     * Carga todos los usuarios desde el backend
+     * @async
+     */
     async loadUsers() {
         try {
+            // Mostrar indicador de carga
+            const container = document.querySelector('.content');
+            if (container) {
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.id = 'users-loading';
+                loadingIndicator.className = 'text-center my-4';
+                loadingIndicator.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div>';
+                container.prepend(loadingIndicator);
+            }
+
             // Obtenemos todos los usuarios desde la API
-            const users = await this.userService.getAllUser();
+            const users = await this.userService.getAllUsers();
             
             // Validar que la respuesta sea un arreglo
             if (!Array.isArray(users)) {
                 console.error('Se esperaba un arreglo de usuarios pero se recibió:', typeof users);
-                this.showMessage('Error al cargar usuarios', 'danger');
+                this.showMessage('Error al cargar usuarios. Formato de respuesta incorrecto', 'danger');
+                this.users = [];
                 return;
             }
 
@@ -33,15 +66,33 @@ export class UsersManager {
             this.renderUsers(users);
         } catch (error) {
             console.error('Error cargando usuarios:', error);
-            this.showMessage('Error al cargar usuarios', 'danger');
+            this.showMessage('Error al cargar usuarios. Verifique la conexión con el servidor', 'danger');
+            this.renderUsers([]);
+        } finally {
+            // Eliminar indicador de carga
+            document.getElementById('users-loading')?.remove();
         }
     }
 
-    // Método para renderizar la tabla de usuarios en el DOM
+    /**
+     * Renderiza la tabla de usuarios en la interfaz
+     * @param {Array} users - Lista de usuarios a mostrar
+     */
     renderUsers(users) {
         const tableBody = document.getElementById('tablaUsuarios');
         if (!tableBody) {
             console.error('Elemento tbody con id "tablaUsuarios" no encontrado');
+            return;
+        }
+
+        if (!users || users.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-3">
+                        <p class="text-muted">No hay usuarios disponibles</p>
+                    </td>
+                </tr>
+            `;
             return;
         }
 
@@ -53,7 +104,11 @@ export class UsersManager {
         this.initializeButtons();
     }
 
-    // Método para crear el HTML de una fila de usuario
+    /**
+     * Crea el HTML para una fila de la tabla de usuarios
+     * @param {Object} user - Datos del usuario
+     * @returns {string} HTML de la fila
+     */
     createUserRow(user) {
         return `
             <tr>
@@ -67,13 +122,13 @@ export class UsersManager {
                 </td>
                 <td>
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-info view-user" data-id="${user.id}">
+                        <button class="btn btn-sm btn-info view-user" data-id="${user.id}" title="Ver detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-warning edit-user" data-id="${user.id}">
+                        <button class="btn btn-sm btn-warning edit-user" data-id="${user.id}" title="Editar usuario">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger delete-user" data-id="${user.id}">
+                        <button class="btn btn-sm btn-danger delete-user" data-id="${user.id}" title="Eliminar usuario">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -82,7 +137,9 @@ export class UsersManager {
         `;
     }
 
-    // Método para asignar eventos a los botones de ver, editar y eliminar usuario
+    /**
+     * Configura los listeners para los botones de acciones
+     */
     initializeButtons() {
         document.querySelectorAll('.view-user').forEach(btn => {
             btn.addEventListener('click', () => this.viewUser(btn.dataset.id));
@@ -97,17 +154,34 @@ export class UsersManager {
         });
     }
 
-    // Método para mostrar los detalles de un usuario en un modal
+    /**
+     * Muestra los detalles de un usuario en un modal
+     * @param {string} id - ID del usuario a ver
+     * @async
+     */
     async viewUser(id) {
         try {
+            // Mostrar spinner mientras carga
+            document.getElementById('userModalBody').innerHTML = `
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('userModal'));
+            modal.show();
+
             // Obtener usuario específico desde el backend o usar la caché local
             let user = this.users.find(u => u.id === id);
             
-            // Si se necesitan detalles adicionales, se puede hacer una petición específica
+            // Si no está en caché, buscarlo en el backend
             if (!user) {
                 user = await this.userService.getUserById(id);
                 if (!user) {
                     this.showMessage('No se pudo encontrar el usuario', 'danger');
+                    modal.hide();
                     return;
                 }
             }
@@ -120,24 +194,27 @@ export class UsersManager {
                         <p><strong>Nombre:</strong> ${user.nombre || 'No especificado'}</p>
                         <p><strong>Email:</strong> ${user.email || 'No especificado'}</p>
                         <p><strong>Rol:</strong> ${user.rol || 'cliente'}</p>
-                        <p><strong>Estado:</strong> ${user.estado || 'inactivo'}</p>
+                        <p><strong>Estado:</strong> <span class="badge bg-${user.estado === 'activo' ? 'success' : 'danger'}">${user.estado || 'inactivo'}</span></p>
                         <p><strong>Teléfono:</strong> ${user.telefono || 'No especificado'}</p>
                         <p><strong>Dirección:</strong> ${user.direccion || 'No especificado'}</p>
+                        <p><strong>Fecha de registro:</strong> ${user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleDateString() : 'No disponible'}</p>
                     </div>
                 </div>
             `;
 
-            // Mostrar modal con la información del usuario
+            // Actualizar modal con la información del usuario
             document.getElementById('userModalBody').innerHTML = modalContent;
-            const modal = new bootstrap.Modal(document.getElementById('userModal'));
-            modal.show();
         } catch (error) {
             console.error('Error al ver usuario:', error);
             this.showMessage('Error al cargar los detalles del usuario', 'danger');
         }
     }
 
-    // Método para mostrar el formulario de edición de usuario en un modal
+    /**
+     * Muestra el formulario de edición de un usuario
+     * @param {string} id - ID del usuario a editar
+     * @async
+     */
     async editUser(id) {
         try {
             const user = this.users.find(u => u.id === id);
@@ -179,7 +256,10 @@ export class UsersManager {
                             <option value="inactivo" ${user.estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
                 </form>
             `;
 
@@ -190,21 +270,28 @@ export class UsersManager {
 
             // Asignar evento para manejar el envío del formulario
             const form = document.getElementById('editUserForm');
-            // Eliminar eventos previos para evitar duplicaciones
-            const newForm = form.cloneNode(true);
-            form.parentNode.replaceChild(newForm, form);
-            newForm.addEventListener('submit', (e) => this.handleEditUser(e));
+            form.addEventListener('submit', (e) => this.handleEditUser(e));
         } catch (error) {
             console.error('Error al editar usuario:', error);
             this.showMessage('Error al cargar el formulario de edición', 'danger');
         }
     }
 
-    // Método para manejar el envío del formulario de edición y actualizar el usuario
+    /**
+     * Procesa el formulario de edición de usuario
+     * @param {Event} e - Evento del formulario
+     * @async
+     */
     async handleEditUser(e) {
         e.preventDefault();
 
         try {
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...`;
+            }
+
             const userId = document.getElementById('userId').value;
             
             // Recopilar datos del formulario
@@ -222,7 +309,7 @@ export class UsersManager {
             
             // Cerrar modal de edición
             const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
-            modal.hide();
+            if (modal) modal.hide();
             
             // Recargar lista de usuarios
             await this.loadUsers();
@@ -230,14 +317,37 @@ export class UsersManager {
             this.showMessage('Usuario actualizado exitosamente', 'success');
         } catch (error) {
             console.error('Error al actualizar usuario:', error);
-            this.showMessage('Error al actualizar usuario', 'danger');
+            this.showMessage('Error al actualizar usuario: ' + (error.message || 'Error desconocido'), 'danger');
+        } finally {
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Guardar cambios';
+            }
         }
     }
 
-    // Método para eliminar un usuario tras confirmación
+    /**
+     * Elimina un usuario previa confirmación
+     * @param {string} id - ID del usuario a eliminar
+     * @async
+     */
     async deleteUser(id) {
-        if (confirm('¿Está seguro de eliminar este usuario?')) {
+        if (confirm('¿Está seguro de eliminar este usuario? Esta acción no se puede deshacer.')) {
             try {
+                // Mostrar indicador de carga
+                const loadingElement = document.createElement('div');
+                loadingElement.className = 'position-fixed top-50 start-50 translate-middle bg-white p-3 rounded shadow';
+                loadingElement.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border text-primary me-3" role="status">
+                            <span class="visually-hidden">Eliminando...</span>
+                        </div>
+                        <span>Eliminando usuario...</span>
+                    </div>
+                `;
+                document.body.appendChild(loadingElement);
+                
                 // Eliminar usuario en backend
                 await this.userService.deleteUser(id);
                 
@@ -247,13 +357,27 @@ export class UsersManager {
                 this.showMessage('Usuario eliminado exitosamente', 'success');
             } catch (error) {
                 console.error('Error al eliminar usuario:', error);
-                this.showMessage('Error al eliminar usuario', 'danger');
+                this.showMessage('Error al eliminar usuario: ' + (error.message || 'Error en el servidor'), 'danger');
+            } finally {
+                // Eliminar indicador de carga
+                const loadingElement = document.querySelector('.position-fixed.top-50.start-50');
+                if (loadingElement) loadingElement.remove();
             }
         }
     }
 
-    // Método para mostrar mensajes de alerta en la interfaz
+    /**
+     * Muestra un mensaje en la interfaz
+     * @param {string} message - Texto del mensaje
+     * @param {string} type - Tipo de alerta (success, danger, warning, etc)
+     */
     showMessage(message, type) {
+        if (this.uiService) {
+            this.uiService.showMessage(message, type);
+            return;
+        }
+        
+        // Fallback si UIService no está disponible
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
         alertDiv.innerHTML = `
@@ -267,20 +391,86 @@ export class UsersManager {
         }
     }
 
-    // Método para configurar eventos globales si es necesario
+    /**
+     * Configura los listeners para los formularios
+     */
     setupEventListeners() {
         // Configurar evento para formulario de agregar usuario si existe
         const addUserForm = document.getElementById('addUserForm');
         if (addUserForm) {
             addUserForm.addEventListener('submit', (e) => this.handleAddUser(e));
         }
+        
+        // Configurar evento para el botón de limpiar filtros
+        const clearFiltersBtn = document.getElementById('clearFilters');
+        if (clearFiltersBtn) {
+            clearFiltersBtn.addEventListener('click', () => this.clearFilters());
+        }
+        
+        // Configurar evento para filtrar usuarios
+        const searchInput = document.getElementById('searchUsers');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => this.filterUsers());
+        }
+        
+        // Configurar evento para filtrar por rol
+        const roleSelect = document.getElementById('filterRole');
+        if (roleSelect) {
+            roleSelect.addEventListener('change', () => this.filterUsers());
+        }
     }
 
-    // Método para manejar agregar un nuevo usuario
+    /**
+     * Filtra la lista de usuarios según los criterios seleccionados
+     */
+    filterUsers() {
+        const searchValue = document.getElementById('searchUsers')?.value?.toLowerCase() || '';
+        const roleValue = document.getElementById('filterRole')?.value || '';
+        
+        let filteredUsers = [...this.users];
+        
+        if (searchValue) {
+            filteredUsers = filteredUsers.filter(user => 
+                user.nombre?.toLowerCase().includes(searchValue) || 
+                user.email?.toLowerCase().includes(searchValue)
+            );
+        }
+        
+        if (roleValue) {
+            filteredUsers = filteredUsers.filter(user => user.rol === roleValue);
+        }
+        
+        this.renderUsers(filteredUsers);
+    }
+    
+    /**
+     * Limpia los filtros aplicados a la lista de usuarios
+     */
+    clearFilters() {
+        const searchInput = document.getElementById('searchUsers');
+        const roleSelect = document.getElementById('filterRole');
+        
+        if (searchInput) searchInput.value = '';
+        if (roleSelect) roleSelect.value = '';
+        
+        this.renderUsers(this.users);
+    }
+
+    /**
+     * Procesa el formulario para agregar un nuevo usuario
+     * @param {Event} e - Evento del formulario
+     * @async
+     */
     async handleAddUser(e) {
         e.preventDefault();
         
         try {
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...`;
+            }
+            
             const form = e.target;
             const newUser = {
                 nombre: form.querySelector('#newNombre').value,
@@ -307,7 +497,16 @@ export class UsersManager {
             this.showMessage('Usuario agregado exitosamente', 'success');
         } catch (error) {
             console.error('Error al agregar usuario:', error);
-            this.showMessage('Error al agregar usuario', 'danger');
+            this.showMessage('Error al agregar usuario: ' + (error.message || 'Error en el servidor'), 'danger');
+        } finally {
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Guardar';
+            }
         }
     }
 }
+
+// Exportar singleton para uso global
+export default new UsersManager();

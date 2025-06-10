@@ -1,14 +1,22 @@
 // Importación del servicio UI centralizado
 import { UIService } from '../services/ui-service.js';
 
-// Clase para gestionar la carga dinámica de secciones en la interfaz administrativa
+/**
+ * Clase para gestionar la carga dinámica de secciones en la interfaz administrativa
+ * Maneja la carga, caché y visualización de las plantillas HTML para el panel de administración
+ */
 export class TemplateManager {
+    /**
+     * Constructor de la clase TemplateManager
+     * Inicializa el sistema de caché y servicios necesarios
+     */
     constructor() {
         // Objeto para almacenar templates cargados en caché para mejorar rendimiento
         this.templates = {};
         
-        // Ruta base para las secciones del panel administrativo
-        this.basePath = '/pages/admin/section/';
+        // Rutas base para las secciones del panel administrativo (primaria y alternativa)
+        this.basePath = '/frontend/pages/admin/section/';
+        this.altPath = '../../pages/admin/section/';
         
         // Instanciar el servicio UI para mensajes y carga
         this.uiService = new UIService();
@@ -20,8 +28,12 @@ export class TemplateManager {
         this.cacheTimestamps = {};
     }
 
-    // Método para cargar el contenido HTML de una sección dada
-    // Usa cache si la sección ya fue cargada previamente y no ha expirado
+    /**
+     * Carga el contenido HTML de una sección específica
+     * Utiliza caché para mejorar el rendimiento si la sección ya fue cargada antes
+     * @param {string} section - Nombre de la sección a cargar
+     * @returns {Promise<string>} - Contenido HTML de la sección
+     */
     async loadSection(section) {
         try {
             // Verificar si ya tenemos esta sección en caché y no ha expirado
@@ -46,15 +58,22 @@ export class TemplateManager {
             // Obtiene el nombre del archivo según la sección, o usa el nombre tal cual
             const fileName = sectionFiles[section] || section;
 
-            // Construye la URL completa para la petición
-            const url = `${this.basePath}${fileName}.html`;
-
-            // Realiza la petición para obtener el archivo HTML de la sección
-            const response = await fetch(url);
-
-            // Verifica que la respuesta sea exitosa
-            if (!response.ok) {
-                throw new Error(`Error cargando sección ${section}: ${response.status} ${response.statusText}`);
+            // Intenta cargar desde la ruta principal, si falla prueba con la ruta alternativa
+            let response;
+            try {
+                const url = `${this.basePath}${fileName}.html`;
+                response = await fetch(url);
+                if (!response.ok) throw new Error(`Error con ruta principal: ${response.status}`);
+            } catch (primaryError) {
+                try {
+                    // Intentar con ruta alternativa
+                    const url = `${this.altPath}${fileName}.html`;
+                    response = await fetch(url);
+                    if (!response.ok) throw new Error(`Error con ruta alternativa: ${response.status}`);
+                } catch (altError) {
+                    // Si ambas rutas fallan, lanzar un error combinado
+                    throw new Error(`No se pudo cargar la sección desde ninguna ruta disponible.`);
+                }
             }
 
             // Obtiene el contenido HTML como texto
@@ -72,24 +91,37 @@ export class TemplateManager {
             console.error(`Error cargando sección ${section}:`, error);
 
             // Retorna un mensaje HTML de error para mostrar en la interfaz
-            return this.getErrorTemplate(section);
+            return this.getErrorTemplate(section, error.message);
         }
     }
 
-    // Genera un template HTML de error consistente
-    getErrorTemplate(section) {
+    /**
+     * Genera un template HTML de error consistente
+     * @param {string} section - Nombre de la sección que falló
+     * @param {string} errorDetails - Detalles específicos del error
+     * @returns {string} - HTML formateado con el mensaje de error
+     */
+    getErrorTemplate(section, errorDetails = '') {
         return `
             <div class="alert alert-danger m-4">
                 <h4 class="alert-heading">Error al cargar sección</h4>
                 <p>No se pudo cargar la sección "${section}". Por favor intente nuevamente.</p>
+                ${errorDetails ? `<p class="small text-muted">${errorDetails}</p>` : ''}
                 <hr>
-                <p class="mb-0">Si el problema persiste, contacte al administrador del sistema.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="mb-0">Si el problema persiste, contacte al administrador del sistema.</p>
+                    <button class="btn btn-outline-danger" onclick="window.adminManager.cargarSeccion('${section}')">
+                        <i class="fas fa-sync-alt me-1"></i> Reintentar
+                    </button>
+                </div>
             </div>
         `;
     }
 
-    // Método para mostrar un indicador de carga en un contenedor dado
-    // Utiliza el UIService para mantener consistencia
+    /**
+     * Muestra un indicador de carga en un contenedor dado
+     * @param {HTMLElement} container - Contenedor donde mostrar el indicador
+     */
     showLoading(container) {
         if (!container) return;
 
@@ -102,8 +134,11 @@ export class TemplateManager {
         `;
     }
 
-    // Método para mostrar un mensaje de error en un contenedor dado
-    // Utiliza el UIService para mantener consistencia
+    /**
+     * Muestra un mensaje de error en un contenedor específico
+     * @param {HTMLElement} container - Contenedor donde mostrar el error
+     * @param {string} message - Mensaje de error a mostrar
+     */
     showError(container, message) {
         if (!container) return;
 
@@ -111,34 +146,53 @@ export class TemplateManager {
             <div class="alert alert-danger m-4">
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 ${message}
+                <button class="btn btn-sm btn-outline-danger float-end" onclick="location.reload()">
+                    <i class="fas fa-sync-alt"></i> Reintentar
+                </button>
             </div>
         `;
         
         // También mostrar mensaje global
-        this.uiService.showMessage(message, 'danger');
+        if (this.uiService) {
+            this.uiService.showMessage(message, 'danger');
+        }
     }
 
-    // Método para limpiar toda la caché de templates
+    /**
+     * Limpia toda la caché de templates almacenada
+     */
     clearCache() {
         this.templates = {};
         this.cacheTimestamps = {};
+        console.log('Caché de plantillas limpiada completamente');
     }
     
-    // Método para limpiar la caché de una sección específica
+    /**
+     * Limpia la caché para una sección específica
+     * @param {string} section - Nombre de la sección a limpiar
+     */
     clearSectionCache(section) {
         if (this.templates[section]) {
             delete this.templates[section];
             delete this.cacheTimestamps[section];
+            console.log(`Caché limpiada para la sección: ${section}`);
         }
     }
     
-    // Método para recargar una sección específica, ignorando la caché
+    /**
+     * Recarga forzosamente una sección, ignorando la caché existente
+     * @param {string} section - Nombre de la sección a recargar
+     * @returns {Promise<string>} - Contenido HTML actualizado de la sección
+     */
     async refreshSection(section) {
         this.clearSectionCache(section);
         return await this.loadSection(section);
     }
     
-    // Método para precargar secciones comunes y mejorar la experiencia de usuario
+    /**
+     * Precarga las secciones más comunes para mejorar la experiencia de usuario
+     * Carga en segundo plano para tener disponibles las secciones principales
+     */
     async preloadCommonSections() {
         try {
             const commonSections = ['inventario', 'pedidos', 'usuarios'];

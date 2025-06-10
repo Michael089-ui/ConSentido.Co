@@ -14,10 +14,6 @@ export class AuthService {
     // Cargar usuario desde localStorage si existe (para persistencia entre recargas)
     this.loadUserFromStorage();
     
-    // Para cuando migres a backend desplegado, puedes descomentar este código:
-    /*
-    this.deployedMode = false; // Cambiar a true cuando uses backend desplegado
-    */
   }
   
   /**

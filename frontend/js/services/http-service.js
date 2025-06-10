@@ -5,80 +5,34 @@
 
 export class HttpService {
   constructor() {
-    // ===== CONFIGURACIÓN PARA BACKEND SPRING BOOT LOCAL =====
-    this.useLocalBackend = true; // Controla si usamos backend local o remoto
-    
     // URL del backend Spring Boot local
-    this.springBootUrl = 'http://localhost:8080';
+    this.baseUrl = 'http://localhost:8080';
     
-    // Para todas las rutas usamos el mismo backend Spring Boot
-    this.localBaseUrls = {
-      'default': this.springBootUrl
-    };
-    
-    // ===== CONFIGURACIÓN PARA BACKEND DESPLEGADO (COMENTADO) =====
-    // Cuando el backend en AWS esté disponible, descomentar esta sección
-    /*
-    this.baseUrl = "https://kpn9ajcasp.us-east-1.awsapprunner.com";
-    this.apiAvailable = null; // Aún no verificado
-    this.lastCheckTime = 0;
-    */
+    // Timeout para peticiones en milisegundos
+    this.requestTimeout = 10000; // 10 segundos
     
     // Mapa de rutas según la estructura del backend Spring Boot
     this.routeMap = {
       // Para backend Spring Boot local
       'usuarios': '/api/usuarios',
       'usuario': '/api/usuarios',
-      'productos': '/productos',
-      'producto': '/productos',
-      'categorias': '/categorias',
-      'categoria': '/categorias',
-      'auth': '/auth',
-      'pedidos': '/pedidos',
-      'pedido': '/pedidos',
-      'inventario': '/inventario',
-      'detalles-pedido': '/detalles-pedido',
+      'productos': '/api/productos',  // Corregido con prefijo /api/
+      'producto': '/api/productos',   // Corregido con prefijo /api/
+      'categorias': '/api/categorias', // Corregido con prefijo /api/
+      'categoria': '/api/categorias',  // Corregido con prefijo /api/
+      'auth': '/api/auth',             // Corregido con prefijo /api/
+      'pedidos': '/api/pedidos',       // Corregido con prefijo /api/
+      'pedido': '/api/pedidos',        // Corregido con prefijo /api/
+      'inventario': '/api/inventario', // Corregido con prefijo /api/
+      'detalles-pedido': '/api/detalles-pedido', // Corregido con prefijo /api/
       'carrito': '/api/carrito'
     };
-    
-    // Para JSON Server (comentado)
-    /*
-    this.routeMap = {
-      'usuarios': '/usuarios',
-      'usuario': '/usuarios',
-      'productos': '/productos',
-      'producto': '/productos',
-      'categorias': '/categorias',
-      'categoria': '/categorias',
-      'auth': '/auth',
-      'pedidos': '/pedidos',
-      'pedido': '/pedidos',
-      'inventario': '/productos',
-      'detalles-pedido': '/detalles-pedido',
-      'carrito': '/carrito'
-    }
-    */
-  }
-
-  /**
-   * Obtiene la URL base adecuada según el tipo de recurso
-   * @param {string} endpoint - Endpoint de la petición
-   * @returns {string} - URL base correspondiente
-   */
-  getBaseUrl(endpoint) {
-    if (!this.useLocalBackend) {
-      // Modo backend desplegado (comentado por ahora)
-      // return this.baseUrl;
-      console.error('Backend desplegado no está configurado');
-      throw new Error('Backend desplegado no está configurado');
-    }
-    
-    // Para Spring Boot local, siempre usamos la misma URL base
-    return this.springBootUrl;
   }
 
   /**
    * Mapea un endpoint a la ruta correcta según la estructura del backend
+   * @param {string} endpoint - Ruta original
+   * @returns {string} - Ruta mapeada
    */
   mapEndpoint(endpoint) {
     // Normalizar: remover barra inicial si existe
@@ -89,12 +43,13 @@ export class HttpService {
     
     // Si hay un mapeo para esta ruta, usarlo
     if (this.routeMap[firstSegment]) {
-      const restOfPath = path.substring(firstSegment.length);
+      // Obtener el resto del path después del primer segmento
+      const restOfPath = path.includes('/') ? path.substring(path.indexOf('/')) : '';
       return this.routeMap[firstSegment] + restOfPath;
     }
     
-    // Si no hay mapeo, devolver el endpoint original con barra inicial
-    return endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+    // Si no hay mapeo específico, añadir prefijo /api/ por defecto
+    return endpoint.startsWith('/') ? `/api${endpoint}` : `/api/${endpoint}`;
   }
 
   /**
@@ -105,22 +60,11 @@ export class HttpService {
    */
   async request(endpoint, options = {}) {
     try {
-      // Para backend desplegado (comentado)
-      /*
-      const isApiAvailable = await this.checkApiAvailability();
-      if (!isApiAvailable) {
-        throw new Error('El servicio backend no está disponible en este momento');
-      }
-      */
-      
       // Mapear al endpoint correcto según la estructura del backend
       const mappedEndpoint = this.mapEndpoint(endpoint);
       
-      // Obtener la URL base adecuada (local o remota)
-      const baseUrl = this.getBaseUrl(endpoint);
-      
       // Construir URL completa
-      const url = `${baseUrl}${mappedEndpoint}`;
+      const url = `${this.baseUrl}${mappedEndpoint}`;
       
       console.log(`🔍 Realizando petición a: ${url}`);
 
@@ -133,13 +77,19 @@ export class HttpService {
         ...options
       };
 
+      // Agregar token de autenticación si está disponible
+      const token = localStorage.getItem('authToken');
+      if (token && !config.headers['Authorization']) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+
       // Si hay un body y es un objeto, convertirlo a JSON
       if (config.body && typeof config.body === 'object') {
         config.body = JSON.stringify(config.body);
       }
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos máximo
+      const timeoutId = setTimeout(() => controller.abort(), this.requestTimeout);
 
       config.signal = controller.signal;
 
@@ -169,19 +119,23 @@ export class HttpService {
       }
 
       // Convertir respuesta a JSON
-      const data = await response.json();
-      return data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json();
+      } else {
+        const text = await response.text();
+        return { content: text };
+      }
     } catch (error) {
       // Error específico de conexión
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-        console.error(`❌ Error de conexión: ¿Está ejecutándose el backend Spring Boot? Verifica que está activo en http://localhost:8080`);
+        console.error(`❌ Error de conexión: ¿Está ejecutándose el backend Spring Boot? Verifica que está activo en ${this.baseUrl}`);
+        this.showLocalServerErrorMessage();
       } else if (error.name === 'AbortError') {
         console.error(`⏱️ Tiempo de espera agotado. El servidor no respondió a tiempo.`);
       } else {
         console.error(`❌ Error en petición a ${endpoint}:`, error);
       }
-      
-      this.showLocalServerErrorMessage();
       
       throw error;
     }
@@ -212,13 +166,31 @@ export class HttpService {
     `;
     
     document.body.appendChild(messageElement);
+    
+    // Auto-eliminar después de 30 segundos
+    setTimeout(() => {
+      const message = document.getElementById('api-unavailable-message');
+      if (message) message.remove();
+    }, 30000);
   }
 
-  // Métodos helper para cada tipo de petición
+  /**
+   * Realiza una petición GET
+   * @param {string} endpoint - Endpoint a consultar
+   * @param {Object} options - Opciones adicionales para fetch
+   * @returns {Promise<any>} - Datos de respuesta
+   */
   async get(endpoint, options = {}) {
     return this.request(endpoint, { ...options, method: 'GET' });
   }
 
+  /**
+   * Realiza una petición POST
+   * @param {string} endpoint - Endpoint a consultar
+   * @param {Object} data - Datos a enviar
+   * @param {Object} options - Opciones adicionales para fetch
+   * @returns {Promise<any>} - Datos de respuesta
+   */
   async post(endpoint, data, options = {}) {
     return this.request(endpoint, {
       ...options,
@@ -227,6 +199,13 @@ export class HttpService {
     });
   }
 
+  /**
+   * Realiza una petición PUT
+   * @param {string} endpoint - Endpoint a consultar
+   * @param {Object} data - Datos a enviar
+   * @param {Object} options - Opciones adicionales para fetch
+   * @returns {Promise<any>} - Datos de respuesta
+   */
   async put(endpoint, data, options = {}) {
     return this.request(endpoint, {
       ...options,
@@ -235,10 +214,23 @@ export class HttpService {
     });
   }
 
+  /**
+   * Realiza una petición DELETE
+   * @param {string} endpoint - Endpoint a consultar
+   * @param {Object} options - Opciones adicionales para fetch
+   * @returns {Promise<any>} - Datos de respuesta
+   */
   async delete(endpoint, options = {}) {
     return this.request(endpoint, { ...options, method: 'DELETE' });
   }
 
+  /**
+   * Realiza una petición PATCH
+   * @param {string} endpoint - Endpoint a consultar
+   * @param {Object} data - Datos a enviar
+   * @param {Object} options - Opciones adicionales para fetch
+   * @returns {Promise<any>} - Datos de respuesta
+   */
   async patch(endpoint, data, options = {}) {
     return this.request(endpoint, {
       ...options,
@@ -247,3 +239,6 @@ export class HttpService {
     });
   }
 }
+
+// Exportar instancia por defecto para uso global
+export default new HttpService();

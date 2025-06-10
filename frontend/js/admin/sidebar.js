@@ -1,6 +1,10 @@
-import { AuthService } from '../services/auth-service.js'; // Corregido nombre del archivo
-import { UIService } from '../services/ui-service.js'; // Agregado servicio UI centralizado
+import { AuthService } from '../services/auth-service.js'; // Servicio de autenticación
+import { UIService } from '../services/ui-service.js'; // Servicio de interfaz de usuario
 
+/**
+ * Clase que gestiona la barra lateral del panel de administración
+ * Maneja la navegación, selección de secciones y perfil de usuario
+ */
 export class SidebarManager {
     // Constructor que inicializa las propiedades y servicios necesarios
     constructor() {
@@ -16,44 +20,60 @@ export class SidebarManager {
         this.initialize();
     }
 
-    // Método de inicialización asíncrona
+    /**
+     * Método de inicialización asíncrona
+     * Carga usuario, verifica permisos y configura el sidebar
+     */
     async initialize() {
         try {
-            // Obtener usuario actual
+            // Obtener datos del usuario actual desde el servicio de autenticación
             this.currentUser = await this.authService.getCurrentUser();
             
             // Verificar permisos antes de continuar
             if (!this.verificarAdmin()) return;
             
-            // Cargar contenido HTML del sidebar
+            // Cargar el HTML del sidebar desde el servidor
             await this.loadSidebar();
             
-            // Configurar eventos de navegación y logout
+            // Configurar eventos para navegación y cierre de sesión
             this.initializeListeners();
             
-            // Marcar la sección activa y actualizar perfil
+            // Marcar la sección activa y actualizar información del perfil
             this.updateActiveSection();
             this.updateUserProfile();
         } catch (error) {
-            console.error('Error inicializando sidebar:', error);
+            console.error('Error al inicializar sidebar:', error);
             this.uiService.showMessage('Error al cargar la barra lateral', 'danger');
         }
     }
 
-    // Verifica que el usuario actual tenga permisos de administrador
-    // Si no los tiene, redirige al login
+    /**
+     * Verifica que el usuario tenga permisos de administrador
+     * Redirige al login si no tiene los permisos necesarios
+     * @returns {boolean} - true si es admin, false si no lo es
+     */
     verificarAdmin() {
-        if (!this.currentUser || this.currentUser.rol !== 'admin') {
-            window.location.href = '../customer/login.html?error=unauthorized';
+        // Comprobar rol de administrador (admite varios formatos de rol)
+        if (!this.currentUser || 
+           (this.currentUser.rol !== 'admin' && 
+            this.currentUser.rol !== 'ROLE_ADMIN' && 
+            this.currentUser.role !== 'admin' && 
+            this.currentUser.role !== 'ROLE_ADMIN')) {
+            
+            // Redirigir al login con mensaje de error
+            window.location.href = '/pages/customer/Login.html?error=unauthorized';
             return false;
         }
         return true;
     }
 
-    // Carga el contenido HTML del sidebar desde el servidor
+    /**
+     * Carga el contenido HTML del sidebar desde el servidor
+     * Muestra un spinner mientras carga y maneja errores
+     */
     async loadSidebar() {
         try {
-            // Mostrar indicador de carga
+            // Mostrar indicador de carga mientras se obtiene el contenido
             if (this.sidebar) {
                 this.sidebar.innerHTML = `
                     <div class="d-flex justify-content-center p-4">
@@ -63,10 +83,19 @@ export class SidebarManager {
                     </div>`;
             }
             
-            const response = await fetch('/components/admin/sidebar.html');
-            if (!response.ok) {
-                throw new Error(`Error cargando sidebar: ${response.status} ${response.statusText}`);
+            // Intentar cargar primero desde ruta relativa
+            let response;
+            try {
+                response = await fetch('/components/admin/sidebar.html');
+                if (!response.ok) throw new Error('No se encontró en la ruta principal');
+            } catch (e) {
+                // Si falla, intentar con ruta alternativa
+                response = await fetch('./components/admin/sidebar.html');
+                if (!response.ok) {
+                    throw new Error(`Error cargando sidebar: ${response.status} ${response.statusText}`);
+                }
             }
+
             const html = await response.text();
             if (this.sidebar) {
                 this.sidebar.innerHTML = html;
@@ -74,6 +103,7 @@ export class SidebarManager {
         } catch (error) {
             console.error('Error cargando sidebar:', error);
             if (this.sidebar) {
+                // Mostrar mensaje de error con botón para reintentar
                 this.sidebar.innerHTML = `
                     <div class="alert alert-danger m-3">
                         Error al cargar la barra lateral. 
@@ -85,20 +115,23 @@ export class SidebarManager {
         }
     }
 
-    // Configura los eventos de navegación y cierre de sesión
+    /**
+     * Configura los eventos de navegación y cierre de sesión
+     * Usa delegación de eventos para mayor eficiencia
+     */
     initializeListeners() {
         if (!this.sidebar) return;
 
         // Usar delegación de eventos para todos los enlaces del menú
         this.sidebar.addEventListener('click', (e) => {
-            // Para navegación entre secciones
+            // Para navegación entre secciones del panel
             const navLink = e.target.closest('.nav-link[data-section]');
             if (navLink) {
                 e.preventDefault();
                 this.handleNavigation(navLink);
             }
             
-            // Para cierre de sesión
+            // Para el botón de cierre de sesión
             const logoutBtn = e.target.closest('.text-danger');
             if (logoutBtn) {
                 e.preventDefault();
@@ -107,30 +140,38 @@ export class SidebarManager {
         });
     }
 
-    // Maneja la navegación entre secciones del panel
+    /**
+     * Maneja el cambio de sección al hacer clic en un enlace
+     * @param {HTMLElement} linkElement - El elemento enlace que se ha clicado
+     */
     handleNavigation(linkElement) {
         const section = linkElement.dataset.section;
         
-        // Actualizar clase activa en el menú
+        // Actualizar clase activa en el menú (visual)
         this.sidebar.querySelectorAll('.nav-link').forEach(link => {
             link.classList.remove('active');
         });
         linkElement.classList.add('active');
 
-        // Disparar evento personalizado para que AdminManager maneje el cambio de sección
+        // Disparar evento personalizado para que AdminManager cargue la sección
         const event = new CustomEvent('sidebarNavigation', {
             detail: { section }
         });
         document.dispatchEvent(event);
     }
 
-    // Actualiza la sección activa basada en la URL o sección por defecto
+    /**
+     * Marca como activa la sección actual según la URL o usa la predeterminada
+     * Útil al recargar la página o entrar directamente con un hash
+     */
     updateActiveSection() {
         if (!this.sidebar) return;
         
+        // Obtener sección de la URL o usar 'dashboard' por defecto
         const currentSection = window.location.hash.slice(1) || 'dashboard';
         const activeLink = this.sidebar.querySelector(`[data-section="${currentSection}"]`);
         
+        // Si existe el enlace correspondiente, marcarlo como activo
         if (activeLink) {
             this.sidebar.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
@@ -139,26 +180,34 @@ export class SidebarManager {
         }
     }
 
-    // Actualiza la información del perfil en el sidebar
+    /**
+     * Actualiza la información del perfil del usuario en el sidebar
+     * Muestra nombre, correo e imagen del administrador actual
+     */
     updateUserProfile() {
         if (!this.currentUser || !this.sidebar) return;
 
         const userImage = this.sidebar.querySelector('.profile-image');
         const userName = this.sidebar.querySelector('.admin-name');
 
+        // Actualizar imagen de perfil (usar imagen por defecto si no tiene)
         if (userImage) {
             userImage.src = this.currentUser.profileImage || '/assets/images/avatar-default.png';
             userImage.alt = this.currentUser.nombre || 'Administrador';
         }
         
+        // Actualizar nombre (usar email si no tiene nombre, o "Administrador" como último recurso)
         if (userName) {
             userName.textContent = this.currentUser.nombre || this.currentUser.email || 'Administrador';
         }
     }
 
-    // Maneja el cierre de sesión con confirmación
+    /**
+     * Muestra un modal de confirmación antes de cerrar la sesión
+     * Usa UIService para crear el modal de manera consistente
+     */
     handleLogout() {
-        // Usar UIService para el modal de confirmación
+        // Crear modal de confirmación con opciones para cancelar o confirmar
         this.uiService.createModal({
             id: 'confirmLogoutModal',
             title: 'Cerrar sesión',
@@ -173,10 +222,10 @@ export class SidebarManager {
                     text: 'Cerrar Sesión',
                     class: 'btn-danger',
                     callback: () => {
-                        // Usar el servicio de autenticación para cerrar sesión
+                        // Usar el servicio de autenticación para cerrar sesión correctamente
                         this.authService.logout();
-                        // Redireccionar al login
-                        window.location.href = '../customer/login.html';
+                        // Redireccionar al login con L mayúscula para mantener consistencia
+                        window.location.href = '/pages/customer/Login.html';
                     }
                 }
             ]
