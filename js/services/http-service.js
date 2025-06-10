@@ -1,5 +1,4 @@
 import { BASE_API_URL } from './config.js';
-import { AuthService } from './auth-service.js';
 
 /**
  * Servicio para manejar peticiones HTTP a la API
@@ -8,7 +7,6 @@ import { AuthService } from './auth-service.js';
 export class HttpService {
   constructor() {
     this.baseUrl = BASE_API_URL;
-    this.authService = new AuthService();
   }
 
   /**
@@ -87,5 +85,13 @@ export class HttpService {
 
   async delete(endpoint, options = {}) {
     return this.request(endpoint, { ...options, method: 'DELETE' });
+  }
+  
+  async patch(endpoint, data, options = {}) {
+    return this.request(endpoint, { 
+      ...options, 
+      method: 'PATCH',
+      body: data
+    });
   }
 }
