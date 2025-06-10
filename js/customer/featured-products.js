@@ -32,17 +32,32 @@ export class FeaturedProductsManager {
 
     // Método para cargar productos destacados
     async loadFeaturedProducts() {
-        try {
-            // Obtener productos destacados desde el servicio específico
-            const productos = await this.productService.getFeaturedProducts();
-            
-            // Renderizar los productos en la interfaz
-            this.renderProducts(productos);
-        } catch (error) {
-            console.error('Error cargando productos destacados:', error);
-            this.showError();
-        }
+  try {
+    // Obtener productos destacados desde el servicio específico
+    const productos = await this.productService.getFeaturedProducts();
+    
+    // Renderizar los productos en la interfaz
+    this.renderProducts(productos);
+  } catch (error) {
+    console.error('Error cargando productos destacados:', error);
+    
+    // Mostrar un mensaje amigable y una alternativa
+    const container = document.querySelector('.productos-destacados .row');
+    if (container) {
+      container.innerHTML = `
+        <div class="col-12">
+          <div class="alert alert-warning">
+            <h4>Servicio temporalmente no disponible</h4>
+            <p>No se pudieron cargar los productos destacados en este momento. 
+            Estamos trabajando para solucionar este problema.</p>
+            <p>Por favor intente nuevamente más tarde o contacte al soporte si el problema persiste.</p>
+            <button class="btn btn-primary" onclick="location.reload()">Reintentar</button>
+          </div>
+        </div>
+      `;
     }
+  }
+}
 
     // Método para renderizar los productos en la interfaz
     renderProducts(productos) {

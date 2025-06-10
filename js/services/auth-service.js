@@ -52,26 +52,15 @@ export class AuthService {
    * @param {boolean} forceRefresh - Si debe forzar una nueva petición al backend
    * @returns {Promise<Object|null>} - Usuario autenticado o null si no hay sesión
    */
-  async getCurrentUser(forceRefresh = false) {
+  async getCurrentUser() {
     try {
-      // Si tenemos en caché y no se pide refresh, devolver de caché
-      if (this.userCache && !forceRefresh) {
-        return this.userCache;
-      }
-      
-      // Obtener del backend
-      const response = await this.httpService.get('/usuarios/perfil');
-      
-      // Actualizar caché
-      this.userCache = response;
-      
-      return response;
-    } catch (error) {
-      console.error('Error al obtener usuario actual:', error);
-      this.userCache = null;
-      return null;
-    }
+    return await this.httpService.get('/usuarios/perfil');
+  } catch (error) {
+    console.error('Error al obtener usuario actual:', error);
+    // Devolver un usuario "no autenticado" en lugar de fallar completamente
+    return null;
   }
+}
 
   /**
    * Verificar si hay un usuario autenticado
