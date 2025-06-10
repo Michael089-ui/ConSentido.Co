@@ -1,50 +1,62 @@
-import { UserService } from '../services/user_services.js';
+// Importación del servicio para manejo de usuarios desde el archivo correcto
+import { UserServices } from '../services/manage_users_services.js';
 
 export class UsersManager {
+    // Constructor que inicializa la instancia del servicio y el arreglo de usuarios
     constructor() {
-        this.userService = new UserService();
+        this.userService = new UserServices();
         this.users = [];
     }
 
+    // Método para inicializar la carga de usuarios y configurar eventos
     async init() {
         console.log('Inicializando UsersManager...');
         await this.loadUsers();
         this.setupEventListeners();
     }
 
+    // Método para cargar la lista de usuarios desde el backend
     async loadUsers() {
         try {
-            console.log('Loading users...');
-            const users = await this.userService.getAllUsers();
-            console.log('Loaded users:', users);
-            
+            console.log('Cargando usuarios...');
+            const users = await this.userService.getAllUser();
+            console.log('Usuarios cargados:', users);
+
+            // Validar que la respuesta sea un arreglo
             if (!Array.isArray(users)) {
-                console.error('Expected array of users but got:', typeof users);
+                console.error('Se esperaba un arreglo de usuarios pero se recibió:', typeof users);
+                this.showMessage('Error al cargar usuarios', 'danger');
                 return;
             }
 
+            // Guardar usuarios y renderizarlos en la tabla
             this.users = users;
             this.renderUsers(users);
         } catch (error) {
-            console.error('Error loading users:', error);
+            console.error('Error cargando usuarios:', error);
             this.showMessage('Error al cargar usuarios', 'danger');
         }
     }
 
+    // Método para renderizar la tabla de usuarios en el DOM
     renderUsers(users) {
-        console.log('Rendering users:', users);
+        console.log('Renderizando usuarios:', users);
         const tableBody = document.getElementById('tablaUsuarios');
         if (!tableBody) {
-            console.error('Table body element not found');
+            console.error('Elemento tbody con id "tablaUsuarios" no encontrado');
             return;
         }
 
+        // Generar el HTML para cada fila de usuario y asignarlo al tbody
         const html = users.map(user => this.createUserRow(user)).join('');
-        console.log('Generated HTML:', html);
+        console.log('HTML generado para usuarios:', html);
         tableBody.innerHTML = html;
+
+        // Inicializar eventos para los botones de cada fila
         this.initializeButtons();
     }
 
+    // Método para crear el HTML de una fila de usuario
     createUserRow(user) {
         return `
             <tr>
@@ -73,6 +85,7 @@ export class UsersManager {
         `;
     }
 
+    // Método para asignar eventos a los botones de ver, editar y eliminar usuario
     initializeButtons() {
         document.querySelectorAll('.view-user').forEach(btn => {
             btn.addEventListener('click', () => this.viewUser(btn.dataset.id));
@@ -87,6 +100,7 @@ export class UsersManager {
         });
     }
 
+    // Método para mostrar los detalles de un usuario en un modal
     async viewUser(id) {
         const user = this.users.find(u => u.id === id);
         if (!user) return;
@@ -107,12 +121,13 @@ export class UsersManager {
             </div>
         `;
 
-        // Mostrar modal
+        // Mostrar modal con la información del usuario
         const modal = new bootstrap.Modal(document.getElementById('userModal'));
         document.getElementById('userModalBody').innerHTML = modalContent;
         modal.show();
     }
 
+    // Método para mostrar el formulario de edición de usuario en un modal
     async editUser(id) {
         const user = this.users.find(u => u.id === id);
         if (!user) return;
@@ -146,53 +161,64 @@ export class UsersManager {
             </form>
         `;
 
+        // Mostrar modal con formulario de edición
         const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
         document.getElementById('editUserModalBody').innerHTML = modalContent;
-        
-        // Manejar el envío del formulario
+
+        // Asignar evento para manejar el envío del formulario
         document.getElementById('editUserForm').addEventListener('submit', (e) => this.handleEditUser(e));
-        
+
         modal.show();
     }
 
+    // Método para manejar el envío del formulario de edición y actualizar el usuario
     async handleEditUser(e) {
         e.preventDefault();
-        
+
+        // Recopilar datos del formulario
         const userData = {
-            id: document.getElementById('userId').value,
             name: document.getElementById('editName').value,
             email: document.getElementById('editEmail').value,
             rol: document.getElementById('editRol').value,
             estado: document.getElementById('editEstado').value
         };
 
+        const userId = document.getElementById('userId').value;
+
         try {
-            await this.userService.updateUser(userData.id, userData);
+            // Actualizar usuario en backend
+            await this.userService.updateUser(userId, userData);
+            // Recargar lista de usuarios
             await this.loadUsers();
-            
+
+            // Cerrar modal de edición
             const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
             modal.hide();
-            
+
             this.showMessage('Usuario actualizado exitosamente', 'success');
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error al actualizar usuario:', error);
             this.showMessage('Error al actualizar usuario', 'danger');
         }
     }
 
+    // Método para eliminar un usuario tras confirmación
     async deleteUser(id) {
         if (confirm('¿Está seguro de eliminar este usuario?')) {
             try {
+                // Eliminar usuario en backend
                 await this.userService.deleteUser(id);
+                // Recargar lista de usuarios
                 await this.loadUsers();
                 this.showMessage('Usuario eliminado exitosamente', 'success');
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error al eliminar usuario:', error);
                 this.showMessage('Error al eliminar usuario', 'danger');
             }
         }
     }
 
+    // Método para mostrar mensajes de alerta en la interfaz
     showMessage(message, type) {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
@@ -200,7 +226,15 @@ export class UsersManager {
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
-        document.querySelector('.content').prepend(alertDiv);
-        setTimeout(() => alertDiv.remove(), 3000);
+        const container = document.querySelector('.content');
+        if (container) {
+            container.prepend(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+    }
+
+    // Método para configurar eventos globales si es necesario
+    setupEventListeners() {
+        // agregar aquí
     }
 }
