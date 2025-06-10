@@ -1,4 +1,3 @@
-import { BASE_API_URL } from './config.js';
 
 /**
  * Servicio para manejar peticiones HTTP a la API
@@ -6,7 +5,7 @@ import { BASE_API_URL } from './config.js';
  */
 export class HttpService {
   constructor() {
-    this.baseUrl = BASE_API_URL;
+    this.baseUrl = "https://kpn9ajcasp.us-east-1.awsapprunner.com";
   }
 
   /**
@@ -16,8 +15,13 @@ export class HttpService {
    * @returns {Promise<any>} - Respuesta de la API
    */
   async request(endpoint, options = {}) {
+    // Asegurarse que el endpoint comience con /
+    if (!endpoint.startsWith('/')) {
+      endpoint = '/' + endpoint;
+    }
+
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     // Configuración por defecto
     const config = {
       headers: {
@@ -35,25 +39,25 @@ export class HttpService {
 
     try {
       const response = await fetch(url, config);
-      
+
       // Manejar respuesta no exitosa
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ 
-          message: 'Error de servidor' 
+        const errorData = await response.json().catch(() => ({
+          message: 'Error de servidor'
         }));
-        
+
         throw {
           status: response.status,
           message: errorData.message || `Error ${response.status}: ${response.statusText}`,
           data: errorData
         };
       }
-      
+
       // Si la respuesta está vacía, devolver objeto vacío
       if (response.status === 204) {
         return {};
       }
-      
+
       // Convertir respuesta a JSON
       return await response.json();
     } catch (error) {
@@ -68,16 +72,16 @@ export class HttpService {
   }
 
   async post(endpoint, data, options = {}) {
-    return this.request(endpoint, { 
-      ...options, 
+    return this.request(endpoint, {
+      ...options,
       method: 'POST',
       body: data
     });
   }
 
   async put(endpoint, data, options = {}) {
-    return this.request(endpoint, { 
-      ...options, 
+    return this.request(endpoint, {
+      ...options,
       method: 'PUT',
       body: data
     });
@@ -86,10 +90,10 @@ export class HttpService {
   async delete(endpoint, options = {}) {
     return this.request(endpoint, { ...options, method: 'DELETE' });
   }
-  
+
   async patch(endpoint, data, options = {}) {
-    return this.request(endpoint, { 
-      ...options, 
+    return this.request(endpoint, {
+      ...options,
       method: 'PATCH',
       body: data
     });
