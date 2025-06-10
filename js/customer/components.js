@@ -1,4 +1,9 @@
+// Importación de servicios necesarios
+import { AuthService } from '../services/auth-service.js';
+import { CustomerCartService } from '../services/customer/cart_services.js';
+
 export class ComponentsManager {
+    // Método para inicializar animaciones en tarjetas del equipo
     static initializeAnimations() {
         const tarjetas = document.querySelectorAll('.equipo-card');
         tarjetas.forEach(card => {
@@ -7,6 +12,7 @@ export class ComponentsManager {
         });
     }
 
+    // Método para crear el HTML de una tarjeta de producto
     static createProductCard(producto) {
         return `
             <div class="col">
@@ -21,16 +27,17 @@ export class ComponentsManager {
                         </p>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="h5 mb-0">$${producto.precio.toLocaleString()}</span>
-                            <button class="btn btn-primary" onclick="productosVista.agregarAlCarrito(${producto.id})">
+                            <button class="btn btn-primary btn-agregar-carrito" data-id="${producto.id}">
                                 <i class="fas fa-shopping-cart"></i> Agregar
                             </button>
-                        </div>ñ
+                        </div>
                     </div>
                 </div>
             </div>
         `;
     }
 
+    // Método para cargar todos los componentes comunes
     static async loadComponents() {
         try {
             await this.loadNavbar();
@@ -41,6 +48,7 @@ export class ComponentsManager {
         }
     }
 
+    // Método para cargar la barra de navegación
     static async loadNavbar() {
         const navPlaceholder = document.getElementById('nav-placeholder');
         if (!navPlaceholder) return;
@@ -72,27 +80,28 @@ export class ComponentsManager {
         }
     }
 
+    // Método para cargar el pie de página
     static async loadFooter() {
-    const footerPlaceholder = document.getElementById('footer-content');
-    if (!footerPlaceholder) return;
+        const footerPlaceholder = document.getElementById('footer-content');
+        if (!footerPlaceholder) return;
 
-    try {
-        const response = await fetch('/components/footer.html');
-        const footerHtml = await response.text();
-        footerPlaceholder.innerHTML = footerHtml;
+        try {
+            const response = await fetch('/components/footer.html');
+            const footerHtml = await response.text();
+            footerPlaceholder.innerHTML = footerHtml;
 
-        //para actaulizar dinámicamente el año de
-        const yearSpan = footerPlaceholder.querySelector('.current-year');
-        if (yearSpan) {
-            yearSpan.textContent = new Date().getFullYear();
+            // Actualizar dinámicamente el año actual
+            const yearSpan = footerPlaceholder.querySelector('.current-year');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+
+        } catch (error) {
+            console.error('Error loading footer:', error);
         }
-
-    } catch (error) {
-        console.error('Error loading footer:', error);
     }
-}
 
-
+    // Método para inicializar funcionalidades de la barra de navegación
     static initializeNavbarFeatures() {
         // Inicializar dropdowns de Bootstrap
         const dropdowns = document.querySelectorAll('.dropdown-toggle');
@@ -110,48 +119,99 @@ export class ComponentsManager {
         }
     }
 
-    static updateUserUI() {
+    // Método para actualizar la UI según el estado de la sesión
+    static async updateUserUI() {
         const userIcon = document.querySelector('.nav-icon i.fa-user');
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!userIcon) return;
         
-        if (userIcon) {
-            if (currentUser && currentUser.rol !== 'admin') {
-                userIcon.classList.remove('fa-user');
-                userIcon.classList.add('fa-user-check');
-                userIcon.parentElement.href = '/pages/customer/profile.html';
-            } else {
-                userIcon.classList.remove('fa-user-check');
-                userIcon.classList.add('fa-user');
-                userIcon.parentElement.href = '/pages/customer/Login.html';
-            }
+        // Usar el servicio de autenticación en lugar de localStorage
+        const authService = new AuthService();
+        const currentUser = await authService.getCurrentUser();
+        
+        if (currentUser && currentUser.rol !== 'admin') {
+            userIcon.classList.remove('fa-user');
+            userIcon.classList.add('fa-user-check');
+            userIcon.parentElement.href = '/pages/customer/profile.html';
+        } else {
+            userIcon.classList.remove('fa-user-check');
+            userIcon.classList.add('fa-user');
+            userIcon.parentElement.href = '/pages/customer/Login.html';
         }
     }
 
+    // Método para actualizar el contador del carrito
     static async updateCartCounter() {
-    const counter = document.querySelector('.cart-counter');
-    if (!counter) return;
+        const counter = document.querySelector('.cart-counter');
+        if (!counter) return;
 
-    try {
-        // Obtener el carrito desde la API
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser || !currentUser.id) return;
+        try {
+            // Usar servicios en lugar de acceder directamente a localStorage
+            const authService = new AuthService();
+            const cartService = new CustomerCartService();
+            
+            // Obtener usuario actual a través del servicio
+            const currentUser = await authService.getCurrentUser();
+            if (!currentUser) {
+                counter.style.display = 'none';
+                return;
+            }
 
-        const response = await fetch(`http://localhost:8080/api/carrito/${currentUser.id}`);
-        if (!response.ok) throw new Error('Error al obtener el carrito');
+            // Obtener carrito a través del servicio
+            const carrito = await cartService.getCart();
+            const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
 
-        const carrito = await response.json();
-        const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-
-        counter.textContent = totalItems;
-        counter.style.display = totalItems > 0 ? 'flex' : 'none';
-
-    } catch (error) {
-        console.error('Error actualizando contador del carrito:', error);
-        counter.style.display = 'none';
+            counter.textContent = totalItems;
+            counter.style.display = totalItems > 0 ? 'flex' : 'none';
+        } catch (error) {
+            console.error('Error actualizando contador del carrito:', error);
+            counter.style.display = 'none';
+        }
     }
-}
 
+    // Método para agregar un producto al carrito
+    static async addToCart(productId, quantity = 1) {
+        try {
+            // Usar servicio de autenticación para verificar usuario
+            const authService = new AuthService();
+            const currentUser = await authService.getCurrentUser();
+            
+            if (!currentUser) {
+                window.location.href = '/pages/customer/Login.html?redirect=cart';
+                return;
+            }
 
+            // Usar servicio del carrito para agregar producto
+            const cartService = new CustomerCartService();
+            await cartService.addToCart({
+                producto_id: productId,
+                cantidad: quantity
+            });
+            
+            // Actualizar contador del carrito
+            await this.updateCartCounter();
+            
+            // Mostrar mensaje de éxito
+            this.showMessage('Producto agregado al carrito', 'success');
+        } catch (error) {
+            console.error('Error al agregar al carrito:', error);
+            this.showMessage('Error al agregar el producto al carrito', 'danger');
+        }
+    }
+
+    // Método para mostrar mensajes de alerta
+    static showMessage(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+        alertDiv.style.zIndex = '1050';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        setTimeout(() => alertDiv.remove(), 3000);
+    }
+
+    // Método para inicializar la búsqueda
     static initializeSearch() {
         const searchInput = document.querySelector('.search-box input');
         const searchButton = document.querySelector('.search-box button');
@@ -179,6 +239,16 @@ export class ComponentsManager {
 // Initialize components when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     ComponentsManager.loadComponents();
+    
+    // Configurar delegación de eventos para botones de agregar al carrito
+    document.addEventListener('click', (e) => {
+        const addButton = e.target.closest('.btn-agregar-carrito');
+        if (addButton) {
+            e.preventDefault();
+            const productId = addButton.dataset.id;
+            ComponentsManager.addToCart(productId, 1);
+        }
+    });
 });
 
 export class ModalManager {

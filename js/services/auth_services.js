@@ -1,75 +1,93 @@
-import { BASE_API_URL } from '../config';
+import { HttpService } from './http-service.js';
 
-// Servicio para manejar autenticación con backend
+/**
+ * Servicio para gestionar la autenticación y sesión de usuarios
+ * Centraliza la lógica relacionada con login, logout y gestión de sesión
+ */
 export class AuthService {
-    constructor() {
-        this.apiUrl = BASE_API_URL;
+  constructor() {
+    this.httpService = new HttpService();
+    // Caché de usuario en memoria para evitar múltiples peticiones
+    this.userCache = null;
+  }
+
+  /**
+   * Iniciar sesión con credenciales
+   * @param {Object} credentials - Credenciales de acceso (email, password)
+   * @returns {Promise<Object>} - Usuario autenticado
+   */
+  async login(credentials) {
+    try {
+      const response = await this.httpService.post('/auth/login', credentials);
+      
+      // Guardar en caché para reducir peticiones
+      this.userCache = response.user;
+      
+      return response.user;
+    } catch (error) {
+      console.error('Error en login:', error);
+      throw error;
     }
+  }
 
-    // Método para hacer login enviando credenciales al backend
-    async login(email, password) {
-        try {
-            const response = await fetch(`${this.apiUrl}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', // para enviar cookies de sesión
-                body: JSON.stringify({ email, password })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error en login');
-            }
-
-            // Retorna datos del usuario autenticado (según respuesta backend)
-            const userData = await response.json();
-            return userData; // Debe incluir el rol del usuario
-
-        } catch (error) {
-            console.error('Error en login:', error);
-            throw error;
-        }
+  /**
+   * Cerrar sesión del usuario actual
+   * @returns {Promise<void>}
+   */
+  async logout() {
+    try {
+      // Hacer logout en el backend
+      await this.httpService.post('/auth/logout', {});
+      
+      // Limpiar caché
+      this.userCache = null;
+    } catch (error) {
+      console.error('Error en logout:', error);
+      throw error;
     }
+  }
 
-    // Método para obtener el usuario autenticado actual desde backend
-    async getCurrentUser() {
-        try {
-            const response = await fetch(`${this.apiUrl}/auth/me`, {
-                credentials: 'include' // para enviar cookies de sesión
-            });
-
-            if (!response.ok) {
-                throw new Error('No autenticado');
-            }
-
-            const userData = await response.json();
-            return userData; // Debe incluir el rol del usuario
-
-        } catch (error) {
-            console.error('Error al obtener usuario actual:', error);
-            return null;
-        }
+  /**
+   * Obtener el usuario actualmente autenticado
+   * @param {boolean} forceRefresh - Si debe forzar una nueva petición al backend
+   * @returns {Promise<Object|null>} - Usuario autenticado o null si no hay sesión
+   */
+  async getCurrentUser(forceRefresh = false) {
+    try {
+      // Si tenemos en caché y no se pide refresh, devolver de caché
+      if (this.userCache && !forceRefresh) {
+        return this.userCache;
+      }
+      
+      // Obtener del backend
+      const response = await this.httpService.get('/usuarios/perfil');
+      
+      // Actualizar caché
+      this.userCache = response;
+      
+      return response;
+    } catch (error) {
+      console.error('Error al obtener usuario actual:', error);
+      this.userCache = null;
+      return null;
     }
+  }
 
-    // Método para cerrar sesión en backend
-    async logout() {
-        try {
-            const response = await fetch(`${this.apiUrl}/auth/logout`, {
-                method: 'POST',
-                credentials: 'include'
-            });
+  /**
+   * Verificar si hay un usuario autenticado
+   * @returns {Promise<boolean>} - true si hay usuario autenticado
+   */
+  async isAuthenticated() {
+    const user = await this.getCurrentUser();
+    return user !== null;
+  }
 
-            if (!response.ok) {
-                throw new Error('Error al cerrar sesión');
-            }
-
-            // Redirigir a login o página principal
-            window.location.href = '/pages/customer/Login.html';
-
-        } catch (error) {
-            console.error('Error en logout:', error);
-            // Igual redirigir para evitar quedar en sesión inválida
-            window.location.href = '/pages/customer/Login.html';
-        }
-    }
+  /**
+   * Verificar si el usuario actual tiene rol de administrador
+   * @returns {Promise<boolean>} - true si el usuario es administrador
+   */
+  async isAdmin() {
+    const user = await this.getCurrentUser();
+    return user && user.rol === 'admin';
+  }
 }

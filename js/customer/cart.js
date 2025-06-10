@@ -1,11 +1,15 @@
-import { OrderService } from '../services/orders_services.js';
-import { cart_service } from '../services/cart_services.js';
+// Importación de servicios necesarios para órdenes y carrito
+import { OrderService } from '../services/customer/orders_services.js';
+import { CustomerCartService } from '../services/customer/cart_services.js';
+import { AuthService } from '../services/auth-service.js';
 
 export class CartManager {
+    // Constructor que inicializa los servicios necesarios y el estado del carrito
     constructor() {
-        // Instanciamos los servicios para órdenes y carrito
+        // Instanciamos los servicios para órdenes, carrito y autenticación
         this.orderService = new OrderService();
-        this.cartService = new cart_service();
+        this.cartService = new CustomerCartService();
+        this.authService = new AuthService();
         this.cart = []; // Carrito sincronizado con backend
         this.init();
     }
@@ -132,7 +136,10 @@ export class CartManager {
             if (!producto) return;
 
             // Enviamos al backend la actualización de cantidad
-            await this.cartService.addToCart({ ...producto, cantidad: newQuantity });
+            await this.cartService.addToCart({ 
+                producto_id: id, 
+                cantidad: newQuantity 
+            });
 
             // Recargamos el carrito para mantener sincronía con backend
             await this.loadCartFromBackend();
@@ -161,7 +168,8 @@ export class CartManager {
     // Finalizo la orden enviando los datos al backend y limpio el carrito
     async finalizeOrder() {
         try {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            // Verifico si el usuario está autenticado usando el servicio
+            const currentUser = this.authService.getCurrentUser();
             if (!currentUser) {
                 window.location.href = '/pages/customer/Login.html?redirect=cart';
                 return;
@@ -169,12 +177,11 @@ export class CartManager {
 
             // Preparo los datos de la orden
             const orderData = {
-                id: Date.now().toString(),
                 usuario: {
                     id: currentUser.id,
-                    name: currentUser.name,
+                    nombre: currentUser.nombre,
                     email: currentUser.email,
-                    celular: currentUser.celular || ''
+                    telefono: currentUser.telefono || ''
                 },
                 productos: this.cart.map(item => ({
                     id: item.id,
@@ -184,7 +191,9 @@ export class CartManager {
                 })),
                 total: this.cart.reduce((sum, item) => sum + (item.precio * item.cantidad), 0),
                 fecha: new Date().toISOString(),
-                estado: 'pendiente'
+                estado: 'pendiente',
+                direccionEnvio: currentUser.direccion || '',
+                metodoPago: 'whatsapp'
             };
 
             // Creo la orden en backend

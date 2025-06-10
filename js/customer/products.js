@@ -6,7 +6,7 @@ import { CustomerCartService } from '../services/customer/cart_services.js';
 export class ProductsManager {
     constructor() {
         // Instancio los servicios de productos y carrito para poder usarlos en este archivo
-        this.dataService = new product_services();
+        this.dataService = new ProductService();
         this.cartService = new CustomerCartService();
         this.initializeCartCounter();
     }

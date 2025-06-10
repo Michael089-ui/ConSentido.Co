@@ -2,7 +2,7 @@
 import { BASE_API_URL } from "../config.js";
 
 // Creamos una clase para manejar productos desde el lado del cliente (customer)
-export class product_services {
+export class ProductService {
 
     // Constructor que se ejecuta cuando se crea una instancia de esta clase
     constructor() {
