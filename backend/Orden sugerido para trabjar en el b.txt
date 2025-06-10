@@ -1,0 +1,41 @@
+
+
+### Orden recomendado de desarrollo:
+
+1. **Model/Entidades** (Primero)
+   - Comenzar con las entidades es fundamental ya que representan la estructura de datos
+   - Orden sugerido basado en las dependencias:
+     1. Usuario (no tiene dependencias)
+     2. Categoria (no tiene dependencias)
+     3. Producto (depende de Categoria)
+     4. Pedido (depende de Usuario)
+     5. DetallePedido (depende de Pedido, Categoria, Producto)
+     6. Inventario (depende de Categoria, Producto)
+
+2. **Repository** (Segundo)
+   - Crear los repositorios en el mismo orden que las entidades
+   - Esto permite manejar las operaciones básicas de base de datos
+
+3. **Service** (Tercero)
+   - Implementar la lógica de negocio
+   - Seguir el mismo orden que los repositorios
+   - Aquí se manejan las reglas de negocio y validaciones
+
+4. **Controller** (Cuarto)
+   - Crear los endpoints REST
+   - Seguir el mismo orden anterior
+   - Manejar las solicitudes HTTP y respuestas
+
+### Justificación del orden:
+- Empezar con los **Models** permite tener clara la estructura de datos
+- Los **Repositories** necesitan las entidades para funcionar
+- Los **Services** requieren los repositories para operar
+- Los **Controllers** necesitan los services para exponer la funcionalidad
+
+### Recomendaciones adicionales:
+- Implementa las entidades con sus relaciones usando anotaciones JPA
+- Crea DTOs para la transferencia de datos
+- Implementa manejo de excepciones personalizado
+- Considera agregar validaciones en las entidades
+- Documenta los endpoints con Swagger/OpenAPI
+
